@@ -1,0 +1,2 @@
+C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\OS2Indberetning\OS2Indberetning.WinPhone\OS2Indberetning.WinPhone.csproj;x86
+C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\OS2Indberetning\OS2Indberetning\OS2Indberetning.csproj;neutral

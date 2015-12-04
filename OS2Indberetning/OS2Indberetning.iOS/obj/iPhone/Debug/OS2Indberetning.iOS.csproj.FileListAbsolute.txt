@@ -1,0 +1,2 @@
+C:\Users\Jesper\Documents\Visual Studio 2013\Projects\OS2Indberetning\OS2Indberetning\OS2Indberetning.iOS\obj\iPhone\Debug\optimized\
+C:\Users\Jesper\Documents\Visual Studio 2013\Projects\OS2Indberetning\OS2Indberetning\OS2Indberetning.iOS\obj\iPhone\Debug\OS2Indberetning.iOS.csprojResolveAssemblyReference.cache

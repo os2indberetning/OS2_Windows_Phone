@@ -1,0 +1,11 @@
+<XamlCompilerSaveState>
+  <ReferenceAssemblyList>
+    <ReferenceAssembly PathName="c:\users\jesper\documents\visual studio 2013\projects\os2indberetning\packages\nunit.3.0.0\lib\portable-net45+win8+wp8+wpa81+xamarin.mac+monoandroid10+monotouch10+xamarin.ios10\nunit.framework.dll" HashGuid="e6d45496-830b-5636-c0b4-f91cd87977b5" />
+    <ReferenceAssembly PathName="c:\users\jesper\documents\visual studio 2013\projects\os2indberetning\packages\nunit.xamarin.3.0.0\lib\wpa81\nunit.runner.wp81.dll" HashGuid="cc0d8760-6564-f95d-3550-c89b7d762aa4" />
+    <ReferenceAssembly PathName="c:\users\jesper\documents\visual studio 2013\projects\os2indberetning\packages\xamarin.forms.1.5.0.6447\lib\wpa81\xamarin.forms.core.dll" HashGuid="7fe0beab-73fa-b0ee-7301-cfe87e92912e" />
+    <ReferenceAssembly PathName="c:\users\jesper\documents\visual studio 2013\projects\os2indberetning\packages\xamarin.forms.1.5.0.6447\lib\wpa81\xamarin.forms.platform.dll" HashGuid="d9389e38-8a39-bed5-406b-7a34fe4704ea" />
+    <ReferenceAssembly PathName="c:\users\jesper\documents\visual studio 2013\projects\os2indberetning\packages\xamarin.forms.1.5.0.6447\lib\wpa81\xamarin.forms.platform.winrt.dll" HashGuid="7b7bf577-02c9-364a-819f-77143e76c477" />
+    <ReferenceAssembly PathName="c:\users\jesper\documents\visual studio 2013\projects\os2indberetning\packages\xamarin.forms.1.5.0.6447\lib\wpa81\xamarin.forms.platform.winrt.phone.dll" HashGuid="f4791380-4614-eb08-592a-efac18501fc3" />
+    <ReferenceAssembly PathName="c:\users\jesper\documents\visual studio 2013\projects\os2indberetning\packages\xamarin.forms.1.5.0.6447\lib\wpa81\xamarin.forms.xaml.dll" HashGuid="3838ccba-838e-e369-f88c-f21aedc9464f" />
+  </ReferenceAssemblyList>
+</XamlCompilerSaveState>

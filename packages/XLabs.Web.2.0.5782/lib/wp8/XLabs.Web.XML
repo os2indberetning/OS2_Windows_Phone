@@ -1,0 +1,177 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>XLabs.Web</name>
+    </assembly>
+    <members>
+        <member name="T:XLabs.Web.IRestClient">
+            <summary>
+            Rest Client interface.
+            </summary>
+        </member>
+        <member name="M:XLabs.Web.IRestClient.AddHeader(System.String,System.String)">
+            <summary>
+            Add request header.
+            </summary>
+            <param name="key">
+            The key.
+            </param>
+            <param name="value">
+            The value.
+            </param>
+        </member>
+        <member name="M:XLabs.Web.IRestClient.RemoveHeader(System.String)">
+            <summary>
+            Remove request header.
+            </summary>
+            <param name="key">
+            The key.
+            </param>
+        </member>
+        <member name="M:XLabs.Web.IRestClient.PostAsync``1(System.String,System.Object)">
+            <summary>
+            Async POST method.
+            </summary>
+            <returns>The async task.</returns>
+            <param name="address">Address of the service.</param>
+            <param name="dto">DTO to post.</param>
+            <typeparam name="T">The type of object to be returned.</typeparam>
+        </member>
+        <member name="M:XLabs.Web.IRestClient.PutAsync``1(System.String,System.Object)">
+            <summary>
+            Async PUT method.
+            </summary>
+            <returns>The async task.</returns>
+            <param name="address">Address of the service.</param>
+            <param name="dto">DTO to put.</param>
+            <typeparam name="T">The type of object to be returned.</typeparam>
+        </member>
+        <member name="M:XLabs.Web.IRestClient.GetAsync``1(System.String)">
+            <summary>
+            Async GET method.
+            </summary>
+            <returns>The async task.</returns>
+            <param name="address">Address of the service.</param>
+            <typeparam name="T">The type of object to be returned.</typeparam>
+        </member>
+        <member name="M:XLabs.Web.IRestClient.GetAsync``1(System.String,System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Async GET method.
+            </summary>
+            <returns>The async task.</returns>
+            <param name="address">Address of the service.</param>
+            <param name="values">Values for the request.</param>
+            <typeparam name="T">The 1st type parameter.</typeparam>
+        </member>
+        <member name="M:XLabs.Web.IRestClient.DeleteAsync``1(System.String)">
+            <summary>
+            Deletes the async.
+            </summary>
+            <returns>The async task.</returns>
+            <param name="address">Address.</param>
+            <typeparam name="T">The 1st type parameter.</typeparam>
+        </member>
+        <member name="M:XLabs.Web.IRestClient.PostAsync(System.String,System.Object)">
+            <summary>
+            Async POST method.
+            </summary>
+            <returns>The async task.</returns>
+            <param name="address">Address of the service.</param>
+            <param name="dto">DTO to post.</param>
+        </member>
+        <member name="M:XLabs.Web.IRestClient.PutAsync(System.String,System.Object)">
+            <summary>
+            Async PUT method.
+            </summary>
+            <returns>The async task.</returns>
+            <param name="address">Address of the service.</param>
+            <param name="dto">DTO to put.</param>
+        </member>
+        <member name="M:XLabs.Web.IRestClient.DeleteAsync(System.String)">
+            <summary>
+            Deletes the async.
+            </summary>
+            <returns>The async task.</returns>
+            <param name="address">Address.</param>
+        </member>
+        <member name="M:XLabs.Web.IRestClient.PostAsync``1(System.String)">
+            <summary>
+            Async POST method.
+            </summary>
+            <returns>The async task.</returns>
+            <param name="address">Address of the service.</param>
+            <typeparam name="T">The type of object to be returned.</typeparam>
+        </member>
+        <member name="M:XLabs.Web.IRestClient.PutAsync``1(System.String)">
+            <summary>
+            Async PUT method.
+            </summary>
+            <returns>The async task.</returns>
+            <param name="address">Address of the service.</param>
+            <typeparam name="T">The type of object to be returned.</typeparam>
+        </member>
+        <member name="M:XLabs.Web.IRestClient.PostAsync(System.String)">
+            <summary>
+            Async POST method.
+            </summary>
+            <returns>The async task.</returns>
+            <param name="address">Address of the service.</param>
+        </member>
+        <member name="M:XLabs.Web.IRestClient.PutAsync(System.String)">
+            <summary>
+            Async PUT method.
+            </summary>
+            <returns>The async task.</returns>
+            <param name="address">Address of the service.</param>
+        </member>
+        <member name="P:XLabs.Web.IRestClient.Timeout">
+            <summary>
+            Gets or sets timeout
+            </summary>
+        </member>
+        <member name="T:XLabs.Web.WebResponseException">
+            <summary>
+            Class WebResponseException.
+            </summary>
+        </member>
+        <member name="M:XLabs.Web.WebResponseException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:XLabs.Web.WebResponseException"/> class.
+            </summary>
+        </member>
+        <member name="M:XLabs.Web.WebResponseException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Exception" /> class with a specified error message.
+            </summary>
+            <param name="message">The message that describes the error.</param>
+        </member>
+        <member name="M:XLabs.Web.WebResponseException.#ctor(System.Net.HttpStatusCode,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:XLabs.Web.WebResponseException"/> class.
+            </summary>
+            <param name="status">The status.</param>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:XLabs.Web.WebResponseException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Exception" /> class with a specified error message and a reference to the inner exception that is the cause of this exception.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+            <param name="innerException">The exception that is the cause of the current exception, or a null reference (Nothing in Visual Basic) if no inner exception is specified.</param>
+        </member>
+        <member name="M:XLabs.Web.WebResponseException.#ctor(System.Net.HttpStatusCode,System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:XLabs.Web.WebResponseException"/> class.
+            </summary>
+            <param name="status">The status.</param>
+            <param name="message">The message.</param>
+            <param name="innerException">The inner exception.</param>
+        </member>
+        <member name="P:XLabs.Web.WebResponseException.Status">
+            <summary>
+            Gets or sets the status.
+            </summary>
+            <value>The status.</value>
+        </member>
+    </members>
+</doc>

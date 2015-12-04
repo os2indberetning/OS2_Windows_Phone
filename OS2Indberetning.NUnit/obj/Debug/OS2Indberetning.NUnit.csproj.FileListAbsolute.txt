@@ -1,0 +1,11 @@
+C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\OS2Indberetning.NUnit\obj\Debug\OS2Indberetning.NUnit.csprojResolveAssemblyReference.cache
+C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\OS2Indberetning.NUnit\obj\Debug\App.g.i.cs
+C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\OS2Indberetning.NUnit\obj\Debug\App.g.cs
+C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\OS2Indberetning.NUnit\obj\Debug\MainPage.g.i.cs
+C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\OS2Indberetning.NUnit\obj\Debug\MainPage.g.cs
+C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\OS2Indberetning.NUnit\obj\Debug\XamlTypeInfo.g.cs
+C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\OS2Indberetning.NUnit\obj\Debug\App.xaml
+C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\OS2Indberetning.NUnit\obj\Debug\MainPage.xaml
+C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\OS2Indberetning.NUnit\obj\Debug\App.xbf
+C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\OS2Indberetning.NUnit\obj\Debug\MainPage.xbf
+C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\OS2Indberetning.NUnit\obj\Debug\XamlSaveStateFile.xml

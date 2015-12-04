@@ -1,0 +1,249 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>XLabs.Web.Droid</name>
+    </assembly>
+    <members>
+        <member name="T:XLabs.Web.HttpHandler">
+            <summary>
+            Class HttpHandler.
+            </summary>
+        </member>
+        <member name="F:XLabs.Web.HttpHandler.CookieHeader">
+            <summary>
+            The cookie header
+            </summary>
+        </member>
+        <member name="F:XLabs.Web.HttpHandler.CookieReceived">
+            <summary>
+            The cookie received
+            </summary>
+        </member>
+        <member name="M:XLabs.Web.HttpHandler.SendAsync(System.Net.Http.HttpRequestMessage,System.Threading.CancellationToken)">
+            <summary>
+            send as an asynchronous operation.
+            </summary>
+            <param name="request">The request.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task&lt;HttpResponseMessage&gt;.</returns>
+        </member>
+        <member name="T:XLabs.Web.JsonRestClient">
+            <summary>
+            The JSON rest client.
+            </summary>
+        </member>
+        <member name="T:XLabs.Web.RestCoreClient">
+            <summary>
+            The rest core client.
+            </summary>
+        </member>
+        <member name="F:XLabs.Web.RestCoreClient.Serializer">
+            <summary>
+            The serializer to use.
+            </summary>
+        </member>
+        <member name="F:XLabs.Web.RestCoreClient.Client">
+            <summary>
+            The Http client.
+            </summary>
+        </member>
+        <member name="M:XLabs.Web.RestCoreClient.#ctor(XLabs.Serialization.ISerializer)">
+            <summary>
+            Initializes a new instance of the <see cref="T:XLabs.Web.RestCoreClient"/> class.
+            </summary>
+            <param name="serializer">The serializer to use.</param>
+        </member>
+        <member name="M:XLabs.Web.RestCoreClient.#ctor(XLabs.Serialization.ISerializer,System.Net.Http.HttpClient)">
+            <summary>
+            Initializes a new instance of the <see cref="T:XLabs.Web.RestCoreClient"/> class.
+            </summary>
+            <param name="serializer">The serializer to use.</param>
+            <param name="client">The Http client.</param>
+        </member>
+        <member name="M:XLabs.Web.RestCoreClient.Finalize">
+            <summary>
+            Finalizes an instance of the <see cref="T:XLabs.Web.RestCoreClient"/> class.
+            </summary>
+        </member>
+        <member name="M:XLabs.Web.RestCoreClient.AddHeader(System.String,System.String)">
+            <summary>
+            Add request header.
+            </summary>
+            <param name="key">The key.</param>
+            <param name="value">The value.</param>
+        </member>
+        <member name="M:XLabs.Web.RestCoreClient.RemoveHeader(System.String)">
+            <summary>
+            Remove request header.
+            </summary>
+            <param name="key">The key.</param>
+        </member>
+        <member name="M:XLabs.Web.RestCoreClient.PostAsync``1(System.String,System.Object)">
+            <summary>
+            Async POST method.
+            </summary>
+            <typeparam name="T">The type of object to be returned.</typeparam>
+            <param name="address">Address of the service.</param>
+            <param name="dto">DTO to post.</param>
+            <returns>The async task.</returns>
+        </member>
+        <member name="M:XLabs.Web.RestCoreClient.PutAsync``1(System.String,System.Object)">
+            <summary>
+            Async PUT method.
+            </summary>
+            <typeparam name="T">The type of object to be returned.</typeparam>
+            <param name="address">Address of the service.</param>
+            <param name="dto">DTO to put.</param>
+            <returns>The async task.</returns>
+        </member>
+        <member name="M:XLabs.Web.RestCoreClient.GetAsync``1(System.String)">
+            <summary>
+            Async GET method.
+            </summary>
+            <typeparam name="T">The type of object to be returned.</typeparam>
+            <param name="address">Address of the service.</param>
+            <returns>The async task.</returns>
+        </member>
+        <member name="M:XLabs.Web.RestCoreClient.GetAsync``1(System.String,System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Async GET method.
+            </summary>
+            <typeparam name="T">The 1st type parameter.</typeparam>
+            <param name="address">Address of the service.</param>
+            <param name="values">Values for the request.</param>
+            <returns>The async task.</returns>
+        </member>
+        <member name="M:XLabs.Web.RestCoreClient.DeleteAsync``1(System.String)">
+            <summary>
+            Deletes the async.
+            </summary>
+            <typeparam name="T">The 1st type parameter.</typeparam>
+            <param name="address">Address of the service.</param>
+            <returns>The async task.</returns>
+        </member>
+        <member name="M:XLabs.Web.RestCoreClient.PostAsync(System.String,System.Object)">
+            <summary>
+            post as an asynchronous operation.
+            </summary>
+            <param name="address">The address.</param>
+            <param name="dto">The dto.</param>
+            <returns>Task.</returns>
+        </member>
+        <member name="M:XLabs.Web.RestCoreClient.PutAsync(System.String,System.Object)">
+            <summary>
+            put as an asynchronous operation.
+            </summary>
+            <param name="address">The address.</param>
+            <param name="dto">The dto.</param>
+            <returns>Task.</returns>
+        </member>
+        <member name="M:XLabs.Web.RestCoreClient.DeleteAsync(System.String)">
+            <summary>
+            Deletes the async.
+            </summary>
+            <param name="address">Address.</param>
+            <returns>The async task.</returns>
+        </member>
+        <member name="M:XLabs.Web.RestCoreClient.PostAsync``1(System.String)">
+            <summary>
+            post as an asynchronous operation.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="address">The address.</param>
+            <returns>Task&lt;T&gt;.</returns>
+        </member>
+        <member name="M:XLabs.Web.RestCoreClient.PutAsync``1(System.String)">
+            <summary>
+            put as an asynchronous operation.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="address">The address.</param>
+            <returns>Task&lt;T&gt;.</returns>
+        </member>
+        <member name="M:XLabs.Web.RestCoreClient.PostAsync(System.String)">
+            <summary>
+            post as an asynchronous operation.
+            </summary>
+            <param name="address">The address.</param>
+            <returns>Task.</returns>
+        </member>
+        <member name="M:XLabs.Web.RestCoreClient.PutAsync(System.String)">
+            <summary>
+            put as an asynchronous operation.
+            </summary>
+            <param name="address">The address.</param>
+            <returns>Task.</returns>
+        </member>
+        <member name="M:XLabs.Web.RestCoreClient.GetResponse``1(System.Net.Http.HttpResponseMessage,XLabs.Serialization.ISerializer)">
+            <summary>
+            Gets the response from Http response message
+            </summary>
+            <typeparam name="T">The 1st type parameter.</typeparam>
+            <param name="response">Http response message</param>
+            <param name="serializer">Serializer to use.</param>
+            <returns>The async task.</returns>
+        </member>
+        <member name="M:XLabs.Web.RestCoreClient.CheckResponse(System.Net.Http.HttpResponseMessage)">
+            <summary>
+            Checks the response.
+            </summary>
+            <param name="response">The response.</param>
+            <returns>Task.</returns>
+        </member>
+        <member name="P:XLabs.Web.RestCoreClient.Timeout">
+            <summary>
+            Gets or sets timeout in milliseconds
+            </summary>
+            <value>The timeout.</value>
+        </member>
+        <member name="P:XLabs.Web.RestCoreClient.StringContentType">
+            <summary>
+            Gets the string content type.
+            </summary>
+            <value>The type of the string content.</value>
+        </member>
+        <member name="M:XLabs.Web.JsonRestClient.#ctor(XLabs.Serialization.IJsonSerializer,System.Net.Http.HttpClient)">
+            <summary>
+            Initializes a new instance of the <see cref="T:XLabs.Web.JsonRestClient"/> class.
+            </summary>
+            <param name="serializer">
+            The serializer.
+            </param>
+            <param name="httpClient">
+            The http client.
+            </param>
+            <exception cref="T:System.Exception">
+            Throws an exception if the serializer does not support JSON
+            </exception>
+        </member>
+        <member name="P:XLabs.Web.JsonRestClient.StringContentType">
+            <summary>
+            Gets the string content type.
+            </summary>
+        </member>
+        <member name="T:XLabs.Web.RestClient.ProtoBufRestClient">
+            <summary>
+            The protobuf Rest client.
+            </summary>
+        </member>
+        <member name="M:XLabs.Web.RestClient.ProtoBufRestClient.#ctor(XLabs.Serialization.ISerializer,System.Net.Http.HttpClient)">
+            <summary>
+            Initializes a new instance of the <see cref="T:XLabs.Web.RestClient.ProtoBufRestClient"/> class.
+            </summary>
+            <param name="serializer">
+            The serializer.
+            </param>
+            <param name="client">
+            The client.
+            </param>
+            <exception cref="T:System.Exception">
+            Throws an exception if the serializer does not support ProtoBuffer
+            </exception>
+        </member>
+        <member name="P:XLabs.Web.RestClient.ProtoBufRestClient.StringContentType">
+            <summary>
+            Gets the string content type.
+            </summary>
+        </member>
+    </members>
+</doc>
