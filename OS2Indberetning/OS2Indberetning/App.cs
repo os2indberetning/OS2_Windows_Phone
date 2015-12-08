@@ -1,23 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Acr.UserDialogs;
 using Newtonsoft.Json;
-using Ninject;
-using OS2Indberetning.BuisnessLogic;
 using OS2Indberetning.Model;
 using OS2Indberetning.Pages;
 using OS2Indberetning.ViewModel;
 using Xamarin.Forms;
 using XLabs.Forms.Mvvm;
-using XLabs.Forms.Services;
 using XLabs.Ioc;
-using XLabs.Ioc.Ninject;
-using XLabs.Platform.Device;
 using XLabs.Platform.Mvvm;
 using XLabs.Platform.Services;
 
@@ -48,7 +40,7 @@ namespace OS2Indberetning
 
             // For testing
             storage = DependencyService.Get<ISecureStorage>();
-            //FakeModel();
+            FakeModel();
             // The root page of your application
            
             //storage.Store(Definitions.TokenKey, Encoding.UTF8.GetBytes("513xc43109-2342"));
@@ -66,17 +58,6 @@ namespace OS2Indberetning
         private Page GetMainPage()
         {
             return new CrossPathPage();
-            // Validation test
-            //if (!test)
-            //{
-            //    MainPage = new NavigationPage((ContentPage)
-            //             ViewFactory.CreatePage<LoginViewModel, LoginPage>());
-            //    return;
-            //}
-
-            //// Create the main page
-            //MainPage = new NavigationPage((ContentPage)
-            //    ViewFactory.CreatePage<MainViewModel, MainPage>());
         }
         
         private void RegisterPages()

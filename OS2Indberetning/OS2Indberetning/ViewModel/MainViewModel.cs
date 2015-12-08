@@ -1,19 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Reflection;
-using NUnit.Framework.Compatibility;
-using Xamarin.Forms.Maps;
 using Xamarin.Forms;
 
 using OS2Indberetning.Model;
-using OS2Indberetning.Pages;
-using XLabs.Forms.Mvvm;
 
 
 namespace OS2Indberetning.ViewModel
@@ -66,6 +55,7 @@ namespace OS2Indberetning.ViewModel
             });
         }
 
+        // Since this page is only created once, we dont unsubscribe
         private void Unsubscribe()
         {
             MessagingCenter.Unsubscribe<MainPage>(this, "Update");
@@ -76,6 +66,27 @@ namespace OS2Indberetning.ViewModel
 
             MessagingCenter.Unsubscribe<MainPage>(this, "ViewStored");
         }
+
+        private void PushPageBasedOnSelectedItem(DriveReportCellModel item)
+        {
+            switch (item.Name)
+            {
+                case purposeText:
+                    Navigation.PushAsync<PurposeViewModel>();
+                    break;
+                case organisatoriskText:
+                    Navigation.PushAsync<OrganizationViewModel>();
+                    break;
+                case takstText:
+                    Navigation.PushAsync<TaxViewModel>();
+                    break;
+                case ekstraText:
+                    Navigation.PushAsync<RemarkViewModel>();
+                    break;
+            }
+        }
+
+        #region Properties
 
         public const string DriveProperty = "DriveReportList";
         public ObservableCollection<DriveReportCellModel> DriveReportList
@@ -142,30 +153,13 @@ namespace OS2Indberetning.ViewModel
             DriveReportList = driveReport;
         }
 
-        private void PushPageBasedOnSelectedItem(DriveReportCellModel item)
-        {
-            switch (item.Name)
-            {
-                case purposeText :
-                    Navigation.PushAsync<PurposeViewModel>();
-                    break;
-                case organisatoriskText :
-                    Navigation.PushAsync<OrganizationViewModel>();
-                    break;
-                case takstText :
-                    Navigation.PushAsync<TaxViewModel>();
-                    break;
-                case ekstraText :
-                    Navigation.PushAsync<RemarkViewModel>();
-                    break;
-            }
-        }
-
         protected void OnPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        #endregion
 
     }
 }

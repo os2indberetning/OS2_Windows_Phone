@@ -22,8 +22,44 @@
     <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\OS2Indberetning\OS2Indberetning\bin\Debug\OS2Indberetning.dll">
       <PackagePath>OS2Indberetning.dll</PackagePath>
     </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\Acr.UserDialogs.4.1.8\lib\wp8\Acr.UserDialogs.dll">
+      <PackagePath>Acr.UserDialogs.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\Acr.UserDialogs.4.1.8\lib\wp8\Acr.UserDialogs.Interface.dll">
+      <PackagePath>Acr.UserDialogs.Interface.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\ExifLib.PCL.1.0.1\lib\portable-net45+sl50+win+WindowsPhoneApp81+wp80+Xamarin.iOS10+MonoAndroid10+MonoTouch10\ExifLib.dll">
+      <PackagePath>ExifLib.dll</PackagePath>
+    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\WPtoolkit.4.2013.08.16\lib\wp8\Microsoft.Phone.Controls.Toolkit.dll">
       <PackagePath>Microsoft.Phone.Controls.Toolkit.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\Newtonsoft.Json.7.0.1\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll">
+      <PackagePath>Newtonsoft.Json.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\Portable.Ninject.3.3.1\lib\wp8\Ninject.dll">
+      <PackagePath>Ninject.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\PCLStorage.1.0.2\lib\wp8\PCLStorage.Abstractions.dll">
+      <PackagePath>PCLStorage.Abstractions.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\PCLStorage.1.0.2\lib\wp8\PCLStorage.dll">
+      <PackagePath>PCLStorage.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\Splat.1.6.2\lib\wp8\Splat.dll">
+      <PackagePath>Splat.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\Microsoft.Net.Http.2.2.29\lib\sl4-windowsphone71\System.Net.Http.dll">
+      <PackagePath>System.Net.Http.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\Microsoft.Net.Http.2.2.29\lib\sl4-windowsphone71\System.Net.Http.Extensions.dll">
+      <PackagePath>System.Net.Http.Extensions.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\Microsoft.Net.Http.2.2.29\lib\sl4-windowsphone71\System.Net.Http.Primitives.dll">
+      <PackagePath>System.Net.Http.Primitives.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\WPControls.1.5.2\lib\wp8\WPControls.dll">
+      <PackagePath>WPControls.dll</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\Xamarin.Forms.1.5.1.6471\lib\WP80\Xamarin.Forms.Core.dll">
       <PackagePath>Xamarin.Forms.Core.dll</PackagePath>
@@ -42,6 +78,36 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\Xamarin.Forms.1.5.1.6471\lib\WP80\Xamarin.Forms.Xaml.dll">
       <PackagePath>Xamarin.Forms.Xaml.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\XLabs.Caching.2.0.5782\lib\portable-net45+netcore45+wp8+MonoAndroid1+MonoTouch1\XLabs.Caching.dll">
+      <PackagePath>XLabs.Caching.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\XLabs.Core.2.0.5782\lib\portable-net45+netcore45+wp8+MonoAndroid1+MonoTouch1\XLabs.Core.dll">
+      <PackagePath>XLabs.Core.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\XLabs.Forms.2.0.5782\lib\wp8\XLabs.Forms.dll">
+      <PackagePath>XLabs.Forms.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\XLabs.Forms.2.0.5782\lib\wp8\XLabs.Forms.WP8.dll">
+      <PackagePath>XLabs.Forms.WP8.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\XLabs.IoC.2.0.5782\lib\portable-net45+netcore45+wp8+MonoAndroid1+MonoTouch1\XLabs.Ioc.dll">
+      <PackagePath>XLabs.Ioc.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\XLabs.Platform.2.0.5782\lib\wp8\XLabs.Platform.dll">
+      <PackagePath>XLabs.Platform.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\XLabs.Platform.2.0.5782\lib\wp8\XLabs.Platform.WP8.dll">
+      <PackagePath>XLabs.Platform.WP8.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\XLabs.Serialization.2.0.5782\lib\portable-net45+netcore45+wp8+MonoAndroid1+MonoTouch1\XLabs.Serialization.dll">
+      <PackagePath>XLabs.Serialization.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\XLabs.Web.2.0.5782\lib\wp8\XLabs.Web.dll">
+      <PackagePath>XLabs.Web.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\XLabs.Web.2.0.5782\lib\wp8\XLabs.Web.WP8.dll">
+      <PackagePath>XLabs.Web.WP8.dll</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Program Files %28x86%29\Microsoft SDKs\Expression\Blend\Windows Phone\v8.0\Libraries\System.Windows.Interactivity.dll">
       <PackagePath>System.Windows.Interactivity.dll</PackagePath>
@@ -226,6 +292,30 @@
     <AppxPackagedFile Include="C:\Program Files %28x86%29\Microsoft SDKs\Expression\Blend\Windows Phone\v8.0\Libraries\zh-Hant\System.Windows.Interactivity.resources.dll">
       <PackagePath>zh-Hant\System.Windows.Interactivity.resources.dll</PackagePath>
     </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\XLabs.Platform.2.0.5782\lib\wp8\XLabs.Platform.WinRT.winmd">
+      <PackagePath>XLabs.Platform.WinRT.winmd</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\Newtonsoft.Json.7.0.1\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.xml">
+      <PackagePath>Newtonsoft.Json.xml</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\Portable.Ninject.3.3.1\lib\wp8\Ninject.xml">
+      <PackagePath>Ninject.xml</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\PCLStorage.1.0.2\lib\wp8\PCLStorage.xml">
+      <PackagePath>PCLStorage.xml</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\PCLStorage.1.0.2\lib\wp8\PCLStorage.Abstractions.xml">
+      <PackagePath>PCLStorage.Abstractions.xml</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\Microsoft.Net.Http.2.2.29\lib\sl4-windowsphone71\System.Net.Http.xml">
+      <PackagePath>System.Net.Http.xml</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\Microsoft.Net.Http.2.2.29\lib\sl4-windowsphone71\System.Net.Http.Extensions.xml">
+      <PackagePath>System.Net.Http.Extensions.xml</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\Microsoft.Net.Http.2.2.29\lib\sl4-windowsphone71\System.Net.Http.Primitives.xml">
+      <PackagePath>System.Net.Http.Primitives.xml</PackagePath>
+    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\Xamarin.Forms.1.5.1.6471\lib\WP80\Xamarin.Forms.Core.xml">
       <PackagePath>Xamarin.Forms.Core.xml</PackagePath>
     </AppxPackagedFile>
@@ -234,6 +324,33 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\Xamarin.Forms.1.5.1.6471\lib\WP80\Xamarin.Forms.Xaml.xml">
       <PackagePath>Xamarin.Forms.Xaml.xml</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\XLabs.Core.2.0.5782\lib\portable-net45+netcore45+wp8+MonoAndroid1+MonoTouch1\XLabs.Core.xml">
+      <PackagePath>XLabs.Core.xml</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\XLabs.Forms.2.0.5782\lib\wp8\XLabs.Forms.xml">
+      <PackagePath>XLabs.Forms.xml</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\XLabs.Forms.2.0.5782\lib\wp8\XLabs.Forms.WP8.xml">
+      <PackagePath>XLabs.Forms.WP8.xml</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\XLabs.IoC.2.0.5782\lib\portable-net45+netcore45+wp8+MonoAndroid1+MonoTouch1\XLabs.Ioc.xml">
+      <PackagePath>XLabs.Ioc.xml</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\XLabs.Platform.2.0.5782\lib\wp8\XLabs.Platform.xml">
+      <PackagePath>XLabs.Platform.xml</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\XLabs.Platform.2.0.5782\lib\wp8\XLabs.Platform.WP8.xml">
+      <PackagePath>XLabs.Platform.WP8.xml</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\XLabs.Serialization.2.0.5782\lib\portable-net45+netcore45+wp8+MonoAndroid1+MonoTouch1\XLabs.Serialization.xml">
+      <PackagePath>XLabs.Serialization.xml</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\XLabs.Web.2.0.5782\lib\wp8\XLabs.Web.xml">
+      <PackagePath>XLabs.Web.xml</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\packages\XLabs.Web.2.0.5782\lib\wp8\XLabs.Web.WP8.xml">
+      <PackagePath>XLabs.Web.WP8.xml</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\OS2Indberetning\OS2Indberetning.WinPhone\Assets\BadgeLogo.png">
       <PackagePath>Assets\BadgeLogo.png</PackagePath>
@@ -259,6 +376,39 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\OS2Indberetning\OS2Indberetning.WinPhone\Assets\WideLogo.png">
       <PackagePath>Assets\WideLogo.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\OS2Indberetning\OS2Indberetning.WinPhone\Resources\add.png">
+      <PackagePath>Resources\add.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\OS2Indberetning\OS2Indberetning.WinPhone\Resources\checkbox_checked.png">
+      <PackagePath>Resources\checkbox_checked.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\OS2Indberetning\OS2Indberetning.WinPhone\Resources\checkbox_unchecked.png">
+      <PackagePath>Resources\checkbox_unchecked.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\OS2Indberetning\OS2Indberetning.WinPhone\Resources\done.png">
+      <PackagePath>Resources\done.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\OS2Indberetning\OS2Indberetning.WinPhone\Resources\done_black.png">
+      <PackagePath>Resources\done_black.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\OS2Indberetning\OS2Indberetning.WinPhone\Resources\left.png">
+      <PackagePath>Resources\left.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\OS2Indberetning\OS2Indberetning.WinPhone\Resources\right.png">
+      <PackagePath>Resources\right.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\OS2Indberetning\OS2Indberetning.WinPhone\Resources\spinner.png">
+      <PackagePath>Resources\spinner.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\OS2Indberetning\OS2Indberetning.WinPhone\Resources\tap.png">
+      <PackagePath>Resources\tap.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\OS2Indberetning\OS2Indberetning.WinPhone\Resources\verts.png">
+      <PackagePath>Resources\verts.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\OS2Indberetning\OS2Indberetning.WinPhone\Resources\verts_black.png">
+      <PackagePath>Resources\verts_black.png</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Jesper\documents\visual studio 2013\Projects\OS2Indberetning\OS2Indberetning\OS2Indberetning.WinPhone\Assets\AlignmentGrid.png">
       <PackagePath>Assets\AlignmentGrid.png</PackagePath>

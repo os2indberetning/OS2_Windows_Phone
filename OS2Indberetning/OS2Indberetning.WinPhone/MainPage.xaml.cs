@@ -1,15 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Reflection;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Navigation;
-using Microsoft.Phone.Controls;
-using Microsoft.Phone.Shell;
-using OS2Indberetning.ViewModel;
-using XLabs.Forms;
+﻿using Microsoft.Phone.Controls;
 
 namespace OS2Indberetning.WinPhone
 {
@@ -23,7 +12,7 @@ namespace OS2Indberetning.WinPhone
             SupportedOrientations = SupportedPageOrientation.Portrait; // Force Portrait
 
             global::Xamarin.Forms.Forms.Init();
-            
+
             LoadApplication(new OS2Indberetning.App());
         }
     }

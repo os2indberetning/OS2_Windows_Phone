@@ -1,24 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Acr.UserDialogs;
-using Newtonsoft.Json;
-using OS2Indberetning.Model;
-using OS2Indberetning.Pages;
-using OS2Indberetning.PlatformInterfaces;
-using OS2Indberetning.Templates;
+﻿using OS2Indberetning.Templates;
 using OS2Indberetning.ViewModel;
 using Xamarin.Forms;
-using Xamarin.Forms.Maps;
 using XLabs.Forms.Controls;
-using XLabs.Forms.Mvvm;
-using XLabs.Helpers;
 using XLabs.Ioc;
 using XLabs.Platform.Device;
-using XLabs.Platform.Services;
-using XLabs.Platform.Services.Media;
 
 namespace OS2Indberetning
 {
@@ -273,8 +258,7 @@ namespace OS2Indberetning
 
         protected override bool OnBackButtonPressed()
         {
-            MessagingCenter.Send<GpsPage>(this, "Closing");
-            Navigation.PopAsync();
+            MessagingCenter.Send<GpsPage>(this, "Back");
             return true;
         }
     }

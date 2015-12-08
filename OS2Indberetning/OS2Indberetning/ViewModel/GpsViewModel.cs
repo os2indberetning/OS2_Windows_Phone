@@ -1,25 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Threading;
 using OS2Indberetning.BuisnessLogic;
-using Xamarin.Forms.Maps;
 using Xamarin.Forms;
 
 using OS2Indberetning.Model;
-using OS2Indberetning.Pages;
-using XLabs.Forms.Mvvm;
 using XLabs.Platform.Services.Geolocation;
 
 
 namespace OS2Indberetning.ViewModel
 {
-    public class GpsViewModel : XLabs.Forms.Mvvm.ViewModel, INotifyPropertyChanged
+    public class GpsViewModel : XLabs.Forms.Mvvm.ViewModel, INotifyPropertyChanged, IDisposable
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -50,11 +41,22 @@ namespace OS2Indberetning.ViewModel
             Subscribe();
         }
 
+        public void Dispose()
+        {
+            Unsubscribe();
+            StopGps();
+            if (cancelSource != null)
+            {
+                cancelSource.Dispose();
+            }
+            locator = null;
+        }
+
         private void Subscribe()
         {
             MessagingCenter.Subscribe<GpsPage>(this, "Toggle", (sender) => ToggleGps());
             MessagingCenter.Subscribe<GpsPage>(this, "Finish", (sender) => FinishDrive());
-            MessagingCenter.Subscribe<GpsPage>(this, "Closing", (sender) => StopGps());
+            MessagingCenter.Subscribe<GpsPage>(this, "Back", (sender) => HandleBackMessage());
             MessagingCenter.Subscribe<GpsPage>(this, "ToggleFinishedHome", (sender) => {
                 FinishedHome = !FinishedHome;
                 Definitions.EndsAtHome = FinishedHome;
@@ -68,7 +70,12 @@ namespace OS2Indberetning.ViewModel
             MessagingCenter.Unsubscribe<GpsPage>(this, "Stop");
             MessagingCenter.Unsubscribe<GpsPage>(this, "ToggleFinishedHome");
         }
-       
+
+        private void HandleBackMessage()
+        {
+            Dispose();
+            Navigation.PopAsync();
+        }
         public void ToggleGps()
         {
             if (locator == null)
@@ -107,7 +114,6 @@ namespace OS2Indberetning.ViewModel
                     locator.PositionChanged -= PositionChanged;
                 }
             }
-            Unsubscribe();
         }
 
         public void FinishDrive()
@@ -128,6 +134,8 @@ namespace OS2Indberetning.ViewModel
             report.Route.TotalDistance = TraveledDistance;
 
             Definitions.Report = report;
+
+            Dispose();
             Navigation.PushAsync<FinishDriveViewModel>();
         }
 
@@ -172,7 +180,10 @@ namespace OS2Indberetning.ViewModel
         public void SetupGps()
         {
             locator = DependencyService.Get<IGeolocator>();
-            locator.DesiredAccuracy = Definitions.Accuracy;
+            if (locator.DesiredAccuracy != Definitions.Accuracy)
+            {
+                locator.DesiredAccuracy = Definitions.Accuracy;
+            }
             cancelSource = new CancellationTokenSource();
             locator.PositionChanged += PositionChanged;
         }

@@ -1,17 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.ComponentModel;
-using Xamarin.Forms.Maps;
 using Xamarin.Forms;
 
 using OS2Indberetning.Model;
-using OS2Indberetning.Pages;
-using XLabs.Forms.Mvvm;
 
 
 namespace OS2Indberetning.ViewModel
@@ -58,6 +51,7 @@ namespace OS2Indberetning.ViewModel
 
         private void UploadHandler()
         {
+            Dispose();
             Navigation.PushAsync<UploadingViewModel>();
         }
            

@@ -1,22 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Diagnostics;
-
-using Android.App;
 using Android.Content;
 using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
-using Android.Util;
 using Android.Locations;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Maps;
-
-using OS2Indberetning.DependencySvcGps;
 using OS2Indberetning.Droid.DependencySvcGps;
 
 [assembly: Xamarin.Forms.Dependency(typeof(GeoLocation_Android))]

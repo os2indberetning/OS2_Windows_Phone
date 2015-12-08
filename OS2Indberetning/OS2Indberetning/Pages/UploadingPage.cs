@@ -1,37 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Acr.UserDialogs;
-using Newtonsoft.Json;
-using OS2Indberetning.Model;
-using OS2Indberetning.Pages;
-using OS2Indberetning.PlatformInterfaces;
+﻿using System.Collections.Generic;
 using OS2Indberetning.Templates;
 using OS2Indberetning.ViewModel;
 using Xamarin.Forms;
-using Xamarin.Forms.Maps;
 using XLabs.Forms.Controls;
-using XLabs.Forms.Mvvm;
-using XLabs.Helpers;
-using XLabs.Ioc;
-using XLabs.Platform.Device;
-using XLabs.Platform.Services;
-using XLabs.Platform.Services.Media;
 
 namespace OS2Indberetning
 {
     public class UploadingPage : ContentPage
     {
+        // used to pop back to mainpage from viewmodel
         public IReadOnlyList<Page> NavigationStack;
         public INavigation Nav;
+
         public UploadingPage()
         {
             NavigationStack = Navigation.NavigationStack;
             Nav = Navigation;
-            //var byteArray = storage.Retrieve(Definitions.UserDataKey);
-            //user = JsonConvert.DeserializeObject<UserInfoModel>(Encoding.UTF8.GetString(byteArray, 0, byteArray.Length));
             
             this.Content = this.SetContent();
         }
@@ -76,6 +60,7 @@ namespace OS2Indberetning
                 Orientation = StackOrientation.Vertical,
                 BackgroundColor = Color.FromHex(Definitions.BackgroundColor),
                 VerticalOptions = LayoutOptions.FillAndExpand,
+                Padding = new Thickness(0, 20, 0, 0),
                 Spacing = 60,
                 Children =
                 {
@@ -153,7 +138,6 @@ namespace OS2Indberetning
 
         protected override bool OnBackButtonPressed()
         {
-            
             return true;
         }
     }

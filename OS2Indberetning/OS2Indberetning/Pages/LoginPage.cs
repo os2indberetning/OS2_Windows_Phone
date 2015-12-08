@@ -1,13 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.Serialization.Json;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Ninject.Modules;
 using OS2Indberetning.BuisnessLogic;
 using OS2Indberetning.Model;
 using OS2Indberetning.Templates;

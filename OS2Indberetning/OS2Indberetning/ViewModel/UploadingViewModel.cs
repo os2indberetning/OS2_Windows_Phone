@@ -1,22 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
-using System.Threading;
 using Newtonsoft.Json;
 using OS2Indberetning.BuisnessLogic;
-using Xamarin.Forms.Maps;
 using Xamarin.Forms;
 
 using OS2Indberetning.Model;
-using OS2Indberetning.Pages;
-using XLabs.Forms.Mvvm;
 using XLabs.Platform.Services;
-using XLabs.Platform.Services.Geolocation;
 
 
 namespace OS2Indberetning.ViewModel
@@ -80,7 +71,7 @@ namespace OS2Indberetning.ViewModel
         {
             MessagingCenter.Unsubscribe<UploadingPage>(this, "Upload");
 
-            MessagingCenter.Unsubscribe<UploadingPage>(this, "Save");
+            MessagingCenter.Unsubscribe<UploadingPage>(this, "Store");
         }
 
         private void HandleUploadResult(UserInfoModel user)
@@ -98,9 +89,6 @@ namespace OS2Indberetning.ViewModel
             {
                 
             }
-
-            
-            
         }
 
         private void HandleSaving(object sender)
@@ -111,12 +99,15 @@ namespace OS2Indberetning.ViewModel
                 {
                     if (result.Result == true)
                     {
+                        // Popping to mainpage
                         var stack = (sender as UploadingPage).Nav.NavigationStack;
                         for (int i = 2; i < stack.Count; )
                         {
+                            if (stack.Count == 3) break;
                             (sender as UploadingPage).Nav.RemovePage(stack[i]);
                         }
-                        //Navigation.PopToRootAsync();
+                        Unsubscribe();
+                        Navigation.PopAsync();
                     }
                 }
             }, TaskScheduler.FromCurrentSynchronizationContext());

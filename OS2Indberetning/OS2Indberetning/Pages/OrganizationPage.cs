@@ -1,17 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using OS2Indberetning.BuisnessLogic;
-using OS2Indberetning.Templates;
+﻿using OS2Indberetning.Templates;
 using OS2Indberetning.ViewModel;
-using PCLStorage;
 using Xamarin.Forms;
-using XLabs.Enums;
-using XLabs.Forms.Controls;
 
 namespace OS2Indberetning.Pages
 {

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using OS2Indberetning;
 using Xamarin.Forms;
 
 namespace OS2Indberetning.Templates

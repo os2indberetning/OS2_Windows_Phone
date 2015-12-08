@@ -1,19 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using Newtonsoft.Json;
 using OS2Indberetning.BuisnessLogic;
 using OS2Indberetning.Model;
 using OS2Indberetning.Pages;
-using PCLStorage;
 using Xamarin.Forms;
-using XLabs.Forms.Mvvm;
 using XLabs.Platform.Services;
 
 namespace OS2Indberetning.ViewModel
@@ -50,8 +42,6 @@ namespace OS2Indberetning.ViewModel
             App.ShowLoading(false, true);
             Navigation.PushAsync<LoginViewModel>();
         }
-
-
 
         private void IsUserStillValid()
         {
