@@ -81,7 +81,7 @@ namespace OS2Indberetning.BuisnessLogic
         /// </summary>
         /// <param name="token">the token belonging to the user.</param>
         /// <param name="mun">the Municipality the user belongs to.</param>
-        /// <returns>UserInfoModel</returns>
+        /// <returns>UserInfoModel if successful. returns null on failure</returns>
         public static async Task<UserInfoModel> RefreshModel(Token token, Municipality mun)
         {
             try
@@ -92,6 +92,50 @@ namespace OS2Indberetning.BuisnessLogic
                 request.Content = new FormUrlEncodedContent(new[]
                 {
                     new KeyValuePair<string, string>("GUID", token.GuId)
+                });
+
+                if (handler.SupportsTransferEncodingChunked())
+                {
+                    request.Headers.TransferEncodingChunked = true;
+                }
+
+                // Send request
+                HttpResponseMessage response = await httpClient.SendAsync(request);
+                // Read response
+                string jsonString = await response.Content.ReadAsStringAsync();
+                // Deserialize string to object
+                UserInfoModel model = JsonConvert.DeserializeObject<UserInfoModel>(jsonString);
+
+                model = RemoveTrailer(model);
+                //return model;
+                return model;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Used to submit drivereport after finished drive.
+        /// </summary>
+        /// <param name="report">the report of the drive.</param>
+        /// <param name="token">the token belonging to the user.</param>
+        /// <param name="munUrl">the municipalicy url to be called</param>
+        /// <returns>UserInfoModel if successful. returns null on failure</returns>
+        public static async Task<UserInfoModel> SubmitDrive(DriveReport report, Token token, string munUrl)
+        {
+            try
+            {
+                HttpClientHandler handler = new HttpClientHandler();
+                httpClient = new HttpClient(handler);
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, munUrl + "SubmitDrive");
+                request.Content = new FormUrlEncodedContent(new[]
+                {
+                    new KeyValuePair<string, string>("token", JsonConvert.SerializeObject(token)),
+                    //new KeyValuePair<string, string>("token", token.GuId),
+                    new KeyValuePair<string, string>("driveReport", JsonConvert.SerializeObject(report)),
+                    //new KeyValuePair<string, string>("token", JsonConvert.SerializeObject(token)),
                 });
 
                 if (handler.SupportsTransferEncodingChunked())

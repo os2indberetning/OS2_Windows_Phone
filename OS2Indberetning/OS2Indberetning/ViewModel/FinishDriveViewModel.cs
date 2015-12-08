@@ -58,7 +58,7 @@ namespace OS2Indberetning.ViewModel
 
         private void UploadHandler()
         {
-            Navigation.PushAsync((ContentPage) ViewFactory.CreatePage<UploadingViewModel, UploadingPage>());
+            Navigation.PushAsync<UploadingViewModel>();
         }
            
 
@@ -139,31 +139,26 @@ namespace OS2Indberetning.ViewModel
             {
                 Name = "Formål:",
                 Description = Definitions.Report.Purpose,
-                Page = null
             });
             driveReport.Add(new DriveReportCellModel
             {
                 Name = "Organisatorisk placering:",
                 Description = Definitions.Report.Profile.Employments.FirstOrDefault(x => x.Id == Definitions.Report.EmploymentId).EmploymentPosition,
-                Page = null
             });
             driveReport.Add(new DriveReportCellModel
             {
                 Name = "Takst",
                 Description = Definitions.Report.Rate.Description,
-                Page = null
             });
             driveReport.Add(new DriveReportCellModel
             {
                 Name = "Ekstra Bemærkning:",
                 Description = Definitions.Report.ManualEntryRemark,
-                Page = null
             });
             driveReport.Add(new DriveReportCellModel
             {
                 Name = "Antal Km:",
                 Description = Definitions.Report.Route.TotalDistance.ToString(),
-                Page = null
             });
 
             DriveReportList = driveReport;

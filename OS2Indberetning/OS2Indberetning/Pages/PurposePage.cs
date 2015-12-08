@@ -135,7 +135,7 @@ namespace OS2Indberetning.Pages
         }
         protected override bool OnBackButtonPressed()
         {
-            Navigation.PopModalAsync();
+            SendBackMessage();
             return true;
         }
 

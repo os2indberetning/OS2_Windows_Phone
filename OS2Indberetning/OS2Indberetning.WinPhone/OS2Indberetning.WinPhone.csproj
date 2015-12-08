@@ -166,6 +166,7 @@
     <Content Include="Resources\spinner.png" />
     <Content Include="Resources\tap.png" />
     <Content Include="Resources\verts.png" />
+    <Content Include="Resources\verts_black.png" />
     <Content Include="tap.png" />
     <Content Include="SplashScreenImage.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

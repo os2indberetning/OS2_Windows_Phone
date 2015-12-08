@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using System.Reflection;
+using NUnit.Framework.Compatibility;
 using Xamarin.Forms.Maps;
 using Xamarin.Forms;
 
@@ -23,8 +25,14 @@ namespace OS2Indberetning.ViewModel
         private ObservableCollection<DriveReportCellModel> driveReport;
         private bool homeCheck = false;
 
+        private const string purposeText = "Formål: ";
+        private const string organisatoriskText = "Organisatorisk placering:";
+        private const string takstText = "Takst";
+        private const string ekstraText = "Ekstra Bemærkning:";
+
         public MainViewModel()
         {
+            Definitions.HasAppeared = true;
             driveReport = new ObservableCollection<DriveReportCellModel>();
             Subscribe();
         }
@@ -38,7 +46,7 @@ namespace OS2Indberetning.ViewModel
 
             MessagingCenter.Subscribe<MainPage>(this, "Start", (sender) =>
             {
-                Navigation.PushAsync((ContentPage)ViewFactory.CreatePage<GpsViewModel, GpsPage>());
+                Navigation.PushAsync<GpsViewModel>();
             });
 
             MessagingCenter.Subscribe<MainPage>(this, "ToggleHome", (sender) =>
@@ -46,6 +54,27 @@ namespace OS2Indberetning.ViewModel
                 HomeCheck = !HomeCheck;
                 Definitions.StartAtHome = HomeCheck;
             });
+
+            MessagingCenter.Subscribe<MainPage>(this, "Selected", (sender) =>
+            {
+                DriveReportCellModel item = sender.list.SelectedItem as DriveReportCellModel;
+                PushPageBasedOnSelectedItem(item);
+            });
+            MessagingCenter.Subscribe<MainPage>(this, "ViewStored", (sender) =>
+            {
+                Navigation.PushAsync<StoredReportsViewModel>();
+            });
+        }
+
+        private void Unsubscribe()
+        {
+            MessagingCenter.Unsubscribe<MainPage>(this, "Update");
+
+            MessagingCenter.Unsubscribe<MainPage>(this, "Start");
+
+            MessagingCenter.Unsubscribe<MainPage>(this, "ToggleHome");
+
+            MessagingCenter.Unsubscribe<MainPage>(this, "ViewStored");
         }
 
         public const string DriveProperty = "DriveReportList";
@@ -91,30 +120,45 @@ namespace OS2Indberetning.ViewModel
             
             driveReport.Add(new DriveReportCellModel
             {
-                Name = "Formål:",
+                Name = purposeText,
                 Description = Definitions.Purpose,
-                Page = (ContentPage)(ContentPage)ViewFactory.CreatePage<PurposeViewModel, PurposePage>()
             });
             driveReport.Add(new DriveReportCellModel
             {
-                Name = "Organisatorisk placering:",
+                Name = organisatoriskText,
                 Description = Definitions.Organization.EmploymentPosition,
-                Page = (ContentPage)(ContentPage)ViewFactory.CreatePage<OrganizationViewModel, OrganizationPage>()
             });
             driveReport.Add(new DriveReportCellModel
             {
-                Name = "Takst",
+                Name = takstText,
                 Description = Definitions.Taxe.Description,
-                Page = (ContentPage)(ContentPage)ViewFactory.CreatePage<TaxViewModel, TaxPage>()
             });
             driveReport.Add(new DriveReportCellModel
             {
-                Name = "Ekstra Bemærkning:",
+                Name = ekstraText,
                 Description = remarkText,
-                Page = (ContentPage)(ContentPage)ViewFactory.CreatePage<RemarkViewModel, RemarkPage>()
             });
 
             DriveReportList = driveReport;
+        }
+
+        private void PushPageBasedOnSelectedItem(DriveReportCellModel item)
+        {
+            switch (item.Name)
+            {
+                case purposeText :
+                    Navigation.PushAsync<PurposeViewModel>();
+                    break;
+                case organisatoriskText :
+                    Navigation.PushAsync<OrganizationViewModel>();
+                    break;
+                case takstText :
+                    Navigation.PushAsync<TaxViewModel>();
+                    break;
+                case ekstraText :
+                    Navigation.PushAsync<RemarkViewModel>();
+                    break;
+            }
         }
 
         protected void OnPropertyChanged(string propertyName)

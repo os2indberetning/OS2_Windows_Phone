@@ -54,8 +54,8 @@ namespace OS2Indberetning.ViewModel
                     App.ShowMessage("Parring fejlede");
                     return;
                 }
-
-                Navigation.PushAsync((ContentPage)ViewFactory.CreatePage<MainViewModel, MainPage>());
+                
+                Navigation.PushAsync<MainViewModel>();
             }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 

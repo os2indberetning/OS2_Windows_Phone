@@ -29,6 +29,7 @@ namespace OS2Indberetning.Pages
             Definitions.PrimaryColor = municipality.PrimaryColor;
             Definitions.SecondaryColor = municipality.SecondaryColor;
             Definitions.MunIcon = new UriImageSource {Uri = new Uri(m.ImgUrl)};
+            Definitions.MunUrl = municipality.APIUrl;
             this.Content = SetContent();
         }
 

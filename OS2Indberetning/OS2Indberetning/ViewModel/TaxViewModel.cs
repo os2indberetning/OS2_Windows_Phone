@@ -70,7 +70,7 @@ namespace OS2Indberetning.ViewModel
             try
             {
                 Unsubscribe();
-                Navigation.PopModalAsync();
+                Navigation.PopAsync();
             }
             catch (Exception e)
             {

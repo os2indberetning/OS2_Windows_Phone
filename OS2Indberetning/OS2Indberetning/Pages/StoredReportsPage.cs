@@ -11,7 +11,6 @@ using OS2Indberetning.Templates;
 using OS2Indberetning.ViewModel;
 using Xamarin.Forms;
 using Xamarin.Forms.Maps;
-using XLabs;
 using XLabs.Forms.Controls;
 using XLabs.Forms.Mvvm;
 using XLabs.Helpers;
@@ -22,7 +21,7 @@ using XLabs.Platform.Services.Media;
 
 namespace OS2Indberetning
 {
-    public class MainPage : ContentPage
+    public class StoredReportsPage : ContentPage
     {
         private int popupWidth = Resolver.Resolve<IDevice>().Display.Width - 30;
         private int yesNoSpacing = 10;
@@ -30,97 +29,76 @@ namespace OS2Indberetning
         private int popupHeight = 250;
 
         public ListView list;
-        private PopupLayout _PopUpLayout;
+        public PopupLayout _PopUpLayout;
 
-        public MainPage()
+        public StoredReportsPage()
         {
-
-            //var byteArray = storage.Retrieve(Definitions.UserDataKey);
-            //user = JsonConvert.DeserializeObject<UserInfoModel>(Encoding.UTF8.GetString(byteArray, 0, byteArray.Length));
-            
             this.Content = this.SetContent();
-            
         }
 
         public View SetContent()
         {
             var header = new Label
             {
-                Text = "Ny Kørsel",
+                Text = "Gemte Rapporter",
                 TextColor = Color.FromHex(Definitions.TextColor),
-                FontSize = Definitions.HeaderFontSize,
+                FontSize = Definitions.HeaderFontSize - 4,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
                 YAlign = TextAlignment.Center,
             };
-            var vertButton = new VertsButton(SendViewStoredMessage);
+            var backButton = new BackButton(SendBackMessage);
             var filler = new Filler();
-
+            
             var headerstack = new StackLayout
             {
                 Orientation = StackOrientation.Horizontal,
                 BackgroundColor = Color.FromHex(Definitions.PrimaryColor),
                 HeightRequest = Definitions.HeaderHeight,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
                 Padding = 5,
                 Children =
                 {
-                    filler,
+                    backButton,
                     header,
-                    vertButton,
+                    filler,
                 }
             };
-            Definitions.Date = DateTime.Now.ToString("d/M/yyyy");
-            var date = new Label
+
+            var topText = new Label
             {
-                Text = Definitions.Date,
+                Text = "Klik på rapporten for enten at sende eller slette den",
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
-                BackgroundColor = Color.FromHex(Definitions.BackgroundColor),
-                HorizontalOptions = LayoutOptions.CenterAndExpand,
                 FontSize = Definitions.LoginLabelText,
-                HeightRequest = 40,
+                HorizontalOptions = LayoutOptions.CenterAndExpand,
+                YAlign = TextAlignment.Center,
+                XAlign = TextAlignment.Center,
             };
-            Definitions.Date = DateTime.Now.ToString("d/M/yyyy");
 
             list = new ListView
             {
-                ItemTemplate = new DataTemplate(typeof(DriveReportCell)),
+                ItemTemplate = new DataTemplate(typeof(StoredReportCell)),
                 SeparatorColor = Color.FromHex("#EE2D2D"),
                 SeparatorVisibility = SeparatorVisibility.Default,
                 VerticalOptions = LayoutOptions.StartAndExpand,
-                HorizontalOptions = LayoutOptions.FillAndExpand
             };
-            list.SetBinding(ListView.ItemsSourceProperty, MainViewModel.DriveProperty);
+            list.SetBinding(ListView.ItemsSourceProperty, StoredReportsViewModel.ListProperty);
 
 
 
             list.ItemSelected += async (sender, e) =>
             {
                 if (e.SelectedItem == null) return;
-                var selectedItem = (DriveReportCellModel)e.SelectedItem;
-                SendSelectedMessage();
-            };
-
-            var startButton = new ButtomButton("Start Kørsel", StartDrive);
-            
-            var buttomStack = new StackLayout
-            {
-                VerticalOptions = LayoutOptions.End,
-                Padding = Definitions.Padding,
-                HeightRequest = Definitions.ButtonHeight,
-
-                Children = {startButton}
+                var selectedItem = (StoredReportCellModel)e.SelectedItem;
+                _PopUpLayout.ShowPopup(CreatePopup("Send rapport fra d. " + selectedItem.report.Date + " ?"));
             };
             
             var layout = new StackLayout
             {
-                Spacing = 2,
+                Spacing = 8,
                 Children =
                 {
                     headerstack,
-                    date,
+                    topText,
                     list,
-                    CheckStack(),
-                    buttomStack
                 },
                 BackgroundColor = Color.FromHex(Definitions.BackgroundColor),
             };
@@ -135,7 +113,7 @@ namespace OS2Indberetning
             var display = Resolver.Resolve<IDevice>().Display;
             var header = new Label
             {
-                Text = "Fejl",
+                Text = "Send Rapport",
                 TextColor = Color.FromHex(Definitions.TextColor),
                 FontSize = Definitions.HeaderFontSize,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -161,17 +139,23 @@ namespace OS2Indberetning
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
                 VerticalOptions = LayoutOptions.CenterAndExpand,
                 YAlign = TextAlignment.Center,
+                XAlign = TextAlignment.Center,
             };
 
-
-            var noButton = new ButtomButton("Ok", ClosePopup);
+            var sendButton = new ButtomButton("Send", SendUploadMessage);
+            var cancelButton = new ButtomButton("Fortryd", ClosePopup);
+            var removeButton = new ButtomButton("Slet", SendRemoveMessage);
+            sendButton.WidthRequest = yesNoButtonWidth;
+            cancelButton.WidthRequest = yesNoButtonWidth;
+            removeButton.WidthRequest = yesNoButtonWidth;
             var noStack = new StackLayout
             {
+                Orientation = StackOrientation.Horizontal,
                 VerticalOptions = LayoutOptions.End,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 HeightRequest = Definitions.ButtonHeight,
-                WidthRequest = yesNoButtonWidth,
-                Children = { noButton }
+                Spacing = yesNoSpacing,
+                Children = { cancelButton, sendButton }
             };
 
             var ButtonStack = new StackLayout
@@ -185,6 +169,7 @@ namespace OS2Indberetning
                 Children =
                 {
                     noStack,
+                    removeButton
                 }
             };
 
@@ -222,79 +207,128 @@ namespace OS2Indberetning
             return PopUpBackground;
         }
 
-        private void ClosePopup()
+        public StackLayout CreateErrorPopup(string Message)
+        {
+            var display = Resolver.Resolve<IDevice>().Display;
+            var header = new Label
+            {
+                Text = "Send Rapport",
+                TextColor = Color.FromHex(Definitions.TextColor),
+                FontSize = Definitions.HeaderFontSize,
+                HorizontalOptions = LayoutOptions.CenterAndExpand,
+                YAlign = TextAlignment.Center,
+                XAlign = TextAlignment.Center,
+            };
+            var headerstack = new StackLayout
+            {
+                Orientation = StackOrientation.Horizontal,
+                BackgroundColor = Color.FromHex(Definitions.PrimaryColor),
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HeightRequest = Definitions.HeaderHeight,
+                Children =
+                {
+                    header,
+                }
+            };
+            var text = new Label
+            {
+                Text = Message,
+                TextColor = Color.FromHex(Definitions.DefaultTextColor),
+                FontSize = Definitions.PopupTextSize,
+                HorizontalOptions = LayoutOptions.CenterAndExpand,
+                VerticalOptions = LayoutOptions.CenterAndExpand,
+                YAlign = TextAlignment.Center,
+                XAlign = TextAlignment.Center,
+            };
+
+            var textStack = new StackLayout
+            {
+                BackgroundColor = Color.White, // for Android and WP
+                Orientation = StackOrientation.Vertical,
+                VerticalOptions = LayoutOptions.CenterAndExpand,
+                Padding = new Thickness(Definitions.Padding, 0, Definitions.Padding, 0),
+                HorizontalOptions = LayoutOptions.CenterAndExpand,
+                Children =
+                {
+                    text,
+                }
+            };
+            
+            var cancelButton = new ButtomButton("Ok", ClosePopup);
+
+            cancelButton.WidthRequest = yesNoButtonWidth;
+
+            var ButtonStack = new StackLayout
+            {
+                BackgroundColor = Color.White, // for Android and WP
+                Orientation = StackOrientation.Horizontal,
+                VerticalOptions = LayoutOptions.End,
+                Padding = new Thickness(Definitions.Padding, 0, Definitions.Padding, Definitions.Padding),
+                Spacing = Definitions.Padding,
+                HorizontalOptions = LayoutOptions.CenterAndExpand,
+                Children =
+                {
+                    cancelButton,
+                }
+            };
+
+            var PopUp = new StackLayout
+            {
+                WidthRequest = popupWidth,
+                HeightRequest = popupHeight,
+                BackgroundColor = Color.White,
+                Orientation = StackOrientation.Vertical,
+                VerticalOptions = LayoutOptions.Center,
+                HorizontalOptions = LayoutOptions.Center,
+                Children =
+                {
+                    headerstack,
+                    textStack,
+                    ButtonStack
+                }
+            };
+            var topPadding = display.Height / 2 - 150;
+            var PopUpBackground = new StackLayout
+            {
+                Padding = new Thickness(0, topPadding, 0, 0),
+                WidthRequest = display.Width,
+                HeightRequest = display.Height,
+                BackgroundColor = Color.FromRgba(0, 0, 0, 0.85),
+                Orientation = StackOrientation.Vertical,
+                VerticalOptions = LayoutOptions.Center,
+                Children =
+                {
+                    PopUp
+                }
+            };
+
+            return PopUpBackground;
+        }
+
+        public void ClosePopup()
         {
             _PopUpLayout.DismissPopup();
+            list.SelectedItem = null;
         }
 
-        private StackLayout CheckStack()
+        private void SendBackMessage()
         {
-            var label = new Label
-            {
-                Text = "Starter du hjemme?",
-                TextColor = Color.FromHex(Definitions.DefaultTextColor),
-                FontAttributes = FontAttributes.Bold,
-                FontFamily = Definitions.FontFamily,
-                FontSize = Definitions.MainListTextSize + 3,
-                HorizontalOptions = LayoutOptions.StartAndExpand,
-                VerticalOptions = LayoutOptions.Center
-            };
-
-            var check = new CheckboxButton(ToggleHomeProperty);
-
-            return new StackLayout
-            {
-                Padding = new Thickness(20, 0, 20, 0),
-                Orientation = StackOrientation.Horizontal,
-                BackgroundColor = Color.FromHex(Definitions.BackgroundColor),
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.End,
-                Children = { label, check}
-            };
+            MessagingCenter.Send(this, "Back");
         }
 
-
-        private void StartDrive()
+        private void SendUploadMessage()
         {
-            if (Definitions.Report.Purpose == null)
-            {
-                _PopUpLayout.ShowPopup(CreatePopup("Vælg venligst et formål"));
-                return;
-            }
-            if (Definitions.Report.EmploymentId == 0)
-            {
-                _PopUpLayout.ShowPopup(CreatePopup("Vælg venligst en organisatorisk placering"));
-                return;
-            }
-            if (Definitions.Report.Rate == null)
-            {
-                _PopUpLayout.ShowPopup(CreatePopup("Vælg venligst en takst"));
-                return;
-            }
-            MessagingCenter.Send<MainPage>(this, "Start");
+            MessagingCenter.Send(this, "Upload");
         }
 
-        private void ToggleHomeProperty()
+        private void SendRemoveMessage()
         {
-            MessagingCenter.Send<MainPage>(this, "ToggleHome");
-        }
-
-        private void SendSelectedMessage()
-        {
-            MessagingCenter.Send<MainPage>(this, "Selected");
-        }
-
-        private void SendViewStoredMessage()
-        {
-            MessagingCenter.Send<MainPage>(this, "ViewStored");
+            MessagingCenter.Send(this, "Remove");
         }
 
         protected override bool OnBackButtonPressed()
         {
-            if (Device.OS == TargetPlatform.WinPhone)
-            {
-                DependencyService.Get<IPlatformMethods>().TerminateApp();
-            }
+            SendBackMessage();
             return true;
         }
 
@@ -305,7 +339,6 @@ namespace OS2Indberetning
                 list.SelectedItem = null;
             }
             //base.OnAppearing();
-            MessagingCenter.Send(this, "Update");
         }
     }
 }

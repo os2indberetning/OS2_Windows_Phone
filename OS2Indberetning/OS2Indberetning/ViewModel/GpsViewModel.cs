@@ -128,8 +128,7 @@ namespace OS2Indberetning.ViewModel
             report.Route.TotalDistance = TraveledDistance;
 
             Definitions.Report = report;
-
-            Navigation.PushAsync((ContentPage)ViewFactory.CreatePage<FinishDriveViewModel, FinishDrivePage>());
+            Navigation.PushAsync<FinishDriveViewModel>();
         }
 
         public void GpsNotAvailable()
@@ -140,7 +139,7 @@ namespace OS2Indberetning.ViewModel
         public void PositionChanged(object sender, PositionEventArgs e)
         {
             IsBusy = true;
-            locator.GetPositionAsync(timeout: 10000, cancelToken: this.cancelSource.Token, includeHeading: true)
+            locator.GetPositionAsync(timeout: 5000, cancelToken: this.cancelSource.Token, includeHeading: false)
                 .ContinueWith(t =>
                 {
                     IsBusy = false;
@@ -156,7 +155,7 @@ namespace OS2Indberetning.ViewModel
                             positionLongitude = t.Result.Longitude;
                             firstRun = false;
                         }
-                        TraveledDistance = GpsCalculator.Distance(positionLatitude, positionLongitude, t.Result.Latitude, t.Result.Longitude, 'K');
+                        TraveledDistance = Math.Round(GpsCalculator.Distance(positionLatitude, positionLongitude, t.Result.Latitude, t.Result.Longitude, 'K'), 3);
                         positionLatitude = t.Result.Latitude;
                         positionLongitude = t.Result.Longitude;
                         PositionStatus = t.Result.Timestamp.ToString("HH:mm:ss");

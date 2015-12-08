@@ -48,7 +48,7 @@ namespace OS2Indberetning
 
             // For testing
             storage = DependencyService.Get<ISecureStorage>();
-            FakeModel();
+            //FakeModel();
             // The root page of your application
            
             //storage.Store(Definitions.TokenKey, Encoding.UTF8.GetBytes("513xc43109-2342"));
@@ -92,6 +92,7 @@ namespace OS2Indberetning
             ViewFactory.Register<GpsPage, GpsViewModel>();
             ViewFactory.Register<FinishDrivePage, FinishDriveViewModel>();
             ViewFactory.Register<UploadingPage, UploadingViewModel>();
+            ViewFactory.Register<StoredReportsPage, StoredReportsViewModel>();
         }
 
         private void FakeModel()

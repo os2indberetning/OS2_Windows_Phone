@@ -24,8 +24,12 @@ namespace OS2Indberetning
 {
     public class UploadingPage : ContentPage
     {
+        public IReadOnlyList<Page> NavigationStack;
+        public INavigation Nav;
         public UploadingPage()
         {
+            NavigationStack = Navigation.NavigationStack;
+            Nav = Navigation;
             //var byteArray = storage.Retrieve(Definitions.UserDataKey);
             //user = JsonConvert.DeserializeObject<UserInfoModel>(Encoding.UTF8.GetString(byteArray, 0, byteArray.Length));
             
@@ -67,36 +71,89 @@ namespace OS2Indberetning
             img.SetBinding(Image.RotationProperty, UploadingViewModel.RotateProperty);
             img.SetBinding(Image.SourceProperty, UploadingViewModel.SpinnerProperty);
 
-            var layout = new StackLayout
+            var loadingStack = new StackLayout
             {
                 Orientation = StackOrientation.Vertical,
                 BackgroundColor = Color.FromHex(Definitions.BackgroundColor),
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 Spacing = 60,
-                Padding = new Thickness(10, 70, 10, 50),
+                Children =
+                {
+                    img,
+                    text,
+                }
+            };
+            loadingStack.SetBinding(StackLayout.IsVisibleProperty, UploadingViewModel.UploadingVisibilityProperty);
+
+            var layout = new StackLayout
+            {
+                Orientation = StackOrientation.Vertical,
+                BackgroundColor = Color.FromHex(Definitions.BackgroundColor),
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                Padding = new Thickness(10, 70, 10, 10),
                 Children =
                 {
                     emblem,
-                    img,
-                    text,
+                    loadingStack,
+                    ErrorStack(),
                 }
             };
 
             return layout;
         }
 
-        private void SendUploadedMessage()
+        private StackLayout ErrorStack()
         {
-            MessagingCenter.Send<UploadingPage>(this, "Uploaded");
+            var text = new Label
+            {
+                TextColor = Color.FromHex(Definitions.DefaultTextColor),
+                FontSize = Definitions.LoginLabelText,
+                HorizontalOptions = LayoutOptions.CenterAndExpand,
+                YAlign = TextAlignment.Center,
+                XAlign = TextAlignment.Center
+            };
+            text.SetBinding(Label.TextProperty, UploadingViewModel.ErrorTextProperty);
+
+            var TryAgainButton = new ButtomButton("Prøv Igen", SendUploadMessage);
+            var SaveButton = new ButtomButton("Gem", SendStoreMessage);
+            TryAgainButton.Height = Definitions.GpsButtonHeight;
+            SaveButton.Height = Definitions.GpsButtonHeight;
+
+            var layout = new StackLayout
+            {
+                Orientation = StackOrientation.Vertical,
+                BackgroundColor = Color.FromHex(Definitions.BackgroundColor),
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                Padding = new Thickness(50, 70, 50, 70),
+                Spacing = 30,
+                Children =
+                {
+                    text,
+                    TryAgainButton,
+                    SaveButton
+                }
+            };
+            layout.SetBinding(StackLayout.IsVisibleProperty, UploadingViewModel.ErrorVisibilityProperty);
+
+            return layout;
         }
 
-        private void SendFailedMessage()
+        private void SendUploadMessage()
         {
-            MessagingCenter.Send<UploadingPage>(this, "Failed");
+            MessagingCenter.Send<UploadingPage>(this, "Upload");
+        }
+
+
+        private void SendStoreMessage()
+        {
+            MessagingCenter.Send<UploadingPage>(this, "Store");
         }
 
         protected override bool OnBackButtonPressed()
         {
+            
             return true;
         }
     }

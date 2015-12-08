@@ -11,7 +11,10 @@ namespace OS2Indberetning
     public static class Definitions
     {
         public static UserInfoModel User;
-        public static DriveReport Report;
+        public static DriveReport Report = new DriveReport();
+        public static Token Token;
+
+        public static bool HasAppeared = false;
 
         #region drive choices
         public static string Purpose = "Vælg Formål";
@@ -40,6 +43,9 @@ namespace OS2Indberetning
 
         public static string PurposeFileName = "purpose.txt";
         public static string PurposeFolderName = "purpose";
+
+        public static string ReportsFileName = "reports.txt";
+        public static string ReportsFolderName = "reports";
 
         #region Storage keys
         public static string TokenKey = "login_key";
@@ -75,6 +81,7 @@ namespace OS2Indberetning
         #endregion
 
         public static UriImageSource MunIcon;
+        public static string MunUrl;
 
         public static int Padding = 15;
 

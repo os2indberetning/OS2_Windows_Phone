@@ -48,7 +48,7 @@ namespace OS2Indberetning.ViewModel
         {
             try
             {
-                Navigation.PopModalAsync();
+                Navigation.PopAsync();
             }
             catch (Exception e)
             {
