@@ -1,7 +1,6 @@
 ﻿using OS2Indberetning.Templates;
 using OS2Indberetning.ViewModel;
 using Xamarin.Forms;
-using XLabs.Forms.Controls;
 
 namespace OS2Indberetning.Pages
 {
@@ -65,14 +64,13 @@ namespace OS2Indberetning.Pages
                 BackgroundColor = Color.FromHex(Definitions.BackgroundColor),
             };
 
-            var entry = new ExtendedEntry()
+            var entry = new Entry
             {
                 Placeholder = "Tast nyt formål",
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
-                HasBorder = true,
             };
-            entry.SetBinding(ExtendedEntry.TextProperty, PurposeViewModel.PurposeStringProperty);
+            entry.SetBinding(Entry.TextProperty, PurposeViewModel.PurposeStringProperty);
 
             var addPurpose = new Button
             {
@@ -90,6 +88,8 @@ namespace OS2Indberetning.Pages
 
             var addStack = new StackLayout
             {
+                Padding = new Thickness(Definitions.Padding, 0, Definitions.Padding, 0),
+                Spacing = Definitions.Padding,
                 Orientation = StackOrientation.Horizontal,
                 Children =
                 {

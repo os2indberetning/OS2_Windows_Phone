@@ -32,7 +32,6 @@ namespace OS2Indberetning.WinPhone
         /// </summary>
         public App()
         {
-            
             // Global handler for uncaught exceptions.
             UnhandledException += Application_UnhandledException;
 

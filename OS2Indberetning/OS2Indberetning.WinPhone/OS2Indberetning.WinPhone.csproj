@@ -104,6 +104,8 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustomRenderer\Button.cs" />
+    <Compile Include="CustomRenderer\CustomEditor.cs" />
+    <Compile Include="CustomRenderer\CustomEntry.cs" />
     <Compile Include="CustomRenderer\Page1.xaml.cs">
       <DependentUpon>Page1.xaml</DependentUpon>
     </Compile>

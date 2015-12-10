@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -10,7 +11,7 @@ using XLabs.Platform.Services;
 
 namespace OS2Indberetning.ViewModel
 {
-    public class CouplingViewModel : XLabs.Forms.Mvvm.ViewModel, INotifyPropertyChanged
+    public class CouplingViewModel : XLabs.Forms.Mvvm.ViewModel, INotifyPropertyChanged, IDisposable
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private Command coupleCommand;
@@ -21,7 +22,27 @@ namespace OS2Indberetning.ViewModel
 
         public CouplingViewModel()
         {
+            Subscribe();
+        }
+
+        public void Dispose()
+        {
+            Unsubscribe();
+        }
+        private void Subscribe()
+        {
             MessagingCenter.Subscribe<CouplingPage>(this, "Couple", (sender) => { Couple(); });
+            MessagingCenter.Subscribe<CouplingPage>(this, "Back", (sender) =>
+            {
+                Unsubscribe();
+                Navigation.PopAsync();
+            });
+        }
+
+        private void Unsubscribe()
+        {
+            MessagingCenter.Unsubscribe<CouplingPage>(this, "Couple");
+            MessagingCenter.Unsubscribe<CouplingPage>(this, "Back");
         }
 
         public void InitVm(Municipality m)

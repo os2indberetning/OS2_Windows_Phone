@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using OS2Indberetning.Model;
@@ -124,22 +125,18 @@ namespace OS2Indberetning.BuisnessLogic
         {
             try
             {
+                var sendthis = new DriveSubmit();
+                sendthis.Token = token;
+                sendthis.DriveReport = report;
+                var json = JsonConvert.SerializeObject(sendthis);
+
                 HttpClientHandler handler = new HttpClientHandler();
                 httpClient = new HttpClient(handler);
+
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, munUrl + "SubmitDrive");
-                request.Content = new FormUrlEncodedContent(new[]
-                {
-                    new KeyValuePair<string, string>("token", JsonConvert.SerializeObject(token)),
-                    //new KeyValuePair<string, string>("token", token.GuId),
-                    new KeyValuePair<string, string>("driveReport", JsonConvert.SerializeObject(report)),
-                    //new KeyValuePair<string, string>("token", JsonConvert.SerializeObject(token)),
-                });
 
-                if (handler.SupportsTransferEncodingChunked())
-                {
-                    request.Headers.TransferEncodingChunked = true;
-                }
-
+                var stringContent = new StringContent(json, Encoding.UTF8, "application/json");
+                request.Content = stringContent;
                 // Send request
                 HttpResponseMessage response = await httpClient.SendAsync(request);
                 // Read response

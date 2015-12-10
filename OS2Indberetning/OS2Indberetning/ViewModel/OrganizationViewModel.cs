@@ -7,7 +7,7 @@ using Xamarin.Forms;
 
 namespace OS2Indberetning.ViewModel
 {
-    public class OrganizationViewModel : XLabs.Forms.Mvvm.ViewModel, INotifyPropertyChanged
+    public class OrganizationViewModel : XLabs.Forms.Mvvm.ViewModel, INotifyPropertyChanged, IDisposable
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -27,6 +27,12 @@ namespace OS2Indberetning.ViewModel
             Subscribe();
         }
 
+        public void Dispose()
+        {
+            Unsubscribe();
+            organizations = null;
+        }
+
         public void Subscribe()
         {
             MessagingCenter.Subscribe<OrganizationPage>(this, "Back", (sender) => { HandleBackMessage(); });
@@ -36,7 +42,7 @@ namespace OS2Indberetning.ViewModel
         public void Unsubscribe()
         {
             MessagingCenter.Unsubscribe<OrganizationPage>(this, "Back");
-            MessagingCenter.Unsubscribe<OrganizationPage>(this, "Selected");
+            MessagingCenter.Unsubscribe<OrganizationPage, string>(this, "Selected");
         }
 
         #region Message Handlers
@@ -57,19 +63,12 @@ namespace OS2Indberetning.ViewModel
         }
         private void HandleBackMessage()
         {
-            try
-            {
-                Unsubscribe();
-                Navigation.PopAsync();
-            }
-            catch (Exception e)
-            {
-                // Catching exception from double pop
-                // Dont know how to fix it in a proper way
-            }
+            Dispose();
+            Navigation.PopAsync();
         }
         #endregion
 
+        #region Properties
         public const string OrganizationListProperty = "OrganizationList";
         public ObservableCollection<OrganizationString> OrganizationList
         {
@@ -90,7 +89,7 @@ namespace OS2Indberetning.ViewModel
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
 
-
+        #endregion
     }
 
     #region OrganizationString

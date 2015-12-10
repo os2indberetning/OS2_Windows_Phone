@@ -10,6 +10,7 @@ using OS2Indberetning.ViewModel;
 using Xamarin.Forms;
 using XLabs.Forms.Mvvm;
 using XLabs.Ioc;
+using XLabs.Platform.Device;
 using XLabs.Platform.Mvvm;
 using XLabs.Platform.Services;
 
@@ -35,6 +36,8 @@ namespace OS2Indberetning
             app.Startup += (o, e) => Debug.WriteLine("Application Startup");
             app.Suspended += (o, e) => Debug.WriteLine("Application Suspended");
 
+            SetScreenHeightAndWidth();
+
             //Register pages before initializing the first page
             RegisterPages();
 
@@ -43,7 +46,6 @@ namespace OS2Indberetning
             FakeModel();
             // The root page of your application
            
-            //storage.Store(Definitions.TokenKey, Encoding.UTF8.GetBytes("513xc43109-2342"));
             ViewFactory.EnableCache = false;
 
             // Check to see if it was found
@@ -60,6 +62,19 @@ namespace OS2Indberetning
             return new CrossPathPage();
         }
         
+        private void SetScreenHeightAndWidth()
+        {
+            var scale = Resolver.Resolve<IDevice>().Display.Scale;
+            var height = Resolver.Resolve<IDevice>().Display.Height;
+            var width = Resolver.Resolve<IDevice>().Display.Width;
+
+            Definitions.ScreenHeight = height/scale;
+            Definitions.ScreenWidth = width/scale;
+
+            Definitions.Padding = Definitions.ScreenWidth/32;
+        }
+
+
         private void RegisterPages()
         {
             ViewFactory.Register<CrossPathPage, CrossPathViewModel>();

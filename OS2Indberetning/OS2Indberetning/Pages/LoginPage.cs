@@ -140,5 +140,10 @@ namespace OS2Indberetning.Pages
 
             return cellList;
         }
+
+        protected override bool OnBackButtonPressed()
+        {
+            return true;
+        }
     }
 }

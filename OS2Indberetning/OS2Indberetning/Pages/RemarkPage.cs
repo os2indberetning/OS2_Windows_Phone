@@ -40,23 +40,29 @@ namespace OS2Indberetning.Pages
                     saveButton
                 }
             };
-            var display = Resolver.Resolve<IDevice>().Display;
             editor = new Editor
             {
-                HeightRequest = 300,
-                WidthRequest = display.Width - 10,
+                HeightRequest = Definitions.ScreenHeight,
+                WidthRequest = Definitions.ScreenWidth,
                 HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.FillAndExpand
             };
             editor.SetBinding(Editor.TextProperty, RemarkViewModel.RemarkProperty);
+
+            var editorStack = new StackLayout
+            {
+                BackgroundColor = Color.FromHex(Definitions.BackgroundColor),
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                Padding = Definitions.Padding,
+                Children = { editor }
+            };
             
             var layout = new StackLayout
             {
                 BackgroundColor = Color.FromHex(Definitions.BackgroundColor),
+                Children = { headerstack, editorStack}
             };
-
-
-            layout.Children.Add(headerstack);
-            layout.Children.Add(editor);
 
             this.Content = layout;
         }

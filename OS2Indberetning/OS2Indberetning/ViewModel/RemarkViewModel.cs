@@ -4,14 +4,19 @@ using Xamarin.Forms;
 
 namespace OS2Indberetning.ViewModel
 {
-    public class RemarkViewModel : XLabs.Forms.Mvvm.ViewModel
+    public class RemarkViewModel : XLabs.Forms.Mvvm.ViewModel, IDisposable
     {
 
         private string remark;
         public RemarkViewModel()
         {
-            remark = Definitions.Report.ManualEntryRemark = remark;
+            Remark = Definitions.Report.ManualEntryRemark;
             Subscribe();
+        }
+
+        public void Dispose()
+        {
+            Unsubscribe();
         }
 
         public void Subscribe()
@@ -30,23 +35,17 @@ namespace OS2Indberetning.ViewModel
         private void HandleSaveMessage()
         {
             Definitions.Report.ManualEntryRemark = remark;
-            Unsubscribe();
+            Dispose();
             HandleBackMessage();
         }
         private void HandleBackMessage()
         {
-            try
-            {
-                Navigation.PopAsync();
-            }
-            catch (Exception e)
-            {
-                // Catching exception from double pop
-                // Dont know how to fix it in a proper way
-            }
+            Dispose();
+            Navigation.PopAsync();
         }
         #endregion
 
+        #region Properties
         public const string RemarkProperty = "Remark";
         public string Remark
         {
@@ -59,5 +58,6 @@ namespace OS2Indberetning.ViewModel
                 remark = value;
             }
         }
+        #endregion
     }
 }

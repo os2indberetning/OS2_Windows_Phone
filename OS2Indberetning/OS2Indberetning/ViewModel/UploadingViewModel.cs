@@ -19,7 +19,7 @@ namespace OS2Indberetning.ViewModel
         private string uploaderText;
         private double rotate;
         private ISecureStorage storage;
-
+        private double minimumWait = 3;
         private bool timerContinue;
         private bool errorVisibility;
         private bool uploadingVisibility;
@@ -37,11 +37,9 @@ namespace OS2Indberetning.ViewModel
             token = JsonConvert.DeserializeObject<Token>(Encoding.UTF8.GetString(tokenByte, 0, tokenByte.Length));
 
             Subscribe();
-
-            Upload();
         }
 
-        public void Upload()
+        public void Upload(object sender)
         {
             UploadingVisibility = true;
             ErrorVisibility = false;
@@ -49,8 +47,8 @@ namespace OS2Indberetning.ViewModel
             RotateSpinner();
             APICaller.SubmitDrive(Definitions.Report, token, Definitions.MunUrl).ContinueWith((result) =>
             {
-                HandleUploadResult(result.Result);
-            });
+                HandleUploadResult(result.Result, sender);
+            }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         public void Dispose()
@@ -62,7 +60,7 @@ namespace OS2Indberetning.ViewModel
 
         private void Subscribe()
         {
-            MessagingCenter.Subscribe<UploadingPage>(this, "Upload", (sender) => { Upload(); });
+            MessagingCenter.Subscribe<UploadingPage>(this, "Upload", (sender) => { Upload(sender); });
 
             MessagingCenter.Subscribe<UploadingPage>(this, "Store", (sender) => { HandleSaving(sender); });
         }
@@ -74,21 +72,35 @@ namespace OS2Indberetning.ViewModel
             MessagingCenter.Unsubscribe<UploadingPage>(this, "Store");
         }
 
-        private void HandleUploadResult(UserInfoModel user)
+        private void HandleUploadResult(UserInfoModel user, object sender)
         {
-            if (user == null)
+            // TESTING! 
+            user = null;
+            Device.StartTimer(TimeSpan.FromSeconds(minimumWait), () =>
             {
-                ErrorText =
-                    "Der skete en fejl ved afsendelsen af din rapport!" +
-                    " Prøv igen eller tryk på 'Gem' og send rapporten fra hovedmenuen på et andet tidspunkt.";
-                UploadingVisibility = false;
-                timerContinue = false;
-                ErrorVisibility = true;
-            }
-            else
-            {
-                
-            }
+                if (user == null)
+                {
+                    ErrorText =
+                        "Der skete en fejl ved afsendelsen af din rapport!" +
+                        " Prøv igen eller tryk på 'Gem' og send rapporten fra hovedmenuen på et andet tidspunkt.";
+                    UploadingVisibility = false;
+                    timerContinue = false;
+                    ErrorVisibility = true;
+                }
+                else
+                {
+                    // Popping to mainpage
+                    var stack = (sender as UploadingPage).Nav.NavigationStack;
+                    for (int i = 2; i < stack.Count; )
+                    {
+                        if (stack.Count == 3) break;
+                        (sender as UploadingPage).Nav.RemovePage(stack[i]);
+                    }
+                    Dispose();
+                    Navigation.PopAsync();
+                }
+            return false; //not continue
+            });
         }
 
         private void HandleSaving(object sender)
@@ -106,7 +118,7 @@ namespace OS2Indberetning.ViewModel
                             if (stack.Count == 3) break;
                             (sender as UploadingPage).Nav.RemovePage(stack[i]);
                         }
-                        Unsubscribe();
+                        Dispose();
                         Navigation.PopAsync();
                     }
                 }

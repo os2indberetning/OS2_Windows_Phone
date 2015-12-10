@@ -18,6 +18,7 @@ namespace OS2Indberetning
             Nav = Navigation;
             
             this.Content = this.SetContent();
+            SendUploadMessage();
         }
 
         public View SetContent()

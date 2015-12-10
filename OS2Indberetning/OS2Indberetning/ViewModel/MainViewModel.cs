@@ -109,6 +109,7 @@ namespace OS2Indberetning.ViewModel
             set
             {
                 homeCheck = value;
+                Definitions.Report.StartsAtHome = value;
                 OnPropertyChanged(HomeCheckProperty);
             }
         }

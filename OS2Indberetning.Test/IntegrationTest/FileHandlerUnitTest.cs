@@ -33,5 +33,14 @@ namespace OS2Indberetning.IntegrationTest
                 });
             });
         }
+
+        [TestMethod]
+        public void FileHandler_ReadFromFolderThatDoesntExist_AssertThatReadFromFileIsNull()
+        {
+            FileHandler.ReadFileContent("something", "something").ContinueWith((sender) =>
+            {
+                Assert.IsNull(sender);
+            });
+        }
     }
 }

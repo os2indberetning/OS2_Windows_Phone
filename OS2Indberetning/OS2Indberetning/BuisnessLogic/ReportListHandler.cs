@@ -6,6 +6,9 @@ using OS2Indberetning.Model;
 
 namespace OS2Indberetning.BuisnessLogic
 {
+    /// <summary>
+    /// Class to handle saved DriveReports through the use of FileHandler
+    /// </summary>
     public static class ReportListHandler
     {
         /// <summary>
@@ -67,7 +70,7 @@ namespace OS2Indberetning.BuisnessLogic
         /// Removes specific report from the stored list
         /// </summary>
         /// <param name="report">the DriveReport to be removed from the list</param>
-        /// <returns>the DriveReport list after removal of the specific DriveReport/returns>
+        /// <returns>the DriveReport list after removal of the specific DriveReport</returns>
         public static async Task<List<DriveReport>> RemoveReportFromList(DriveReport report)
         {
             try

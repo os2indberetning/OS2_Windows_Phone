@@ -78,7 +78,10 @@ namespace OS2Indberetning
         public static UriImageSource MunIcon;
         public static string MunUrl;
 
-        public static int Padding = 15;
+        public static double Padding;
+
+        public static double ScreenWidth;
+        public static double ScreenHeight;
 
     }
 }

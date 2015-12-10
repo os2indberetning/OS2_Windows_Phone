@@ -10,10 +10,9 @@ namespace OS2Indberetning
 {
     public class StoredReportsPage : ContentPage
     {
-        private int popupWidth = Resolver.Resolve<IDevice>().Display.Width - 30;
-        private int yesNoSpacing = 10;
-        private int yesNoButtonWidth = Resolver.Resolve<IDevice>().Display.Width / 2;
-        private int popupHeight = 250;
+        private double popupWidth = Definitions.ScreenWidth - 2 * Definitions.Padding;
+        private readonly double yesNoButtonWidth = (Definitions.ScreenHeight - Definitions.Padding) / 3;
+        private double popupHeight = Definitions.ScreenHeight / 3.6;
 
         public ListView list;
         public PopupLayout _PopUpLayout;
@@ -141,39 +140,24 @@ namespace OS2Indberetning
                 VerticalOptions = LayoutOptions.End,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 HeightRequest = Definitions.ButtonHeight,
-                Spacing = yesNoSpacing,
-                Children = { cancelButton, sendButton }
-            };
-
-            var ButtonStack = new StackLayout
-            {
-                BackgroundColor = Color.White, // for Android and WP
-                Orientation = StackOrientation.Horizontal,
-                VerticalOptions = LayoutOptions.End,
-                Padding = new Thickness(Definitions.Padding, 0, Definitions.Padding, 0),
                 Spacing = Definitions.Padding,
-                HorizontalOptions = LayoutOptions.CenterAndExpand,
-                Children =
-                {
-                    noStack,
-                    removeButton
-                }
+                Padding = new Thickness(Definitions.Padding, 0, Definitions.Padding, Definitions.Padding),
+                Children = { cancelButton, sendButton, removeButton}
             };
 
             var PopUp = new StackLayout
             {
                 WidthRequest = popupWidth,
-                HeightRequest = popupHeight,
                 BackgroundColor = Color.White,
                 Orientation = StackOrientation.Vertical,
                 VerticalOptions = LayoutOptions.Center,
                 HorizontalOptions = LayoutOptions.Center,
-                Padding = new Thickness(0, 0, 0, 30),
+                Spacing = Definitions.Padding,
                 Children =
                 {
                     headerstack,
                     text,
-                    ButtonStack
+                    noStack
                 }
             };
             var topPadding = display.Height / 2 - 150;
@@ -325,7 +309,6 @@ namespace OS2Indberetning
             {
                 list.SelectedItem = null;
             }
-            //base.OnAppearing();
         }
     }
 }

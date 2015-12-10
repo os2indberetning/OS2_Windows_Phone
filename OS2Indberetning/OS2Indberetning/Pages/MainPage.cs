@@ -5,7 +5,6 @@ using OS2Indberetning.Templates;
 using OS2Indberetning.ViewModel;
 using Xamarin.Forms;
 using XLabs.Forms.Controls;
-using XLabs.Forms.Mvvm;
 using XLabs.Ioc;
 using XLabs.Platform.Device;
 
@@ -13,10 +12,10 @@ namespace OS2Indberetning
 {
     public class MainPage : ContentPage
     {
-        private int popupWidth = Resolver.Resolve<IDevice>().Display.Width - 30;
-        private int yesNoSpacing = 10;
-        private int yesNoButtonWidth = Resolver.Resolve<IDevice>().Display.Width / 2;
-        private int popupHeight = 250;
+
+        private double popupWidth = Definitions.ScreenWidth - Definitions.Padding;
+        private readonly double yesNoButtonWidth = (Definitions.ScreenHeight - Definitions.Padding) / 2;
+        private double popupHeight = Definitions.ScreenHeight / 3;
 
         public ListView list;
         private PopupLayout _PopUpLayout;
@@ -43,6 +42,11 @@ namespace OS2Indberetning
             };
             var vertButton = new VertsButton(SendViewStoredMessage);
             var filler = new Filler();
+
+            vertButton.WidthRequest = 60;
+            vertButton.HeightRequest = 60;
+            filler.WidthRequest = 60;
+            filler.HeightRequest = 60;
 
             var headerstack = new StackLayout
             {
@@ -168,7 +172,7 @@ namespace OS2Indberetning
                 BackgroundColor = Color.White, // for Android and WP
                 Orientation = StackOrientation.Horizontal,
                 VerticalOptions = LayoutOptions.End,
-                Padding = new Thickness(Definitions.Padding, 0, Definitions.Padding, 0),
+                Padding = new Thickness(Definitions.Padding, 0, Definitions.Padding, Definitions.Padding),
                 Spacing = Definitions.Padding,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
                 Children =
@@ -185,7 +189,6 @@ namespace OS2Indberetning
                 Orientation = StackOrientation.Vertical,
                 VerticalOptions = LayoutOptions.Center,
                 HorizontalOptions = LayoutOptions.Center,
-                Padding = new Thickness(0, 0, 0, 30),
                 Children =
                 {
                     headerstack,
@@ -280,10 +283,10 @@ namespace OS2Indberetning
 
         protected override bool OnBackButtonPressed()
         {
-            if (Device.OS == TargetPlatform.WinPhone)
-            {
-                DependencyService.Get<IPlatformMethods>().TerminateApp();
-            }
+            //if (Device.OS == TargetPlatform.WinPhone)
+            //{
+            //    DependencyService.Get<IPlatformMethods>().TerminateApp();
+            //}
             return true;
         }
 
@@ -293,7 +296,7 @@ namespace OS2Indberetning
             {
                 list.SelectedItem = null;
             }
-            MessagingCenter.Send(this, "Update");
+            MessagingCenter.Send<MainPage>(this, "Update");
         }
     }
 }

@@ -87,7 +87,7 @@ namespace OS2Indberetning.Pages
                 }
             };
 
-            var coupleButton = new ButtomButton("Par Telefon", Couple);
+            var coupleButton = new ButtomButton("Par Telefon", SendCoupleMessage);
             var buttomStack = new StackLayout
             {
                 VerticalOptions = LayoutOptions.End,
@@ -112,19 +112,21 @@ namespace OS2Indberetning.Pages
             return layout;
         }
 
-        private void Couple()
+        private void SendCoupleMessage()
         {
             MessagingCenter.Send<CouplingPage>(this, "Couple");
         }
 
-        //protected override bool OnBackButtonPressed()
-        //{
-        //    if (Device.OS == TargetPlatform.WinPhone)
-        //    {
-        //        Navigation.PopAsync(true);
-        //    }
-        //    return true;
-        //}
+        private void SendBackMessage()
+        {
+            MessagingCenter.Send<CouplingPage>(this, "Back");
+        }
+
+        protected override bool OnBackButtonPressed()
+        {
+            
+            return true;
+        }
     }
 
 

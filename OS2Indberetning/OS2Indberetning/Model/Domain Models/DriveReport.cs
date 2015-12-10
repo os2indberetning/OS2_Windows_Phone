@@ -9,7 +9,7 @@
         }
         public int Id { get; set; }
         public int RouteId { get; set; }
-        public int Profilfield { get; set; }
+        public int ProfileId { get; set; }
         public int RateId { get; set; }
         public int EmploymentId { get; set; }
         public string Date  { get; set; }

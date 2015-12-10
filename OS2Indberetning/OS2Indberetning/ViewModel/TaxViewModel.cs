@@ -7,7 +7,7 @@ using Xamarin.Forms;
 
 namespace OS2Indberetning.ViewModel
 {
-    public class TaxViewModel : XLabs.Forms.Mvvm.ViewModel, INotifyPropertyChanged
+    public class TaxViewModel : XLabs.Forms.Mvvm.ViewModel, INotifyPropertyChanged, IDisposable
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -29,6 +29,12 @@ namespace OS2Indberetning.ViewModel
             Subscribe();
         }
 
+        public void Dispose()
+        {
+            Unsubscribe();
+            taxes = null;
+        }
+
         public void Subscribe()
         {
             MessagingCenter.Subscribe<TaxPage>(this, "Back", (sender) => { HandleBackMessage(); });
@@ -40,7 +46,6 @@ namespace OS2Indberetning.ViewModel
             MessagingCenter.Unsubscribe<TaxPage>(this, "Back");
             MessagingCenter.Unsubscribe<TaxPage>(this, "Selected");
         }
-
 
         #region Message Handlers
         private void HandleSelectedMessage(string arg)
@@ -59,19 +64,12 @@ namespace OS2Indberetning.ViewModel
         }
         private void HandleBackMessage()
         {
-            try
-            {
-                Unsubscribe();
-                Navigation.PopAsync();
-            }
-            catch (Exception e)
-            {
-                // Catching exception from double pop
-                // Dont know how to fix it in a proper way
-            }
+            Dispose();
+            Navigation.PopAsync();
         }
         #endregion
 
+        #region Properties
         public const string TaxListProperty = "TaxList";
         public ObservableCollection<TaxString> TaxList
         {
@@ -91,7 +89,7 @@ namespace OS2Indberetning.ViewModel
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
-
+        #endregion
 
     }
 

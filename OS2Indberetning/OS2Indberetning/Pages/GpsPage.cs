@@ -12,16 +12,12 @@ namespace OS2Indberetning
 
         private PopupLayout _PopUpLayout;
 
-        private int popupWidth = Resolver.Resolve<IDevice>().Display.Width - 30;
-        private int yesNoSpacing = 10;
-        private int yesNoButtonWidth = Resolver.Resolve<IDevice>().Display.Width / 2;
-        private int popupHeight = 300;
+        private double popupWidth = Definitions.ScreenWidth - 2 * Definitions.Padding;
+        private readonly double yesNoButtonWidth = (Definitions.ScreenHeight - Definitions.Padding) / 2;
+        private double popupHeight = Definitions.ScreenHeight / 2.5;
         
         public GpsPage()
         {
-            //var byteArray = storage.Retrieve(Definitions.UserDataKey);
-            //user = JsonConvert.DeserializeObject<UserInfoModel>(Encoding.UTF8.GetString(byteArray, 0, byteArray.Length));
-            
             this.Content = this.SetContent();
         }
 
@@ -153,7 +149,6 @@ namespace OS2Indberetning
                 Orientation = StackOrientation.Horizontal,
                 VerticalOptions = LayoutOptions.Center,
                 HorizontalOptions = LayoutOptions.Center,
-                Padding = new Thickness(0, 15, 20, 0),
                 Spacing = 20,
                 Children =
                 {
@@ -186,7 +181,7 @@ namespace OS2Indberetning
                 BackgroundColor = Color.White, // for Android and WP
                 Orientation = StackOrientation.Horizontal,
                 VerticalOptions = LayoutOptions.End,
-                Padding = new Thickness(Definitions.Padding, 0, Definitions.Padding, 0),
+                Padding = new Thickness(Definitions.Padding, 0, Definitions.Padding, Definitions.Padding),
                 Spacing = Definitions.Padding,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
                 Children =
@@ -199,11 +194,12 @@ namespace OS2Indberetning
             var PopUp = new StackLayout
             {
                 WidthRequest = popupWidth,
-                HeightRequest = popupHeight,
+                //HeightRequest = popupHeight,
                 BackgroundColor = Color.White,
                 Orientation = StackOrientation.Vertical,
                 VerticalOptions = LayoutOptions.Center,
                 HorizontalOptions = LayoutOptions.Center,
+                Spacing = Definitions.Padding,
                 Children =
                 {
                     headerstack,
@@ -232,7 +228,6 @@ namespace OS2Indberetning
 
         private void OpenPopup()
         {
-            
             _PopUpLayout.ShowPopup(CreatePopup());
         }
 

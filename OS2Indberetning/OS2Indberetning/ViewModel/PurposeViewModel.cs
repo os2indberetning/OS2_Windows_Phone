@@ -11,7 +11,7 @@ using Xamarin.Forms;
 
 namespace OS2Indberetning.ViewModel
 {
-    public class PurposeViewModel : XLabs.Forms.Mvvm.ViewModel, INotifyPropertyChanged
+    public class PurposeViewModel : XLabs.Forms.Mvvm.ViewModel, INotifyPropertyChanged, IDisposable
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private Command addPurposeCommand;
@@ -28,7 +28,7 @@ namespace OS2Indberetning.ViewModel
         {
             Subscribe();
 
-            var objectList = FileHandler.ReadFileContent(Definitions.PurposeFileName, Definitions.PurposeFolderName).ContinueWith((result) =>
+            FileHandler.ReadFileContent(Definitions.PurposeFileName, Definitions.PurposeFolderName).ContinueWith((result) =>
             {
                 if (result.Result == null) return;
                 if (result.Result == "") return;
@@ -46,30 +46,19 @@ namespace OS2Indberetning.ViewModel
             }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
+        public void Dispose()
+        {
+            Unsubscribe();
+            purposes = null;
+        }
+
         public void Subscribe()
         {
             MessagingCenter.Subscribe<PurposePage>(this, "Add", (sender) => { HideField = !HideField; });
 
-            MessagingCenter.Subscribe<PurposePage>(this, "Back", (sender) =>
-            {
-                HandleBackMessage();
-            });
+            MessagingCenter.Subscribe<PurposePage>(this, "Back", (sender) => { HandleBackMessage(); });
 
-            MessagingCenter.Subscribe<PurposePage>(this, "Selected", (sender) =>
-            {
-                var from = (PurposeString)sender.selected;
-                foreach (var item in purposes)
-                {
-                    if (item.Name == from.Name)
-                    {
-                        Definitions.Purpose = item.Name;
-                        Definitions.Report.Purpose = item.Name;
-                        continue;
-                    }
-                    item.Selected = false;
-                }
-                PurposeList = purposes;
-            });
+            MessagingCenter.Subscribe<PurposePage>(this, "Selected", HandleSelectedMessage);
         }
 
         public void Unsubscribe()
@@ -81,20 +70,31 @@ namespace OS2Indberetning.ViewModel
             MessagingCenter.Unsubscribe<PurposePage>(this, "Selected");
         }
 
+        #region MessageHandlers
         private void HandleBackMessage()
         {
-            try
-            {
-                Unsubscribe();
-                Navigation.PopAsync();
-            }
-            catch (Exception e)
-            {
-                // Catching exception from double pop
-                // Dont know how to fix it in a proper way
-            }
+            Dispose();
+            Navigation.PopAsync();
         }
 
+        private void HandleSelectedMessage(PurposePage sender)
+        {
+            var from = (PurposeString)sender.selected;
+            foreach (var item in purposes)
+            {
+                if (item.Name == from.Name)
+                {
+                    Definitions.Purpose = item.Name;
+                    Definitions.Report.Purpose = item.Name;
+                    continue;
+                }
+                item.Selected = false;
+            }
+            PurposeList = purposes;
+        }
+        #endregion
+
+        #region Properties
         public const string AddPurposeCommand = "AddPurpose";
         public ICommand AddPurpose 
         {
@@ -180,7 +180,7 @@ namespace OS2Indberetning.ViewModel
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
-
+        #endregion
 
     }
 

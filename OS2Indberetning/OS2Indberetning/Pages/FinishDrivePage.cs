@@ -1,4 +1,5 @@
-﻿using OS2Indberetning.Templates;
+﻿using System.Collections.Generic;
+using OS2Indberetning.Templates;
 using OS2Indberetning.ViewModel;
 using Xamarin.Forms;
 using XLabs.Forms.Controls;
@@ -7,26 +8,36 @@ using XLabs.Platform.Device;
 
 namespace OS2Indberetning
 {
+    /// <summary>
+    /// Page is shown after GPS tracking is done
+    /// </summary>
     public class FinishDrivePage : ContentPage
     {
         public ListView list;
-        private PopupLayout _PopUpLayout;
+        public PopupLayout _PopUpLayout;
 
-        private int popupWidth = Resolver.Resolve<IDevice>().Display.Width - 30;
-        private int yesNoSpacing = 10;
-        private int yesNoButtonWidth = Resolver.Resolve<IDevice>().Display.Width / 2;
-        private int popupHeight = 300;
+        // used to pop back to mainpage from viewmodel
+        public IReadOnlyList<Page> NavigationStack;
+        public INavigation Nav;
+
+        public string newKm;
+        
+        private readonly double popupWidth = Definitions.ScreenWidth - 2 * Definitions.Padding;
+        private readonly double yesNoButtonWidth = (Definitions.ScreenHeight - Definitions.Padding) / 2;
 
         public FinishDrivePage()
         {
+            NavigationStack = Navigation.NavigationStack;
+            Nav = Navigation;
 
-            //var byteArray = storage.Retrieve(Definitions.UserDataKey);
-            //user = JsonConvert.DeserializeObject<UserInfoModel>(Encoding.UTF8.GetString(byteArray, 0, byteArray.Length));
-            
             this.Content = this.SetContent();
-            
         }
 
+        #region View Setup
+        /// <summary>
+        /// Creates the view content
+        /// </summary>
+        /// <returns>the view to be displayed</returns>
         public View SetContent()
         {
             var header = new Label
@@ -78,6 +89,13 @@ namespace OS2Indberetning
             };
             list.SetBinding(ListView.ItemsSourceProperty, MainViewModel.DriveProperty);
 
+
+            list.ItemSelected += async (sender, e) =>
+            {
+                if (e.SelectedItem == null) return;
+                SendSelectedMessage();
+            };
+
             var startButton = new ButtomButton("Indsend Kørsel", SendUploadMessage);
             var cancelButton = new ButtomButton("Annuller og Slet", OpenPopup);
             startButton.FontSize = 24;
@@ -117,7 +135,73 @@ namespace OS2Indberetning
             return _PopUpLayout;
         }
 
-        private StackLayout CreatePopup()
+        /// <summary>
+        /// Creates the stacklayout for the Checkboxes
+        /// </summary>
+        /// <returns>Stacklayout of the checkboxes</returns>
+        private StackLayout CheckStack()
+        {
+            var startLabel = new Label
+            {
+                Text = "Starter du hjemme?",
+                TextColor = Color.FromHex(Definitions.DefaultTextColor),
+                FontAttributes = FontAttributes.Bold,
+                FontFamily = Definitions.FontFamily,
+                FontSize = Definitions.MainListTextSize,
+                HorizontalOptions = LayoutOptions.StartAndExpand,
+                VerticalOptions = LayoutOptions.Center
+            };
+            var endLabel = new Label
+            {
+                Text = "Sluttede du hjemme?",
+                TextColor = Color.FromHex(Definitions.DefaultTextColor),
+                FontAttributes = FontAttributes.Bold,
+                FontFamily = Definitions.FontFamily,
+                FontSize = Definitions.MainListTextSize,
+                HorizontalOptions = LayoutOptions.StartAndExpand,
+                VerticalOptions = LayoutOptions.Center
+            };
+
+            var startCheck = new CheckboxButton(SendStartHomeMessage, Definitions.Report.StartsAtHome);
+            var endCheck = new CheckboxButton(SendEndHomeMessage, Definitions.Report.EndsAtHome);
+
+            var topCheck = new StackLayout
+            {
+                Padding = new Thickness(20, 0, 20, 0),
+                Orientation = StackOrientation.Horizontal,
+                BackgroundColor = Color.FromHex(Definitions.BackgroundColor),
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.End,
+                Children = { startLabel, startCheck }
+            };
+            var buttomCheck = new StackLayout
+            {
+                Padding = new Thickness(20, 0, 20, 0),
+                Orientation = StackOrientation.Horizontal,
+                BackgroundColor = Color.FromHex(Definitions.BackgroundColor),
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.End,
+                Children = { endLabel, endCheck }
+            };
+
+            return new StackLayout
+            {
+                Orientation = StackOrientation.Vertical,
+                BackgroundColor = Color.FromHex(Definitions.BackgroundColor),
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.End,
+                Spacing = 5,
+                Children = { topCheck, buttomCheck }
+            };
+        }
+        #endregion
+
+        #region Popups
+        /// <summary>
+        /// Creates a view for the delete report popup
+        /// </summary>
+        /// <returns>Stacklayout of the popup content</returns>
+        private StackLayout CreateDeletePopup()
         {
             var display = Resolver.Resolve<IDevice>().Display;
             var header = new Label
@@ -158,7 +242,7 @@ namespace OS2Indberetning
                 WidthRequest = yesNoButtonWidth,
                 Children = { noButton }
             };
-            var yesButton = new ButtomButton("OK", DeleteAndClosePopup);
+            var yesButton = new ButtomButton("OK", SendDeleteMessage);
             var yesStack = new StackLayout
             {
                 VerticalOptions = LayoutOptions.End,
@@ -173,9 +257,9 @@ namespace OS2Indberetning
                 BackgroundColor = Color.White, // for Android and WP
                 Orientation = StackOrientation.Horizontal,
                 VerticalOptions = LayoutOptions.End,
-                Padding = new Thickness(Definitions.Padding, 0, Definitions.Padding, 0),
+                Padding = new Thickness(Definitions.Padding, 0, Definitions.Padding, Definitions.Padding),
                 Spacing = Definitions.Padding,
-                HorizontalOptions = LayoutOptions.CenterAndExpand,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
                 Children =
                 {
                     noStack,
@@ -186,11 +270,12 @@ namespace OS2Indberetning
             var PopUp = new StackLayout
             {
                 WidthRequest = popupWidth,
-                HeightRequest = popupHeight,
+                //HeightRequest = popupHeight,
                 BackgroundColor = Color.White,
                 Orientation = StackOrientation.Vertical,
                 VerticalOptions = LayoutOptions.Center,
                 HorizontalOptions = LayoutOptions.Center,
+                Spacing = Definitions.Padding,
                 Children =
                 {
                     headerstack,
@@ -216,101 +301,196 @@ namespace OS2Indberetning
             return PopUpBackground;
         }
 
-        private void OpenPopup()
+        /// <summary>
+        /// Creates a view for the edit km popup
+        /// </summary>
+        /// <returns>Stacklayout of the popup content</returns>
+        public StackLayout EditKmPopup()
         {
-            _PopUpLayout.ShowPopup(CreatePopup());
+            var display = Resolver.Resolve<IDevice>().Display;
+            var header = new Label
+            {
+                Text = "Antal Km",
+                TextColor = Color.FromHex(Definitions.TextColor),
+                FontSize = Definitions.HeaderFontSize,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                YAlign = TextAlignment.Center,
+                XAlign = TextAlignment.Center,
+            };
+            var headerstack = new StackLayout
+            {
+                Orientation = StackOrientation.Horizontal,
+                BackgroundColor = Color.FromHex(Definitions.PrimaryColor),
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HeightRequest = Definitions.HeaderHeight,
+                Children =
+                {
+                    header,
+                }
+            };
+            var text = new Label
+            {
+                Text = "Rediger i antal kørte km: ",
+                TextColor = Color.FromHex(Definitions.DefaultTextColor),
+                FontSize = Definitions.PopupTextSize,
+                HorizontalOptions = LayoutOptions.Center,
+                YAlign = TextAlignment.Center,
+            };
+
+            var entry = new Entry
+            {
+                TextColor = Color.FromHex(Definitions.DefaultTextColor),
+                Keyboard = Keyboard.Numeric,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+            };
+            entry.SetBinding(Entry.TextProperty, FinishDriveViewModel.NewKmProperty);
+            entry.Focus();
+            
+            var noButton = new ButtomButton("Fortryd", () => _PopUpLayout.DismissPopup());
+            var noStack = new StackLayout
+            {
+                VerticalOptions = LayoutOptions.End,
+                HorizontalOptions = LayoutOptions.Start,
+                HeightRequest = Definitions.ButtonHeight,
+                WidthRequest = yesNoButtonWidth,
+                Children = { noButton }
+            };
+            var yesButton = new ButtomButton("Gem", SendNewKmMessage);
+            var yesStack = new StackLayout
+            {
+                VerticalOptions = LayoutOptions.End,
+                HorizontalOptions = LayoutOptions.End,
+                HeightRequest = Definitions.ButtonHeight,
+                WidthRequest = yesNoButtonWidth,
+                Children = { yesButton }
+            };
+
+            var ButtonStack = new StackLayout
+            {
+                BackgroundColor = Color.White, // for Android and WP
+                Orientation = StackOrientation.Horizontal,
+                VerticalOptions = LayoutOptions.End,
+                Padding = new Thickness(Definitions.Padding, 0, Definitions.Padding, Definitions.Padding),
+                Spacing = Definitions.Padding,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                Children =
+                {
+                    noStack,
+                    yesStack
+                }
+            };
+
+            var PopUp = new StackLayout
+            {
+                WidthRequest = popupWidth,
+
+                BackgroundColor = Color.White,
+                Orientation = StackOrientation.Vertical,
+                VerticalOptions = LayoutOptions.Center,
+                HorizontalOptions = LayoutOptions.Center,
+                Spacing = Definitions.Padding,
+                Children =
+                {
+                    headerstack,
+                    text,
+                    entry,
+                    ButtonStack
+                }
+            };
+            var topPadding = display.Height / 2 - 150;
+            var PopUpBackground = new StackLayout
+            {
+                Padding = new Thickness(0, topPadding, 0, 0),
+                WidthRequest = display.Width,
+                HeightRequest = display.Height,
+                BackgroundColor = Color.FromRgba(0, 0, 0, 0.85),
+                Orientation = StackOrientation.Vertical,
+                VerticalOptions = LayoutOptions.Center,
+                Children =
+                {
+                    PopUp
+                }
+            };
+
+            return PopUpBackground;
         }
 
+        /// <summary>
+        /// Opens the delete report popup
+        /// </summary>
+        private void OpenPopup()
+        {
+            _PopUpLayout.ShowPopup(CreateDeletePopup());
+        }
+
+        /// <summary>
+        /// Closes the popup
+        /// </summary>
         private void ClosePopup()
         {
             _PopUpLayout.DismissPopup();
         }
+        #endregion
 
-        private void DeleteAndClosePopup()
-        {
-            // Doing some cleanup
-            Definitions.Report = null;
-            (this.BindingContext as FinishDriveViewModel).Dispose();
-            this.BindingContext = null;
-            Navigation.PopToRootAsync( );
-        }
-
+        #region Messages
+        /// <summary>
+        /// Sends Upload message throught the MessagingCenter
+        /// </summary>
         private void SendUploadMessage()
         {
             MessagingCenter.Send<FinishDrivePage>(this, "Upload");
         }
 
-
-        private StackLayout CheckStack()
+        /// <summary>
+        /// Sends Delete message throught the MessagingCenter
+        /// </summary>
+        private void SendDeleteMessage()
         {
-            var startLabel = new Label
-            {
-                Text = "Starter du hjemme?",
-                TextColor = Color.FromHex(Definitions.DefaultTextColor),
-                FontAttributes = FontAttributes.Bold,
-                FontFamily = Definitions.FontFamily,
-                FontSize = Definitions.MainListTextSize,
-                HorizontalOptions = LayoutOptions.StartAndExpand,
-                VerticalOptions = LayoutOptions.Center
-            };
-            var endLabel = new Label
-            {
-                Text = "Sluttede du hjemme?",
-                TextColor = Color.FromHex(Definitions.DefaultTextColor),
-                FontAttributes = FontAttributes.Bold,
-                FontFamily = Definitions.FontFamily,
-                FontSize = Definitions.MainListTextSize,
-                HorizontalOptions = LayoutOptions.StartAndExpand,
-                VerticalOptions = LayoutOptions.Center
-            };
-
-            var startCheck = new CheckboxButton(null, Definitions.Report.StartsAtHome);
-            var endCheck = new CheckboxButton(null, Definitions.Report.EndsAtHome);
-
-            var topCheck = new StackLayout
-            {
-                Padding = new Thickness(20, 0, 20, 0),
-                Orientation = StackOrientation.Horizontal,
-                BackgroundColor = Color.FromHex(Definitions.BackgroundColor),
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.End,
-                Children = { startLabel, startCheck}
-            };
-            var buttomCheck = new StackLayout
-            {
-                Padding = new Thickness(20, 0, 20, 0),
-                Orientation = StackOrientation.Horizontal,
-                BackgroundColor = Color.FromHex(Definitions.BackgroundColor),
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.End,
-                Children = { endLabel, endCheck }
-            };
-
-            return new StackLayout
-            {
-                Orientation = StackOrientation.Vertical,
-                BackgroundColor = Color.FromHex(Definitions.BackgroundColor),
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.End,
-                Spacing = 5,
-                Children = { topCheck, buttomCheck }
-            };
+            MessagingCenter.Send<FinishDrivePage>(this, "Delete");
         }
 
-
-        private void StartDrive()
+        /// <summary>
+        /// Sends Selected message throught the MessagingCenter
+        /// </summary>
+        private void SendSelectedMessage()
         {
-            MessagingCenter.Send<FinishDrivePage>(this, "Start");
+            MessagingCenter.Send<FinishDrivePage>(this, "Selected");
         }
 
-        private void ToggleHomeProperty()
+        /// <summary>
+        /// Sends StartHome message throught the MessagingCenter
+        /// </summary>
+        private void SendStartHomeMessage()
         {
-            MessagingCenter.Send<FinishDrivePage>(this, "ToggleHome");
+            MessagingCenter.Send<FinishDrivePage>(this, "StartHome");
         }
 
+        /// <summary>
+        /// Sends EndHome message throught the MessagingCenter
+        /// </summary>
+        private void SendEndHomeMessage()
+        {
+            MessagingCenter.Send<FinishDrivePage>(this, "EndHome");
+        }
+
+        /// <summary>
+        /// Sends NewKm message throught the MessagingCenter
+        /// </summary>
+        private void SendNewKmMessage()
+        {
+            MessagingCenter.Send<FinishDrivePage>(this, "NewKm");
+        }
+
+        #endregion
+
+        #region Overrides
         protected override bool OnBackButtonPressed()
         {
-            Navigation.PopAsync();
+            if (!_PopUpLayout.IsPopupActive)
+            {
+                _PopUpLayout.ShowPopup(CreateDeletePopup());
+            }
+            
             return true;
         }
 
@@ -321,7 +501,8 @@ namespace OS2Indberetning
                 list.SelectedItem = null;
             }
             base.OnAppearing();
-            MessagingCenter.Send(this, "Update");
+            MessagingCenter.Send<FinishDrivePage>(this, "Update");
         }
+        #endregion
     }
 }

@@ -118,22 +118,15 @@ namespace OS2Indberetning.ViewModel
 
         public void FinishDrive()
         {
-            var report = new DriveReport();
+            Definitions.Report.EmploymentId = Definitions.Organization.Id;
+            Definitions.Report.Date = Definitions.Date;
 
-            report.EmploymentId = Definitions.Organization.Id;
-            report.Date = Definitions.Date;
-            report.ManualEntryRemark = Definitions.Remark;
-            report.Purpose = Definitions.Purpose;
-            report.StartsAtHome = Definitions.StartAtHome;
-            report.EndsAtHome = Definitions.EndsAtHome;
-
-            report.Profile = Definitions.User.Profile;
-            report.Rate = Definitions.Taxe;
-
-            report.Route = Definitions.Route;
-            report.Route.TotalDistance = TraveledDistance;
-
-            Definitions.Report = report;
+            Definitions.Report.ProfileId = Definitions.User.Profile.Id;
+            Definitions.Report.RateId = Definitions.Taxe.Id;
+            Definitions.Report.Profile = Definitions.User.Profile;
+            Definitions.Report.Rate = Definitions.Taxe;
+            Definitions.Report.Route = Definitions.Route;
+            Definitions.Report.Route.TotalDistance = TraveledDistance;
 
             Dispose();
             Navigation.PushAsync<FinishDriveViewModel>();
@@ -170,7 +163,7 @@ namespace OS2Indberetning.ViewModel
                         Definitions.Route.GPSCoordinates.Add(new GPSCoordinate
                         {
                             Latitude = t.Result.Latitude.ToString(),
-                            Longtitude = t.Result.Longitude.ToString(),
+                            Longitude = t.Result.Longitude.ToString(),
                         });
                     }
 
@@ -249,6 +242,7 @@ namespace OS2Indberetning.ViewModel
             set
             {
                 finishedHome = value;
+                Definitions.Report.EndsAtHome = value;
                 OnPropertyChanged(FinishedHomeProperty);
             }
         }
