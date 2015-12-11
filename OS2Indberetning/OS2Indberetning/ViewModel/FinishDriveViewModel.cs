@@ -51,14 +51,8 @@ namespace OS2Indberetning.ViewModel
         {
             MessagingCenter.Subscribe<FinishDrivePage>(this, "Upload", (sender) => UploadHandler());
             MessagingCenter.Subscribe<FinishDrivePage>(this, "Delete", (sender) => HandleDeleteMessage(sender));
-            MessagingCenter.Subscribe<FinishDrivePage>(this, "Selected", (sender) =>
-            {
-                PushPageBasedOnSelectedItem(sender);
-            });
-            MessagingCenter.Subscribe<FinishDrivePage>(this, "Update", (sender) =>
-            {
-                InitializeCollection();
-            });
+            MessagingCenter.Subscribe<FinishDrivePage>(this, "Selected", (sender) => { PushPageBasedOnSelectedItem(sender); });
+            MessagingCenter.Subscribe<FinishDrivePage>(this, "Update", (sender) => { InitializeCollection(); });
             MessagingCenter.Subscribe<FinishDrivePage>(this, "EndHome",(sender) => { StartHomeCheck = !StartHomeCheck; });
             MessagingCenter.Subscribe<FinishDrivePage>(this, "StartHome", (sender) => { EndHomeCheck = !EndHomeCheck; });
             MessagingCenter.Subscribe<FinishDrivePage>(this, "NewKm", (sender) =>
@@ -116,7 +110,7 @@ namespace OS2Indberetning.ViewModel
         private void HandleDeleteMessage(object sender)
         {
             // Doing some cleanup
-            Definitions.Report = new DriveReport();
+            Definitions.Report.Route = null;
             // Popping to mainpage
             var stack = (sender as FinishDrivePage).Nav.NavigationStack;
             for (int i = 2; i < stack.Count; )

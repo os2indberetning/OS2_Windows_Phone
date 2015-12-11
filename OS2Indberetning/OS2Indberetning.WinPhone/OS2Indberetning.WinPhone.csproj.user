@@ -10,7 +10,11 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <CurrentDeployCmdId>256</CurrentDeployCmdId>
-    <CurrentDeployID>A754CC38-6EE5-40E2-8BDF-5CB561BECF94</CurrentDeployID>
+    <CurrentDeployID>30F105C9-681E-420b-A277-7C086EAD8A4E</CurrentDeployID>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <CurrentDeployCmdId>256</CurrentDeployCmdId>
+    <CurrentDeployID>30F105C9-681E-420b-A277-7C086EAD8A4E</CurrentDeployID>
   </PropertyGroup>
   <ProjectExtensions>
     <VisualStudio>

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Globalization;
+using System.Linq;
 using System.Threading;
 using OS2Indberetning.BuisnessLogic;
 using Xamarin.Forms;
@@ -93,13 +95,16 @@ namespace OS2Indberetning.ViewModel
                 }
                 else
                 {
-                    
                     locator.StartListening(Definitions.MinInterval, Definitions.Accuracy, true);
                 }
             }
             else
             {
                 locator.StopListening();
+                if (Definitions.Route.GPSCoordinates.Count > 0)
+                {
+                    Definitions.Route.GPSCoordinates.Last().IsViaPoint = "true";
+                } 
             }
         }
 
@@ -162,8 +167,8 @@ namespace OS2Indberetning.ViewModel
                         PositionStatus = t.Result.Timestamp.ToString("HH:mm:ss");
                         Definitions.Route.GPSCoordinates.Add(new GPSCoordinate
                         {
-                            Latitude = t.Result.Latitude.ToString(),
-                            Longitude = t.Result.Longitude.ToString(),
+                            Latitude = t.Result.Latitude.ToString("#.######", CultureInfo.InvariantCulture),
+                            Longitude = t.Result.Longitude.ToString("#.######", CultureInfo.InvariantCulture),
                         });
                     }
 

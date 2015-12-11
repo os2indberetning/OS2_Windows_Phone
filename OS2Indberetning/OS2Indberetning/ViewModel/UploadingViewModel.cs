@@ -74,8 +74,6 @@ namespace OS2Indberetning.ViewModel
 
         private void HandleUploadResult(UserInfoModel user, object sender)
         {
-            // TESTING! 
-            user = null;
             Device.StartTimer(TimeSpan.FromSeconds(minimumWait), () =>
             {
                 if (user == null)

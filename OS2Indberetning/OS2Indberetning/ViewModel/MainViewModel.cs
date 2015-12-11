@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using Xamarin.Forms;
 
 using OS2Indberetning.Model;
@@ -21,6 +22,10 @@ namespace OS2Indberetning.ViewModel
 
         public MainViewModel()
         {
+            if (Definitions.Report == null)
+            {
+                Definitions.Report = new DriveReport();
+            }
             Definitions.HasAppeared = true;
             driveReport = new ObservableCollection<DriveReportCellModel>();
             Subscribe();

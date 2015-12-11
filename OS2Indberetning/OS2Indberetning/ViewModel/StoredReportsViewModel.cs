@@ -65,11 +65,7 @@ namespace OS2Indberetning.ViewModel
             {
                 var item = (StoredReportCellModel)sender.list.SelectedItem;
 
-                ReportListHandler.RemoveReportFromList(item.report).ContinueWith((result) =>
-                {
-                    (sender as StoredReportsPage).ClosePopup();
-                    InitializeCollection(result.Result);
-                }, TaskScheduler.FromCurrentSynchronizationContext());
+                RemoveItemFromList(item, sender);
             });
         }
 
@@ -80,15 +76,30 @@ namespace OS2Indberetning.ViewModel
             MessagingCenter.Unsubscribe<StoredReportsPage>(this, "Remove");
         }
 
-        private void HandleUploadResult(UserInfoModel item, object page)
+        private void HandleUploadResult(UserInfoModel item, StoredReportsPage page)
         {
-            (page as StoredReportsPage).ClosePopup();
             if (item == null)
             {
-                var popup = (page as StoredReportsPage).CreateErrorPopup("Kunne ikke upload på nuværende tidspunkt. Prøv igen senere");
-                (page as StoredReportsPage)._PopUpLayout.ShowPopup(popup);
+                page.ClosePopup();
+                var popup = page.CreateErrorPopup("Kunne ikke upload på nuværende tidspunkt. Prøv igen senere");
+                page._PopUpLayout.ShowPopup(popup);
                 return;
             }
+            else
+            {
+                RemoveItemFromList((StoredReportCellModel)page.list.SelectedItem, page);
+            }
+        }
+
+        private void RemoveItemFromList(StoredReportCellModel item, StoredReportsPage page)
+        {
+            ReportListHandler.RemoveReportFromList(item.report).ContinueWith((result) =>
+            {
+                page.ClosePopup();
+                InitializeCollection(result.Result);
+                var popup = page.CreateErrorPopup("Kørsels rapport blev uploaded");
+                page._PopUpLayout.ShowPopup(popup);
+            }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         private void InitializeCollection(List<DriveReport> list)

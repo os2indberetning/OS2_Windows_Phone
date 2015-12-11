@@ -21,7 +21,7 @@ namespace OS2Indberetning
         public INavigation Nav;
 
         public string newKm;
-        
+
         private readonly double popupWidth = Definitions.ScreenWidth - 2 * Definitions.Padding;
         private readonly double yesNoButtonWidth = (Definitions.ScreenHeight - Definitions.Padding) / 2;
 

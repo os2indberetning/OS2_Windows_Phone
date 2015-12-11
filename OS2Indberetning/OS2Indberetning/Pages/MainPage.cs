@@ -283,10 +283,6 @@ namespace OS2Indberetning
 
         protected override bool OnBackButtonPressed()
         {
-            //if (Device.OS == TargetPlatform.WinPhone)
-            //{
-            //    DependencyService.Get<IPlatformMethods>().TerminateApp();
-            //}
             return true;
         }
 

@@ -48,10 +48,20 @@ namespace OS2Indberetning.ViewModel
             try
             {
                 // Get Municipality from storage and deserialize
+                if (!storage.Contains(Definitions.TokenKey))
+                {
+                    ShowLoginPage();
+                    return;
+                }
                 var byteArray = storage.Retrieve(Definitions.TokenKey);
                 var mstring = Encoding.UTF8.GetString(byteArray, 0, byteArray.Length);
                 var userToken = JsonConvert.DeserializeObject<Token>(mstring);
                 // Get Token from storage and deserialize
+                if (!storage.Contains(Definitions.MunKey))
+                {
+                    ShowLoginPage();
+                    return;
+                }
                 var userTokenByte = storage.Retrieve(Definitions.MunKey);
                 var userTokenString = Encoding.UTF8.GetString(userTokenByte, 0, userTokenByte.Length);
                 var mun = JsonConvert.DeserializeObject<Municipality>(userTokenString);

@@ -28,13 +28,13 @@ namespace OS2Indberetning
                 return;
             }
 
-            app.Closing += (o, e) => Debug.WriteLine("Application Closing");
-            app.Error += (o, e) => Debug.WriteLine("Application Error");
-            app.Initialize += (o, e) => Debug.WriteLine("Application Initialize");
-            app.Resumed += (o, e) => Debug.WriteLine("Application Resumed");
-            app.Rotation += (o, e) => Debug.WriteLine("Application Rotation");
-            app.Startup += (o, e) => Debug.WriteLine("Application Startup");
-            app.Suspended += (o, e) => Debug.WriteLine("Application Suspended");
+            //app.Closing += (o, e) => Debug.WriteLine("Application Closing");
+            //app.Error += (o, e) => Debug.WriteLine("Application Error");
+            //app.Initialize += (o, e) => Debug.WriteLine("Application Initialize");
+            //app.Resumed += (o, e) => Debug.WriteLine("Application Resumed");
+            //app.Rotation += (o, e) => Debug.WriteLine("Application Rotation");
+            //app.Startup += (o, e) => Debug.WriteLine("Application Startup");
+            //app.Suspended += (o, e) => Debug.WriteLine("Application Suspended");
 
             SetScreenHeightAndWidth();
 
@@ -43,7 +43,7 @@ namespace OS2Indberetning
 
             // For testing
             storage = DependencyService.Get<ISecureStorage>();
-            FakeModel();
+            //FakeModel();
             // The root page of your application
            
             ViewFactory.EnableCache = false;
