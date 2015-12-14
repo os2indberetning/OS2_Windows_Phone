@@ -75,8 +75,8 @@ namespace OS2Indberetning.ViewModel
 
         private void HandleBackMessage()
         {
-            Dispose();
-            Navigation.PopAsync();
+            //Dispose();
+            App.Navigation.PopToRootAsync();
         }
         public void ToggleGps()
         {

@@ -109,17 +109,9 @@ namespace OS2Indberetning.ViewModel
 
         private void HandleDeleteMessage(object sender)
         {
-            // Doing some cleanup
             Definitions.Report.Route = null;
-            // Popping to mainpage
-            var stack = (sender as FinishDrivePage).Nav.NavigationStack;
-            for (int i = 2; i < stack.Count; )
-            {
-                if (stack.Count == 3) break;
-                (sender as FinishDrivePage).Nav.RemovePage(stack[i]);
-            }
             Dispose();
-            Navigation.PopAsync();
+            App.Navigation.PopToRootAsync();
         }
 
         private void UploadHandler()

@@ -8,6 +8,7 @@ namespace OS2Indberetning.Pages
 
         public CrossPathPage()
         {
+            //BindingContext = App.Locator.CrossPath;
             this.Content = SetTempContent();
         }
 
@@ -20,17 +21,9 @@ namespace OS2Indberetning.Pages
             return layout;
         }
 
-        private void SendShowMainMessage()
-        {
-            MessagingCenter.Send(this, "ShowMain");
-        }
-
         protected override void OnAppearing()
         {
-            if (Definitions.HasAppeared)
-            {
-                SendShowMainMessage();
-            }
+            MessagingCenter.Send(this, "Choose");
         }
     }
 }

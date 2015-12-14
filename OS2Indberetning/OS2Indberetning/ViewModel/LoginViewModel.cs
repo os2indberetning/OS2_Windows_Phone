@@ -6,5 +6,9 @@ namespace OS2Indberetning.ViewModel
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public LoginViewModel()
+        {
+            
+        }
     }
 }

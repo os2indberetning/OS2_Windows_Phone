@@ -74,7 +74,7 @@ namespace OS2Indberetning.ViewModel
         private void HandleBackMessage()
         {
             Dispose();
-            Navigation.PopAsync();
+            App.Navigation.PopToRootAsync();
         }
 
         private void HandleSelectedMessage(PurposePage sender)

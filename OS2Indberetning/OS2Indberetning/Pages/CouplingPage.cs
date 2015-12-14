@@ -124,7 +124,7 @@ namespace OS2Indberetning.Pages
 
         protected override bool OnBackButtonPressed()
         {
-            
+            SendBackMessage();
             return true;
         }
     }

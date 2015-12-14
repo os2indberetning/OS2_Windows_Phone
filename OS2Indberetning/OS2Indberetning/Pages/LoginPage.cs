@@ -96,7 +96,7 @@ namespace OS2Indberetning.Pages
                 {
                     if (item.Name == selectedItem.Name)
                     {
-                        await Navigation.PushAsync(
+                        await App.Navigation.PushAsync(
                                 (ContentPage)
                                     ViewFactory.CreatePage<CouplingViewModel, CouplingPage>((v, vm) =>
                                     {

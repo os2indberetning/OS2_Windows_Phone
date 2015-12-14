@@ -34,8 +34,8 @@ namespace OS2Indberetning.ViewModel
             MessagingCenter.Subscribe<CouplingPage>(this, "Couple", (sender) => { Couple(); });
             MessagingCenter.Subscribe<CouplingPage>(this, "Back", (sender) =>
             {
-                Unsubscribe();
-                Navigation.PopAsync();
+                Dispose();
+                App.Navigation.PopAsync();
             });
         }
 
@@ -70,7 +70,8 @@ namespace OS2Indberetning.ViewModel
                     return;
                 }
                 
-                Navigation.PushAsync<MainViewModel>();
+                Dispose();
+                App.Navigation.PopToRootAsync();
             }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 

@@ -87,15 +87,8 @@ namespace OS2Indberetning.ViewModel
                 }
                 else
                 {
-                    // Popping to mainpage
-                    var stack = (sender as UploadingPage).Nav.NavigationStack;
-                    for (int i = 2; i < stack.Count; )
-                    {
-                        if (stack.Count == 3) break;
-                        (sender as UploadingPage).Nav.RemovePage(stack[i]);
-                    }
                     Dispose();
-                    Navigation.PopAsync();
+                    App.Navigation.PopToRootAsync();
                 }
             return false; //not continue
             });
@@ -109,15 +102,8 @@ namespace OS2Indberetning.ViewModel
                 {
                     if (result.Result == true)
                     {
-                        // Popping to mainpage
-                        var stack = (sender as UploadingPage).Nav.NavigationStack;
-                        for (int i = 2; i < stack.Count; )
-                        {
-                            if (stack.Count == 3) break;
-                            (sender as UploadingPage).Nav.RemovePage(stack[i]);
-                        }
                         Dispose();
-                        Navigation.PopAsync();
+                        App.Navigation.PopToRootAsync();
                     }
                 }
             }, TaskScheduler.FromCurrentSynchronizationContext());

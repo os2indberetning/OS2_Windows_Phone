@@ -1,8 +1,6 @@
 ﻿using OS2Indberetning.Templates;
 using OS2Indberetning.ViewModel;
 using Xamarin.Forms;
-using XLabs.Ioc;
-using XLabs.Platform.Device;
 
 namespace OS2Indberetning.Pages
 {

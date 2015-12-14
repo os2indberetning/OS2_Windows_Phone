@@ -8,24 +8,29 @@ using OS2Indberetning.Pages;
 using Xamarin.Forms;
 using XLabs.Platform.Services;
 
+
 namespace OS2Indberetning.ViewModel
 {
     public class CrossPathViewModel : XLabs.Forms.Mvvm.ViewModel
     {
-        private ISecureStorage storage;
+        private readonly ISecureStorage storage;
+        //private readonly GalaSoft.MvvmLight.Views.INavigationService _navigationService;
         public CrossPathViewModel()
         {
+            //if (navigationService == null) throw new ArgumentNullException("navigationService");
+            //_navigationService = navigationService;
+            //_navigationService = (NavigationService)SimpleIoc.Default.GetInstance(typeof (GalaSoft.MvvmLight.Views.INavigationService));
             storage = DependencyService.Get<ISecureStorage>();
             Subscribe();
             App.ShowLoading(true);
-            IsUserStillValid();
+            //IsUserStillValid();
         }
 
         private void Subscribe()
         {
-            MessagingCenter.Subscribe<CrossPathPage>(this, "ShowMain", (sender) =>
+            MessagingCenter.Subscribe<CrossPathPage>(this, "Choose", (sender) =>
             {
-                ShowMainPage();
+                IsUserStillValid();
             });
         }
 
@@ -33,7 +38,8 @@ namespace OS2Indberetning.ViewModel
         {
             Definitions.Report = new DriveReport();
             App.ShowLoading(false, true);
-            Navigation.PushAsync<MainViewModel>();
+            App.Navigation.PopToRootAsync();
+            //_navigationService.NavigateTo(Locator.MainPage, null);
         }
 
         private void ShowLoginPage()

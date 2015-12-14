@@ -24,7 +24,6 @@ namespace OS2Indberetning.ViewModel
                 }
                 taxes.Add(new TaxString { Name = rate.Description, Selected = false });
             }
-
             TaxList = taxes;
             Subscribe();
         }
@@ -65,7 +64,7 @@ namespace OS2Indberetning.ViewModel
         private void HandleBackMessage()
         {
             Dispose();
-            Navigation.PopAsync();
+            App.Navigation.PopToRootAsync();
         }
         #endregion
 

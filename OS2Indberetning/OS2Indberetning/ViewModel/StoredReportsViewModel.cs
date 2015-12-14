@@ -47,7 +47,7 @@ namespace OS2Indberetning.ViewModel
             MessagingCenter.Subscribe<StoredReportsPage>(this, "Back", (sender) =>
             {
                 Dispose();
-                Navigation.PopAsync();
+                App.Navigation.PopToRootAsync();
             });
 
             MessagingCenter.Subscribe<StoredReportsPage>(this, "Upload", (sender) =>

@@ -1,6 +1,5 @@
 ﻿using System;
 using OS2Indberetning.Model;
-using OS2Indberetning.PlatformInterfaces;
 using OS2Indberetning.Templates;
 using OS2Indberetning.ViewModel;
 using Xamarin.Forms;
@@ -23,6 +22,7 @@ namespace OS2Indberetning
         public MainPage()
         {
 
+            //BindingContext = App.Locator.Main;
             //var byteArray = storage.Retrieve(Definitions.UserDataKey);
             //user = JsonConvert.DeserializeObject<UserInfoModel>(Encoding.UTF8.GetString(byteArray, 0, byteArray.Length));
             
@@ -291,6 +291,12 @@ namespace OS2Indberetning
             if (list != null)
             {
                 list.SelectedItem = null;
+            }
+            this.Content = SetContent();
+            if (!Definitions.HasAppeared)
+            {
+                Definitions.HasAppeared = true;
+                MessagingCenter.Send<MainPage>(this, "ShowCross");
             }
             MessagingCenter.Send<MainPage>(this, "Update");
         }

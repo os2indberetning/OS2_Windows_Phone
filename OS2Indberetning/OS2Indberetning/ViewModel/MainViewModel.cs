@@ -1,8 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using Xamarin.Forms;
-
 using OS2Indberetning.Model;
 
 
@@ -26,7 +24,6 @@ namespace OS2Indberetning.ViewModel
             {
                 Definitions.Report = new DriveReport();
             }
-            Definitions.HasAppeared = true;
             driveReport = new ObservableCollection<DriveReportCellModel>();
             Subscribe();
         }
@@ -58,6 +55,11 @@ namespace OS2Indberetning.ViewModel
             {
                 Navigation.PushAsync<StoredReportsViewModel>();
             });
+
+            MessagingCenter.Subscribe<MainPage>(this, "ShowCross", (sender) =>
+            {
+                Navigation.PushAsync<CrossPathViewModel>();
+            });
         }
 
         // Since this page is only created once, we dont unsubscribe
@@ -70,6 +72,8 @@ namespace OS2Indberetning.ViewModel
             MessagingCenter.Unsubscribe<MainPage>(this, "ToggleHome");
 
             MessagingCenter.Unsubscribe<MainPage>(this, "ViewStored");
+
+            MessagingCenter.Unsubscribe<MainPage>(this, "ShowCross");
         }
 
         private void PushPageBasedOnSelectedItem(DriveReportCellModel item)

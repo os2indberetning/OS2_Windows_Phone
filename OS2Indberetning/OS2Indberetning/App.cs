@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Text;
 using Acr.UserDialogs;
 using Newtonsoft.Json;
@@ -20,6 +19,7 @@ namespace OS2Indberetning
     {
         private ISecureStorage storage;
 
+        public static INavigation Navigation;
         public App()
         {
             var app = Resolver.Resolve<IXFormsApp>();
@@ -28,14 +28,7 @@ namespace OS2Indberetning
                 return;
             }
 
-            //app.Closing += (o, e) => Debug.WriteLine("Application Closing");
-            //app.Error += (o, e) => Debug.WriteLine("Application Error");
-            //app.Initialize += (o, e) => Debug.WriteLine("Application Initialize");
-            //app.Resumed += (o, e) => Debug.WriteLine("Application Resumed");
-            //app.Rotation += (o, e) => Debug.WriteLine("Application Rotation");
-            //app.Startup += (o, e) => Debug.WriteLine("Application Startup");
-            //app.Suspended += (o, e) => Debug.WriteLine("Application Suspended");
-
+            // Sets the height and width scale so it fits with xamarin 
             SetScreenHeightAndWidth();
 
             //Register pages before initializing the first page
@@ -43,14 +36,13 @@ namespace OS2Indberetning
 
             // For testing
             storage = DependencyService.Get<ISecureStorage>();
-            //FakeModel();
+            FakeModel();
             // The root page of your application
            
             ViewFactory.EnableCache = false;
 
-            // Check to see if it was found
-            MainPage = new NavigationPage((ContentPage)
-                           ViewFactory.CreatePage<CrossPathViewModel, CrossPathPage>());
+            this.MainPage = GetMainPage();
+
         }
 
         /// <summary>
@@ -59,7 +51,9 @@ namespace OS2Indberetning
         /// <returns></returns>
         private Page GetMainPage()
         {
-            return new CrossPathPage();
+            var test = new NavigationPage((ContentPage) ViewFactory.CreatePage<MainViewModel, MainPage>());
+            Navigation = test.Navigation;
+            return test;
         }
         
         private void SetScreenHeightAndWidth()
@@ -90,6 +84,13 @@ namespace OS2Indberetning
             ViewFactory.Register<UploadingPage, UploadingViewModel>();
             ViewFactory.Register<StoredReportsPage, StoredReportsViewModel>();
         }
+
+        //private void RegisterPages()
+        //{
+            
+        //    //var test = new NavigationService();
+        //    //test.RegisterPage("MainPage", typeof(MainPage));
+        //}
 
         private void FakeModel()
         {
