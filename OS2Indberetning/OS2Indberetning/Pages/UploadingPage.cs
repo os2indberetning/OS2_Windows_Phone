@@ -6,21 +6,24 @@ using XLabs.Forms.Controls;
 
 namespace OS2Indberetning
 {
+    /// <summary>
+    /// Page that is displayed when trying to upload a drivereport
+    /// If upload fails, the user can choose to retry or store the report
+    /// </summary>
     public class UploadingPage : ContentPage
     {
-        // used to pop back to mainpage from viewmodel
-        public IReadOnlyList<Page> NavigationStack;
-        public INavigation Nav;
-
+        /// <summary>
+        /// Constructor that handles initialization of the page
+        /// </summary>
         public UploadingPage()
         {
-            NavigationStack = Navigation.NavigationStack;
-            Nav = Navigation;
-            
             this.Content = this.SetContent();
             SendUploadMessage();
         }
 
+        /// <summary>
+        /// Method that creates the page content
+        /// </summary>
         public View SetContent()
         {
             var emblem = new Image
@@ -89,6 +92,10 @@ namespace OS2Indberetning
             return layout;
         }
 
+        /// <summary>
+        /// Method that creates the error stack
+        /// The stacks visibility is binded to the viewmodel
+        /// </summary>
         private StackLayout ErrorStack()
         {
             var text = new Label
@@ -126,20 +133,37 @@ namespace OS2Indberetning
             return layout;
         }
 
+        #region Message Handlers
+
+        /// <summary>
+        /// Method that handles sending a Upload message
+        /// </summary>
         private void SendUploadMessage()
         {
             MessagingCenter.Send<UploadingPage>(this, "Upload");
         }
 
-
+        /// <summary>
+        /// Method that handles sending a Store message
+        /// </summary>
         private void SendStoreMessage()
         {
             MessagingCenter.Send<UploadingPage>(this, "Store");
         }
 
+        #endregion
+
+        #region Overrides
+
+        /// <summary>
+        /// Method that overrides the BackbuttonPressed event. 
+        /// Makes backbutton press invalid by doing nothing and returning true
+        /// </summary>
         protected override bool OnBackButtonPressed()
         {
             return true;
         }
+
+        #endregion
     }
 }

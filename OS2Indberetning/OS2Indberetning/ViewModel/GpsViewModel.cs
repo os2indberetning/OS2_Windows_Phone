@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using OS2Indberetning.BuisnessLogic;
 using Xamarin.Forms;
 
@@ -12,29 +13,43 @@ using XLabs.Platform.Services.Geolocation;
 
 namespace OS2Indberetning.ViewModel
 {
+    /// <summary>
+    /// Viewmodel of the GPS page. Handles all view logic
+    /// </summary>
     public class GpsViewModel : XLabs.Forms.Mvvm.ViewModel, INotifyPropertyChanged, IDisposable
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private string accuracy;
+        private GpsPage _parentPage;
+
+        private string _accuracy;
         
-        private string driven;
-        private string lastUpdate;
+        private string _driven;
+        private string _lastUpdate;
 
-        private IGeolocator locator;
+        private IGeolocator _locator;
 
-        private string positionStatus;
-        private double positionLatitude;
-        private double positionLongitude;
+        private string _positionStatus;
+        private double _positionLatitude;
+        private double _positionLongitude;
 
-        private double distance;
-        private bool firstRun = true;
-        private bool finishedHome = false;
-        private bool pause = true;
+        private double pauseLatitude;
+        private double pauseLongitude;
 
-        private CancellationTokenSource cancelSource;
-        
+        private double _distance;
+        private bool _firstRun = true;
+        private bool _finishedHome = false;
+        private bool _pause = true;
 
+        private CancellationTokenSource _cancelSource;
+
+        private int _countDown = 5;
+        private bool _trackChanges = false;
+        private bool _doTestCheck;
+
+        /// <summary>
+        /// Constructor that handles initialization of the viewmodel
+        /// </summary>
         public GpsViewModel()
         {
             TraveledDistance = 0;
@@ -43,28 +58,50 @@ namespace OS2Indberetning.ViewModel
             Subscribe();
         }
 
+        /// <summary>
+        /// Method that handles cleanup of the viewmodel
+        /// </summary>
         public void Dispose()
         {
+            _parentPage.Dispose();
             Unsubscribe();
-            StopGps();
-            if (cancelSource != null)
+            HandleStopGpsMessage();
+            if (_cancelSource != null)
             {
-                cancelSource.Dispose();
+                _cancelSource.Dispose();
             }
-            locator = null;
+            _locator = null;
         }
 
+        /// <summary>
+        /// Method that handles subscribing to the needed messages
+        /// </summary>
         private void Subscribe()
         {
-            MessagingCenter.Subscribe<GpsPage>(this, "Toggle", (sender) => ToggleGps());
-            MessagingCenter.Subscribe<GpsPage>(this, "Finish", (sender) => FinishDrive());
-            MessagingCenter.Subscribe<GpsPage>(this, "Back", (sender) => HandleBackMessage());
+            MessagingCenter.Subscribe<GpsPage>(this, "Toggle", (sender) =>
+            {
+                _parentPage = sender;
+                HandleToggleGpsMessage();
+            });
+            MessagingCenter.Subscribe<GpsPage>(this, "Finish", (sender) =>
+            {
+                _parentPage = sender;
+                HandleFinishDriveMessage();
+            });
+            MessagingCenter.Subscribe<GpsPage>(this, "Back", (sender) =>
+            {
+                _parentPage = sender;
+                HandleBackMessage();
+            });
             MessagingCenter.Subscribe<GpsPage>(this, "ToggleFinishedHome", (sender) => {
                 FinishedHome = !FinishedHome;
                 Definitions.EndsAtHome = FinishedHome;
             });
         }
 
+        /// <summary>
+        /// Method that handles unsubscribing
+        /// </summary>
         private void Unsubscribe()
         {
             MessagingCenter.Unsubscribe<GpsPage>(this, "Toggle");
@@ -73,55 +110,232 @@ namespace OS2Indberetning.ViewModel
             MessagingCenter.Unsubscribe<GpsPage>(this, "ToggleFinishedHome");
         }
 
-        private void HandleBackMessage()
+        /// <summary>
+        /// Method that handles sending a PauseError
+        /// </summary>
+        public void PauseDistanceTooBig(double distance)
         {
-            //Dispose();
-            App.Navigation.PopToRootAsync();
+            _parentPage.HandlePauseError();
         }
-        public void ToggleGps()
+
+        /// <summary>
+        /// Method to do stuff when gps is not available
+        /// </summary>
+        public void GpsNotAvailable()
         {
-            if (locator == null)
+            Accuracy = "Gps er ikke tilgængelig";
+        }
+
+        /// <summary>
+        /// Method that handles change in positions from the gps signal
+        /// </summary>
+        public void PositionChanged(object sender, PositionEventArgs e)
+        {
+            IsBusy = true;
+            _locator.GetPositionAsync(timeout: (int)Definitions.MinInterval, cancelToken: this._cancelSource.Token, includeHeading: false)
+                .ContinueWith(t =>
+                {
+                    IsBusy = false;
+                    if (t.IsFaulted)
+                        PositionStatus = ((GeolocationException)t.Exception.InnerException).Error.ToString();
+                    else if (t.IsCanceled)
+                        PositionStatus = "Canceled";
+                    else
+                    {
+                        if (_trackChanges)
+                        {
+                            if (_firstRun)
+                            {
+                                _positionLatitude = t.Result.Latitude;
+                                _positionLongitude = t.Result.Longitude;
+                                _firstRun = false;
+                                _doTestCheck = false;
+                            }
+                            if (_doTestCheck)
+                            {
+                                _doTestCheck = !_doTestCheck;
+                                var testDistance = Math.Round(GpsCalculator.Distance(_positionLatitude, _positionLongitude, t.Result.Latitude, t.Result.Longitude, 'K'), 3);
+                                if (testDistance > 0.2)
+                                {
+                                    _locator.StopListening();
+                                    _pause = !_pause;
+                                    PauseDistanceTooBig(testDistance);
+                                    return;
+                                }
+                            }
+                            TraveledDistance = Math.Round(GpsCalculator.Distance(_positionLatitude, _positionLongitude, t.Result.Latitude, t.Result.Longitude, 'K'), 3);
+                            _positionLatitude = t.Result.Latitude;
+                            _positionLongitude = t.Result.Longitude;
+                            PositionStatus = t.Result.Timestamp.ToString("HH:mm:ss");
+                            Definitions.Route.GPSCoordinates.Add(new GPSCoordinate
+                            {
+                                Latitude = t.Result.Latitude.ToString("#.######", CultureInfo.InvariantCulture),
+                                Longitude = t.Result.Longitude.ToString("#.######", CultureInfo.InvariantCulture),
+                            });
+                        }
+                    }
+
+                });
+        }
+
+        /// <summary>
+        /// Method that does the initial gps setup
+        /// </summary>
+        public void SetupGps()
+        {
+            _locator = DependencyService.Get<IGeolocator>();
+            if (_locator.DesiredAccuracy != Definitions.Accuracy)
             {
-                SetupGps();
+                _locator.DesiredAccuracy = Definitions.Accuracy;
+            }
+            _cancelSource = new CancellationTokenSource();
+            _locator.PositionChanged += PositionChanged;
+            _locator.StartListening(Definitions.MinInterval, Definitions.Accuracy, false);
+        }
+
+        /// <summary>
+        /// Method that does a countdown on the screen.
+        /// Also makes sure the gps isnt tracked while countdown is active
+        /// </summary>
+        private void CountDown()
+        {
+            Device.StartTimer(TimeSpan.FromSeconds(1), () =>
+            {
+                LastUpdate = "Gps starter om: " + _countDown + " sekunder";
+                if (_countDown > 0)
+                {
+                    _countDown = _countDown - 1;
+                    return true;
+                }
+
+                _countDown = 5; // reset timer
+                PositionStatus = DateTime.Now.ToString("HH:mm:ss");
+                _trackChanges = true;
+                return false; //not continue
+            });
+        }
+
+        #region helper methods
+
+        /// <summary>
+        /// Method to help with setting the correct text for Accuracy
+        /// </summary>
+        public void SetAccuracy()
+        {
+            if (_pause)
+            {
+                Accuracy = "GPS sat på _pause";
+            }
+            else
+            {
+                Accuracy = "GPS Nøjagtighed: " + Convert.ToString(Definitions.Accuracy) + " m";
             }
 
-            pause = !pause;
-            if (!pause)
+        }
+
+        /// <summary>
+        /// Method to help with setting the correct text for LastUpdate
+        /// </summary>
+        public string PositionStatus
+        {
+            get
             {
-                var test = locator.IsGeolocationAvailable;
+                return _positionStatus;
+            }
+            set
+            {
+                _positionStatus = value;
+                LastUpdate = "Sidst opdateret kl: " + value;
+            }
+        }
+
+        /// <summary>
+        /// Method to help with setting the correct text for Driven
+        /// </summary>
+        public double TraveledDistance
+        {
+            get { return _distance; }
+            set
+            {
+                _distance = _distance + value;
+                Driven = Convert.ToString(Math.Round(_distance, 2));
+            }
+        }
+
+        #endregion
+
+        #region Message Handlers
+
+        /// <summary>
+        /// Method that handles the Back message
+        /// </summary>
+        private void HandleBackMessage()
+        {
+            Dispose();
+            App.Navigation.PopToRootAsync();
+        }
+
+        /// <summary>
+        /// Method that handles the ToggleGps message
+        /// </summary>
+        public void HandleToggleGpsMessage()
+        {
+            if (_locator == null)
+            {
+                CountDown();
+                SetupGps();
+                return;
+            }
+
+            _pause = !_pause;
+            if (_pause)
+            {
+                var test = _locator.IsGeolocationAvailable;
                 if (!test)
                 {
                     GpsNotAvailable();
                 }
                 else
                 {
-                    locator.StartListening(Definitions.MinInterval, Definitions.Accuracy, true);
+                    _doTestCheck = true;
+                    CountDown();
+                    _locator.StartListening(Definitions.MinInterval, Definitions.Accuracy);
                 }
             }
             else
             {
-                locator.StopListening();
+                _locator.StopListening();
+                pauseLatitude = _positionLatitude;
+                pauseLongitude = _positionLongitude;
                 if (Definitions.Route.GPSCoordinates.Count > 0)
                 {
                     Definitions.Route.GPSCoordinates.Last().IsViaPoint = "true";
-                } 
-            }
-        }
-
-        public void StopGps()
-        {
-            if (locator != null)
-            {
-                if (locator.IsGeolocationEnabled)
-                {
-                    locator.StopListening();
-                    cancelSource.Cancel(false);
-                    locator.PositionChanged -= PositionChanged;
+                    _trackChanges = true;
                 }
             }
         }
 
-        public void FinishDrive()
+        /// <summary>
+        /// Method that handles the StopGps message
+        /// </summary>
+        public void HandleStopGpsMessage()
+        {
+            if (_locator != null)
+            {
+                if (_locator.IsGeolocationEnabled)
+                {
+                    _locator.StopListening();
+                    _cancelSource.Cancel(false);
+                    _locator.PositionChanged -= PositionChanged;
+                }
+            }
+            _trackChanges = false;
+        }
+
+        /// <summary>
+        /// Method that handles the FinishDrive message
+        /// </summary>
+        public void HandleFinishDriveMessage()
         {
             Definitions.Report.EmploymentId = Definitions.Organization.Id;
             Definitions.Report.Date = Definitions.Date;
@@ -137,90 +351,7 @@ namespace OS2Indberetning.ViewModel
             Navigation.PushAsync<FinishDriveViewModel>();
         }
 
-        public void GpsNotAvailable()
-        {
-            Accuracy = "Gps er ikke tilgængelig";
-        }
-
-        public void PositionChanged(object sender, PositionEventArgs e)
-        {
-            IsBusy = true;
-            locator.GetPositionAsync(timeout: 5000, cancelToken: this.cancelSource.Token, includeHeading: false)
-                .ContinueWith(t =>
-                {
-                    IsBusy = false;
-                    if (t.IsFaulted)
-                        PositionStatus = ((GeolocationException)t.Exception.InnerException).Error.ToString();
-                    else if (t.IsCanceled)
-                        PositionStatus = "Canceled";
-                    else
-                    {
-                        if (firstRun)
-                        {
-                            positionLatitude = t.Result.Latitude;
-                            positionLongitude = t.Result.Longitude;
-                            firstRun = false;
-                        }
-                        TraveledDistance = Math.Round(GpsCalculator.Distance(positionLatitude, positionLongitude, t.Result.Latitude, t.Result.Longitude, 'K'), 3);
-                        positionLatitude = t.Result.Latitude;
-                        positionLongitude = t.Result.Longitude;
-                        PositionStatus = t.Result.Timestamp.ToString("HH:mm:ss");
-                        Definitions.Route.GPSCoordinates.Add(new GPSCoordinate
-                        {
-                            Latitude = t.Result.Latitude.ToString("#.######", CultureInfo.InvariantCulture),
-                            Longitude = t.Result.Longitude.ToString("#.######", CultureInfo.InvariantCulture),
-                        });
-                    }
-
-                });
-        }
-
-        public void SetupGps()
-        {
-            locator = DependencyService.Get<IGeolocator>();
-            if (locator.DesiredAccuracy != Definitions.Accuracy)
-            {
-                locator.DesiredAccuracy = Definitions.Accuracy;
-            }
-            cancelSource = new CancellationTokenSource();
-            locator.PositionChanged += PositionChanged;
-        }
-
-        public void SetAccuracy()
-        {
-            if (pause)
-            {
-                Accuracy = "GPS sat på pause";
-            }
-            else
-            {
-                Accuracy = "GPS Nøjagtighed: " + Convert.ToString(Definitions.Accuracy) + " m";
-            }
-
-        }
-
-        public string PositionStatus
-        {
-            get
-            {
-                return positionStatus;
-            }
-            set
-            {
-                positionStatus = value;
-                LastUpdate = "Sidst opdateret kl: " + value;
-            }
-        }
-
-        public double TraveledDistance
-        {
-            get { return distance; }
-            set
-            {
-                distance = distance + value;
-                Driven = Convert.ToString(Math.Round(distance, 2));
-            }
-        }
+        #endregion
 
         #region properties
         public const string AccuracyProperty = "Accuracy";
@@ -228,11 +359,11 @@ namespace OS2Indberetning.ViewModel
         {
             get
             {
-                return accuracy;
+                return _accuracy;
             }
             set
             {
-                accuracy = value;
+                _accuracy = value;
                 OnPropertyChanged(AccuracyProperty);
             }
         }
@@ -242,11 +373,11 @@ namespace OS2Indberetning.ViewModel
         {
             get
             {
-                return finishedHome;
+                return _finishedHome;
             }
             set
             {
-                finishedHome = value;
+                _finishedHome = value;
                 Definitions.Report.EndsAtHome = value;
                 OnPropertyChanged(FinishedHomeProperty);
             }
@@ -257,11 +388,11 @@ namespace OS2Indberetning.ViewModel
         {
             get
             {
-                return pause;
+                return _pause;
             }
             set
             {
-                pause = value;
+                _pause = value;
                 OnPropertyChanged(PauseProperty);
             }
         }
@@ -271,11 +402,11 @@ namespace OS2Indberetning.ViewModel
         {
             get
             {
-                return driven;
+                return _driven;
             }
             set
             {
-                driven = "Du har nu kørt " + value + " km";
+                _driven = "Du har nu kørt " + value + " km";
                 OnPropertyChanged(DrivenProperty);
             }
         }
@@ -285,11 +416,11 @@ namespace OS2Indberetning.ViewModel
         {
             get
             {
-                return lastUpdate;
+                return _lastUpdate;
             }
             set
             {
-                lastUpdate = value;
+                _lastUpdate = value;
                 OnPropertyChanged(LastUpdateProperty);
             }
         }

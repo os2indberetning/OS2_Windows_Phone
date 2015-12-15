@@ -54,7 +54,7 @@ namespace OS2Indberetning.Templates
                 Command = new Command(async (o) =>
                 {
                     _toggle = !_toggle;
-                    Text = _toggle ? _text1 : _text2;
+                    _textLabel.Text = _toggle ? _text1 : _text2;
                     await this.ScaleTo(0.95, 50, Easing.CubicOut);
                     await this.ScaleTo(1, 50, Easing.CubicIn);
                     if (callback != null)
@@ -105,6 +105,7 @@ namespace OS2Indberetning.Templates
             set
             {
                 _textLabel.Text = value;
+                _toggle = !_toggle;
             }
         }
 

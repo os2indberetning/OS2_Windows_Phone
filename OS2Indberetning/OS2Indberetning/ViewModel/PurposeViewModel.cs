@@ -11,23 +11,67 @@ using Xamarin.Forms;
 
 namespace OS2Indberetning.ViewModel
 {
+    /// <summary>
+    /// Viewmodel of the Purpose page. Handles all view logic
+    /// </summary>
     public class PurposeViewModel : XLabs.Forms.Mvvm.ViewModel, INotifyPropertyChanged, IDisposable
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        private Command addPurposeCommand;
-        private Command backCommand;
-        private Command showFieldCommand;
-        private Command selectionChangedCommand;
+        private Command _addPurposeCommand;
 
-        private string purposeAddString = null;
-        private bool hideField = false;
+        private string _purposeAddString = null;
+        private bool _hideField = false;
 
-        public ObservableCollection<PurposeString> purposes = new ObservableCollection<PurposeString>();
+        private ObservableCollection<PurposeString> _purposes;
 
+        /// <summary>
+        /// Constructor that handles initialization of the viewmodel
+        /// </summary>
         public PurposeViewModel()
         {
+            _purposes = new ObservableCollection<PurposeString>();
+            InitializeCollection();
             Subscribe();
+        }
 
+        /// <summary>
+        /// Method that handles cleanup of the viewmodel
+        /// </summary>
+        public void Dispose()
+        {
+            Unsubscribe();
+            _purposes = null;
+        }
+
+        /// <summary>
+        /// Method that handles subscribing to the needed messages
+        /// </summary>
+        public void Subscribe()
+        {
+            MessagingCenter.Subscribe<PurposePage>(this, "Add", (sender) => { HideField = !HideField; });
+
+            MessagingCenter.Subscribe<PurposePage>(this, "Back", (sender) => { HandleBackMessage(); });
+
+            MessagingCenter.Subscribe<PurposePage>(this, "Selected", HandleSelectedMessage);
+        }
+
+        /// <summary>
+        /// Method that handles unsubscribing
+        /// </summary>
+        public void Unsubscribe()
+        {
+            MessagingCenter.Unsubscribe<PurposePage>(this, "Add");
+
+            MessagingCenter.Unsubscribe<PurposePage>(this, "Back");
+
+            MessagingCenter.Unsubscribe<PurposePage>(this, "Selected");
+        }
+
+        /// <summary>
+        /// Method that handles initialization of the observerable collection
+        /// </summary>
+        private void InitializeCollection()
+        {
             FileHandler.ReadFileContent(Definitions.PurposeFileName, Definitions.PurposeFolderName).ContinueWith((result) =>
             {
                 if (result.Result == null) return;
@@ -46,41 +90,24 @@ namespace OS2Indberetning.ViewModel
             }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        public void Dispose()
-        {
-            Unsubscribe();
-            purposes = null;
-        }
+        #region Message Handlers
 
-        public void Subscribe()
-        {
-            MessagingCenter.Subscribe<PurposePage>(this, "Add", (sender) => { HideField = !HideField; });
-
-            MessagingCenter.Subscribe<PurposePage>(this, "Back", (sender) => { HandleBackMessage(); });
-
-            MessagingCenter.Subscribe<PurposePage>(this, "Selected", HandleSelectedMessage);
-        }
-
-        public void Unsubscribe()
-        {
-            MessagingCenter.Unsubscribe<PurposePage>(this, "Add");
-
-            MessagingCenter.Unsubscribe<PurposePage>(this, "Back");
-
-            MessagingCenter.Unsubscribe<PurposePage>(this, "Selected");
-        }
-
-        #region MessageHandlers
+        /// <summary>
+        /// Method that handles the Back message
+        /// </summary>
         private void HandleBackMessage()
         {
             Dispose();
             App.Navigation.PopToRootAsync();
         }
 
+        /// <summary>
+        /// Method that handles the Selected message
+        /// </summary>
         private void HandleSelectedMessage(PurposePage sender)
         {
-            var from = (PurposeString)sender.selected;
-            foreach (var item in purposes)
+            var from = (PurposeString)sender.Selected;
+            foreach (var item in _purposes)
             {
                 if (item.Name == from.Name)
                 {
@@ -90,59 +117,60 @@ namespace OS2Indberetning.ViewModel
                 }
                 item.Selected = false;
             }
-            PurposeList = purposes;
+            PurposeList = _purposes;
         }
+
         #endregion
 
         #region Properties
         public const string AddPurposeCommand = "AddPurpose";
-        public ICommand AddPurpose 
+        public ICommand AddPurpose
         {
             get
             {
-                return addPurposeCommand ?? (addPurposeCommand = new Command(() =>
+                return _addPurposeCommand ?? (_addPurposeCommand = new Command(() =>
                 {
-                    if (purposeAddString != null)
+                    if (_purposeAddString != null)
                     {
                         // Check if item already exists
-                        if (purposes.FirstOrDefault(x => x.Name == purposeAddString) != null)
+                        if (_purposes.FirstOrDefault(x => x.Name == _purposeAddString) != null)
                         {
                             PurposeAddString = null;
                             return;
                         }
                         // Add new item
-                        purposes.Add(new PurposeString{Name = purposeAddString, Selected = false});
+                        _purposes.Add(new PurposeString { Name = _purposeAddString, Selected = false });
                         // Reset field
                         PurposeAddString = null;
                         // Save list
-                        FileHandler.WriteFileContent(Definitions.PurposeFileName, Definitions.PurposeFolderName, JsonConvert.SerializeObject(purposes));
+                        FileHandler.WriteFileContent(Definitions.PurposeFileName, Definitions.PurposeFolderName, JsonConvert.SerializeObject(_purposes));
                     }
                 }));
             }
         }
 
-        public const string ShowFieldProperty = "ShowField";
-        public ICommand ShowField
-        {
-            get
-            {
-                return showFieldCommand ?? (showFieldCommand = new Command(() =>
-                {
-                    HideField = !HideField;
-                }));
-            }
-        }
+        //public const string ShowFieldProperty = "ShowField";
+        //public ICommand ShowField
+        //{
+        //    get
+        //    {
+        //        return showFieldCommand ?? (showFieldCommand = new Command(() =>
+        //        {
+        //            HideField = !HideField;
+        //        }));
+        //    }
+        //}
 
         public const string PurposeListProperty = "PurposeList";
         public ObservableCollection<PurposeString> PurposeList
         {
             get
             {
-                return purposes;
+                return _purposes;
             }
             set
             {
-                purposes = value;
+                _purposes = value;
                 OnPropertyChanged(PurposeListProperty);
             }
         }
@@ -152,11 +180,11 @@ namespace OS2Indberetning.ViewModel
         {
             get
             {
-                return purposeAddString;
+                return _purposeAddString;
             }
             set
             {
-                purposeAddString = value;
+                _purposeAddString = value;
                 OnPropertyChanged(PurposeStringProperty);
             }
         }
@@ -166,11 +194,11 @@ namespace OS2Indberetning.ViewModel
         {
             get
             {
-                return hideField;
+                return _hideField;
             }
             set
             {
-                hideField = value;
+                _hideField = value;
                 OnPropertyChanged(HideFieldProperty);
             }
         }
@@ -183,6 +211,9 @@ namespace OS2Indberetning.ViewModel
         #endregion
 
     }
+
+    // List template model
+    #region PurposeString
 
     public class PurposeString : INotifyPropertyChanged
     {
@@ -205,4 +236,6 @@ namespace OS2Indberetning.ViewModel
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
     }
+
+    #endregion
 }

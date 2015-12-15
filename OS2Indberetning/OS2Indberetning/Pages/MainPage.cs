@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Text;
+using Newtonsoft.Json;
 using OS2Indberetning.Model;
 using OS2Indberetning.Templates;
 using OS2Indberetning.ViewModel;
@@ -6,30 +8,59 @@ using Xamarin.Forms;
 using XLabs.Forms.Controls;
 using XLabs.Ioc;
 using XLabs.Platform.Device;
+using XLabs.Platform.Services;
 
 namespace OS2Indberetning
 {
+    /// <summary>
+    /// Page where drive specific selections are made before starting the drive.
+    /// </summary>
     public class MainPage : ContentPage
     {
 
-        private double popupWidth = Definitions.ScreenWidth - Definitions.Padding;
-        private readonly double yesNoButtonWidth = (Definitions.ScreenHeight - Definitions.Padding) / 2;
-        private double popupHeight = Definitions.ScreenHeight / 3;
+        private readonly double _popupWidth = Definitions.ScreenWidth - Definitions.Padding;
+        private readonly double _yesNoButtonWidth = (Definitions.ScreenHeight - Definitions.Padding) / 2;
+        private readonly double _popupHeight = Definitions.ScreenHeight / 3;
 
-        public ListView list;
-        private PopupLayout _PopUpLayout;
+        public ListView List;
+        private PopupLayout _popUpLayout;
+        private CheckboxButton _checkboxButton;
 
+        /// <summary>
+        /// Constructor that handles initialization of the page
+        /// </summary>
         public MainPage()
         {
-
-            //BindingContext = App.Locator.Main;
-            //var byteArray = storage.Retrieve(Definitions.UserDataKey);
-            //user = JsonConvert.DeserializeObject<UserInfoModel>(Encoding.UTF8.GetString(byteArray, 0, byteArray.Length));
-            
-            this.Content = this.SetContent();
-            
+            InitializeTheme();
+            //this.Content = this.SetContent();
         }
 
+        /// <summary>
+        /// Method that tries to initialization the theme
+        /// </summary>
+        public void InitializeTheme()
+        {
+            try
+            {
+                var storage = DependencyService.Get<ISecureStorage>();
+                var userTokenByte = storage.Retrieve(Definitions.MunKey);
+                var userTokenString = Encoding.UTF8.GetString(userTokenByte, 0, userTokenByte.Length);
+                var mun = JsonConvert.DeserializeObject<Municipality>(userTokenString);
+
+                Definitions.MunIcon = new UriImageSource {Uri = new Uri(mun.ImgUrl)};
+                Definitions.TextColor = mun.TextColor;
+                Definitions.PrimaryColor = mun.PrimaryColor;
+                Definitions.SecondaryColor = mun.SecondaryColor;
+            }
+            catch (Exception e)
+            {
+                // no theme stored
+            }
+        }
+        /// <summary>
+        /// Method that creates the page content
+        /// </summary>
+        /// <returns>View of the content to be displayed</returns>
         public View SetContent()
         {
             var header = new Label
@@ -74,7 +105,7 @@ namespace OS2Indberetning
             };
             Definitions.Date = DateTime.Now.ToString("d/M/yyyy");
 
-            list = new ListView
+            List = new ListView
             {
                 ItemTemplate = new DataTemplate(typeof(DriveReportCell)),
                 SeparatorColor = Color.FromHex("#EE2D2D"),
@@ -82,11 +113,11 @@ namespace OS2Indberetning
                 VerticalOptions = LayoutOptions.StartAndExpand,
                 HorizontalOptions = LayoutOptions.FillAndExpand
             };
-            list.SetBinding(ListView.ItemsSourceProperty, MainViewModel.DriveProperty);
+            List.SetBinding(ListView.ItemsSourceProperty, MainViewModel.DriveProperty);
 
 
 
-            list.ItemSelected += async (sender, e) =>
+            List.ItemSelected += async (sender, e) =>
             {
                 if (e.SelectedItem == null) return;
                 var selectedItem = (DriveReportCellModel)e.SelectedItem;
@@ -111,18 +142,23 @@ namespace OS2Indberetning
                 {
                     headerstack,
                     date,
-                    list,
+                    List,
                     CheckStack(),
                     buttomStack
                 },
                 BackgroundColor = Color.FromHex(Definitions.BackgroundColor),
             };
 
-            _PopUpLayout = new PopupLayout();
-            _PopUpLayout.Content = layout;
-            return _PopUpLayout;
+            _popUpLayout = new PopupLayout();
+            _popUpLayout.Content = layout;
+            return _popUpLayout;
         }
 
+        /// <summary>
+        /// Method that creates a stacklayout of a popup with a specific message
+        /// </summary>
+        /// <param name="Message">string message of the text to be displayed in the popup</param>
+        /// <returns>Stacklayout of popup</returns>
         private StackLayout CreatePopup(string Message)
         {
             var display = Resolver.Resolve<IDevice>().Display;
@@ -163,7 +199,7 @@ namespace OS2Indberetning
                 VerticalOptions = LayoutOptions.End,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 HeightRequest = Definitions.ButtonHeight,
-                WidthRequest = yesNoButtonWidth,
+                WidthRequest = _yesNoButtonWidth,
                 Children = { noButton }
             };
 
@@ -183,8 +219,8 @@ namespace OS2Indberetning
 
             var PopUp = new StackLayout
             {
-                WidthRequest = popupWidth,
-                HeightRequest = popupHeight,
+                WidthRequest = _popupWidth,
+                HeightRequest = _popupHeight,
                 BackgroundColor = Color.White,
                 Orientation = StackOrientation.Vertical,
                 VerticalOptions = LayoutOptions.Center,
@@ -214,11 +250,18 @@ namespace OS2Indberetning
             return PopUpBackground;
         }
 
+        /// <summary>
+        /// Method that handles closing the popup
+        /// </summary>
         private void ClosePopup()
         {
-            _PopUpLayout.DismissPopup();
+            _popUpLayout.DismissPopup();
         }
 
+        /// <summary>
+        /// Method that creates a stacklayout with the checkhome checkbox
+        /// </summary>
+        /// <returns>Stacklayout with checbox and text</returns>
         private StackLayout CheckStack()
         {
             var label = new Label
@@ -232,7 +275,10 @@ namespace OS2Indberetning
                 VerticalOptions = LayoutOptions.Center
             };
 
-            var check = new CheckboxButton(ToggleHomeProperty);
+            if (_checkboxButton == null)
+            {
+                _checkboxButton = new CheckboxButton(ToggleHomeProperty);
+            }
 
             return new StackLayout
             {
@@ -241,64 +287,98 @@ namespace OS2Indberetning
                 BackgroundColor = Color.FromHex(Definitions.BackgroundColor),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.End,
-                Children = { label, check}
+                Children = { label, _checkboxButton }
             };
         }
-
-
+        
+        /// <summary>
+        /// Method that handles displaying of an alert popup with the correct
+        /// message to notify the user that something is missing
+        /// </summary>
         private void StartDrive()
         {
             if (Definitions.Report.Purpose == null)
             {
-                _PopUpLayout.ShowPopup(CreatePopup("Vælg venligst et formål"));
+                _popUpLayout.ShowPopup(CreatePopup("Vælg venligst et formål"));
                 return;
             }
             if (Definitions.Report.EmploymentId == 0)
             {
-                _PopUpLayout.ShowPopup(CreatePopup("Vælg venligst en organisatorisk placering"));
+                _popUpLayout.ShowPopup(CreatePopup("Vælg venligst en organisatorisk placering"));
                 return;
             }
             if (Definitions.Report.Rate == null)
             {
-                _PopUpLayout.ShowPopup(CreatePopup("Vælg venligst en takst"));
+                _popUpLayout.ShowPopup(CreatePopup("Vælg venligst en takst"));
                 return;
             }
             MessagingCenter.Send<MainPage>(this, "Start");
         }
 
+        #region Message Handlers
+
+        /// <summary>
+        /// Method that handles sending an ToggleHome message
+        /// </summary>
         private void ToggleHomeProperty()
         {
             MessagingCenter.Send<MainPage>(this, "ToggleHome");
         }
 
+        /// <summary>
+        /// Method that handles sending an Selected message
+        /// </summary>
         private void SendSelectedMessage()
         {
             MessagingCenter.Send<MainPage>(this, "Selected");
         }
 
+        /// <summary>
+        /// Method that handles sending an ViewStored message
+        /// </summary>
         private void SendViewStoredMessage()
         {
             MessagingCenter.Send<MainPage>(this, "ViewStored");
         }
 
+        #endregion
+
+        #region Overrides
+
+        /// <summary>
+        /// Override of the OnBackButtonPressed event
+        /// </summary>
+        /// <returns>Returns true, meaning nothing happens</returns>
         protected override bool OnBackButtonPressed()
         {
             return true;
         }
 
+        /// <summary>
+        /// Override of the OnAppearing event.
+        /// If an item is Selected in the _list it is reset.
+        /// Sets the content of the page here, because it might not have been
+        /// properly initialized with colors if the user wasnt coupled
+        /// If its the first time its called, it will send a ShowCross message to the viewmodel.
+        /// Also sends an Update message to the viewmodel
+        /// </summary>
         protected override void OnAppearing()
         {
-            if (list != null)
+            if (List != null)
             {
-                list.SelectedItem = null;
+                List.SelectedItem = null;
             }
-            this.Content = SetContent();
+            
             if (!Definitions.HasAppeared)
             {
+                
                 Definitions.HasAppeared = true;
                 MessagingCenter.Send<MainPage>(this, "ShowCross");
             }
             MessagingCenter.Send<MainPage>(this, "Update");
+            this.Content = SetContent();
         }
+
+        #endregion
     }
 }

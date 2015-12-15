@@ -7,48 +7,76 @@ using Xamarin.Forms;
 
 namespace OS2Indberetning.ViewModel
 {
+    /// <summary>
+    /// Viewmodel of the Organization page. Handles all view logic
+    /// </summary>
     public class OrganizationViewModel : XLabs.Forms.Mvvm.ViewModel, INotifyPropertyChanged, IDisposable
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public ObservableCollection<OrganizationString> organizations = new ObservableCollection<OrganizationString>();
+        private ObservableCollection<OrganizationString> _organizations;
 
+        /// <summary>
+        /// Constructor that handles initialization of the viewmodel
+        /// </summary>
         public OrganizationViewModel()
         {
-            foreach (var employment in Definitions.User.Profile.Employments)
-            {
-                if (employment.Id == Definitions.Report.EmploymentId)
-                {
-                    organizations.Add(new OrganizationString { Name = employment.EmploymentPosition, Selected = true });
-                    continue;
-                }
-                organizations.Add(new OrganizationString{Name = employment.EmploymentPosition, Selected = false});
-            }
+            _organizations = new ObservableCollection<OrganizationString>();
+            InitializeCollection();
             Subscribe();
         }
 
+        /// <summary>
+        /// Method that handles subscribing to the needed messages
+        /// </summary>
         public void Dispose()
         {
             Unsubscribe();
-            organizations = null;
+            _organizations = null;
         }
 
+        /// <summary>
+        /// Method that handles subscribing to the needed messages
+        /// </summary>
         public void Subscribe()
         {
             MessagingCenter.Subscribe<OrganizationPage>(this, "Back", (sender) => { HandleBackMessage(); });
             MessagingCenter.Subscribe<OrganizationPage, string>(this, "Selected", (sender, arg) => { HandleSelectedMessage(arg); });
         }
 
+        /// <summary>
+        /// Method that handles unsubscribing
+        /// </summary>
         public void Unsubscribe()
         {
             MessagingCenter.Unsubscribe<OrganizationPage>(this, "Back");
             MessagingCenter.Unsubscribe<OrganizationPage, string>(this, "Selected");
         }
 
+        /// <summary>
+        /// Method that handles initialization of the observerable collection
+        /// </summary>
+        private void InitializeCollection()
+        {
+            foreach (var employment in Definitions.User.Profile.Employments)
+            {
+                if (employment.Id == Definitions.Report.EmploymentId)
+                {
+                    _organizations.Add(new OrganizationString { Name = employment.EmploymentPosition, Selected = true });
+                    continue;
+                }
+                _organizations.Add(new OrganizationString { Name = employment.EmploymentPosition, Selected = false });
+            }
+        }
+
         #region Message Handlers
+
+        /// <summary>
+        /// Method that handles the Selected message
+        /// </summary>
         private void HandleSelectedMessage(string arg)
         {
-            foreach (var item in organizations)
+            foreach (var item in _organizations)
             {
                 if (item.Name == arg)
                 {
@@ -59,8 +87,12 @@ namespace OS2Indberetning.ViewModel
                 }
                 item.Selected = false;
             }
-            OrganizationList = organizations;
+            OrganizationList = _organizations;
         }
+
+        /// <summary>
+        /// Method that handles the Back message
+        /// </summary>
         private void HandleBackMessage()
         {
             Dispose();
@@ -74,11 +106,11 @@ namespace OS2Indberetning.ViewModel
         {
             get
             {
-                return organizations;
+                return _organizations;
             }
             set
             {
-                organizations = value;
+                _organizations = value;
                 OnPropertyChanged(OrganizationListProperty);
             }
         }
@@ -91,7 +123,8 @@ namespace OS2Indberetning.ViewModel
 
         #endregion
     }
-
+    
+    // List template model
     #region OrganizationString
     public class OrganizationString : INotifyPropertyChanged
     {

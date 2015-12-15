@@ -29,7 +29,7 @@ namespace OS2Indberetning.Templates
             {
                 FontFamily = Definitions.FontFamily,
                 FontSize = Definitions.HeaderFontSize - 7,
-                Text = "Save",
+                Text = "Gem",
                 TextColor = Color.FromHex(Definitions.TextColor),
                 //YAlign = TextAlignment.Center,
                 HorizontalOptions = LayoutOptions.FillAndExpand,

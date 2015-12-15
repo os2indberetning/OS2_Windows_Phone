@@ -37,10 +37,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
-    <Compile Include="BuisnessLogic\APICaller.cs" />
-    <Compile Include="BuisnessLogic\FileHandler.cs" />
-    <Compile Include="BuisnessLogic\GpsCalculator.cs" />
-    <Compile Include="BuisnessLogic\ReportListHandler.cs" />
+    <Compile Include="Services\APICaller.cs" />
+    <Compile Include="Services\FileHandler.cs" />
+    <Compile Include="Services\GpsCalculator.cs" />
+    <Compile Include="Services\ReportListHandler.cs" />
     <Compile Include="Definitions.cs" />
     <Compile Include="Model\Domain Models\DriveReport.cs" />
     <Compile Include="Model\DriveSubmit.cs" />
@@ -48,7 +48,7 @@
     <Compile Include="Model\Domain Models\GPSCoordinate.cs" />
     <Compile Include="Model\TemplateModels\StoredReportCellModel.cs" />
     <Compile Include="Model\TemplateModels\MunCellModel.cs" />
-    <Compile Include="Model\TemplateModels\Municipality.cs" />
+    <Compile Include="Model\Domain Models\Municipality.cs" />
     <Compile Include="Model\Domain Models\Profile.cs" />
     <Compile Include="Model\Domain Models\Rate.cs" />
     <Compile Include="Model\Domain Models\Route.cs" />

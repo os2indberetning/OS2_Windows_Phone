@@ -4,14 +4,24 @@ using Xamarin.Forms;
 
 namespace OS2Indberetning.Pages
 {
+    /// <summary>
+    /// Page that makes it possible to add remarks to a drive report in the form of text
+    /// </summary>
     public class RemarkPage : ContentPage
     {
-        private Editor editor;
+        private Editor _editor;
+
+        /// <summary>
+        /// Constructor that handles initialization of the page
+        /// </summary>
         public RemarkPage()
         {
             SetContent();
         }
 
+        /// <summary>
+        /// Method that creates the page content
+        /// </summary>
         public void SetContent()
         {
             var header = new Label
@@ -38,14 +48,14 @@ namespace OS2Indberetning.Pages
                     saveButton
                 }
             };
-            editor = new Editor
+            _editor = new Editor
             {
                 HeightRequest = Definitions.ScreenHeight,
                 WidthRequest = Definitions.ScreenWidth,
                 HorizontalOptions = LayoutOptions.Center,
                 VerticalOptions = LayoutOptions.FillAndExpand
             };
-            editor.SetBinding(Editor.TextProperty, RemarkViewModel.RemarkProperty);
+            _editor.SetBinding(Editor.TextProperty, RemarkViewModel.RemarkProperty);
 
             var editorStack = new StackLayout
             {
@@ -53,7 +63,7 @@ namespace OS2Indberetning.Pages
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 Padding = Definitions.Padding,
-                Children = { editor }
+                Children = { _editor }
             };
             
             var layout = new StackLayout
@@ -65,20 +75,37 @@ namespace OS2Indberetning.Pages
             this.Content = layout;
         }
 
+        #region Message Handlers
+
+        /// <summary>
+        /// Method that handles sending a Back message
+        /// </summary>
         private void SendBackMessage()
         {
             MessagingCenter.Send<RemarkPage>(this, "Back");
         }
+
+        /// <summary>
+        /// Method that handles sending a Save message
+        /// </summary>
         private void SendSaveMessage()
         {
             MessagingCenter.Send<RemarkPage>(this, "Save");
         }
 
+        #endregion
+
+        #region Overrides
+        /// <summary>
+        /// Method that overrides the BackbuttonPressed event. 
+        /// Calls SendBackMessage so that the logic is handles by the viewmodel
+        /// </summary>
         protected override bool OnBackButtonPressed()
         {
             SendBackMessage();
             return true;
         }
-       
+
+        #endregion
     }
 }

@@ -6,5 +6,6 @@ namespace OS2Indberetning.Model
     {
         public UriImageSource ImageSource { get; set; }
         public string Name { get; set; }
+        public bool Selected { get; set; }
     }
 }

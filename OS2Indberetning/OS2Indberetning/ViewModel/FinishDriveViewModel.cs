@@ -9,27 +9,33 @@ using OS2Indberetning.Model;
 
 namespace OS2Indberetning.ViewModel
 {
+    /// <summary>
+    /// Viewmodel that handles the view logic of FinishDrivePage
+    /// </summary>
     public class FinishDriveViewModel : XLabs.Forms.Mvvm.ViewModel, INotifyPropertyChanged, IDisposable
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private ObservableCollection<DriveReportCellModel> driveReport;
+        private ObservableCollection<DriveReportCellModel> _driveReport;
 
-        private bool startHomeCheck;
-        private bool endHomeCheck;
-        private string date;
-        private string username;
-        private string newKm;
+        private bool _startHomeCheck;
+        private bool _endHomeCheck;
+        private string _date;
+        private string _username;
+        private string _newKm;
         
-        private const string purposeText = "Formål: ";
-        private const string organisatoriskText = "Organisatorisk placering:";
-        private const string takstText = "Takst";
-        private const string ekstraText = "Ekstra Bemærkning:";
-        private const string kilometerText = "Antal Km:";
+        private const string PurposeText = "Formål: ";
+        private const string OrganisatoriskText = "Organisatorisk placering:";
+        private const string TakstText = "Takst";
+        private const string EkstraText = "Ekstra Bemærkning:";
+        private const string KilometerText = "Antal Km:";
 
+        /// <summary>
+        /// Constructor that handles initialization of the viewmodel
+        /// </summary>
         public FinishDriveViewModel()
         {
-            driveReport = new ObservableCollection<DriveReportCellModel>();
+            _driveReport = new ObservableCollection<DriveReportCellModel>();
             NewKm = Definitions.Report.Route.TotalDistance.ToString();
 
             InitializeCollection();
@@ -41,36 +47,32 @@ namespace OS2Indberetning.ViewModel
             Subscribe();
         }
 
+        /// <summary>
+        /// Destructor 
+        /// </summary>
         public void Dispose()
         {
             Unsubscribe();
-            driveReport = null;
+            _driveReport = null;
         }
 
+        /// <summary>
+        /// Method that subscribes to nessecary calls
+        /// </summary>
         private void Subscribe()
         {
             MessagingCenter.Subscribe<FinishDrivePage>(this, "Upload", (sender) => UploadHandler());
-            MessagingCenter.Subscribe<FinishDrivePage>(this, "Delete", (sender) => HandleDeleteMessage(sender));
-            MessagingCenter.Subscribe<FinishDrivePage>(this, "Selected", (sender) => { PushPageBasedOnSelectedItem(sender); });
-            MessagingCenter.Subscribe<FinishDrivePage>(this, "Update", (sender) => { InitializeCollection(); });
+            MessagingCenter.Subscribe<FinishDrivePage>(this, "Delete", HandleDeleteMessage);
+            MessagingCenter.Subscribe<FinishDrivePage>(this, "Selected", HandleSelectedMessage);
+            MessagingCenter.Subscribe<FinishDrivePage>(this, "Update", (sender) => { HandleUpdateMessage();});
             MessagingCenter.Subscribe<FinishDrivePage>(this, "EndHome",(sender) => { StartHomeCheck = !StartHomeCheck; });
             MessagingCenter.Subscribe<FinishDrivePage>(this, "StartHome", (sender) => { EndHomeCheck = !EndHomeCheck; });
-            MessagingCenter.Subscribe<FinishDrivePage>(this, "NewKm", (sender) =>
-            {
-                try
-                {
-                    Definitions.Report.Route.TotalDistance = Convert.ToDouble(newKm);
-                }
-                catch (Exception e)
-                {
-                    // ONLY happens if user somehow writes letters with numeric keyboard?  
-                    // Can happen in a simulator
-                }
-                InitializeCollection();
-                sender._PopUpLayout.DismissPopup();
-            });
+            MessagingCenter.Subscribe<FinishDrivePage>(this, "NewKm", HandleNewKmMessage);
         }
 
+        /// <summary>
+        /// Method that handles all unsubscribing
+        /// </summary>
         private void Unsubscribe()
         {
             MessagingCenter.Unsubscribe<FinishDrivePage>(this, "Upload");
@@ -82,31 +84,105 @@ namespace OS2Indberetning.ViewModel
             MessagingCenter.Unsubscribe<FinishDrivePage>(this, "NewKm");
         }
 
-        private void PushPageBasedOnSelectedItem(FinishDrivePage sender)
+        /// <summary>
+        /// Method that handles initialization of the observerable collection
+        /// </summary>
+        private void InitializeCollection()
         {
-            DriveReportCellModel item = sender.list.SelectedItem as DriveReportCellModel;
+            _driveReport.Clear();
+            DriveReportList.Clear();
+
+            _driveReport.Add(new DriveReportCellModel
+            {
+                Name = PurposeText,
+                Description = Definitions.Report.Purpose,
+            });
+            _driveReport.Add(new DriveReportCellModel
+            {
+                Name = OrganisatoriskText,
+                Description = Definitions.Report.Profile.Employments.FirstOrDefault(x => x.Id == Definitions.Report.EmploymentId).EmploymentPosition,
+            });
+            _driveReport.Add(new DriveReportCellModel
+            {
+                Name = TakstText,
+                Description = Definitions.Report.Rate.Description,
+            });
+            _driveReport.Add(new DriveReportCellModel
+            {
+                Name = EkstraText,
+                Description = Definitions.Report.ManualEntryRemark,
+            });
+            _driveReport.Add(new DriveReportCellModel
+            {
+                Name = KilometerText,
+                Description = Definitions.Report.Route.TotalDistance.ToString(),
+            });
+
+            DriveReportList = _driveReport;
+        }
+
+        #region Message Handlers
+
+        /// <summary>
+        /// Method that handles a Selected message from the page
+        /// </summary>
+        private void HandleSelectedMessage(FinishDrivePage sender)
+        {
+            DriveReportCellModel item = sender.List.SelectedItem as DriveReportCellModel;
 
             switch (item.Name)
             {
-                case purposeText:
+                case PurposeText:
                     Navigation.PushAsync<PurposeViewModel>();
                     break;
-                case organisatoriskText:
+                case OrganisatoriskText:
                     Navigation.PushAsync<OrganizationViewModel>();
                     break;
-                case takstText:
+                case TakstText:
                     Navigation.PushAsync<TaxViewModel>();
                     break;
-                case ekstraText:
+                case EkstraText:
                     Navigation.PushAsync<RemarkViewModel>();
                     break;
-                case kilometerText:
-                    sender._PopUpLayout.ShowPopup(sender.EditKmPopup());
-                    sender.list.SelectedItem = null;
+                case KilometerText:
+                    sender.PopUpLayout.ShowPopup(sender.EditKmPopup());
+                    sender.List.SelectedItem = null;
                     break;
             }
         }
 
+        /// <summary>
+        /// Method that handles a Update message from the page
+        /// </summary>
+        private void HandleUpdateMessage()
+        {
+            InitializeCollection();
+        }
+
+        /// <summary>
+        /// Method that handles a NewKm message from the page
+        /// </summary>
+        private void HandleNewKmMessage(FinishDrivePage sender)
+        {
+            try
+            {
+                Definitions.Report.Route.TotalDistance = Convert.ToDouble(_newKm);
+                // When the user inputs new KM the route needs to be cleared
+                Definitions.Report.Route.GPSCoordinates.Clear();
+            }
+            catch (Exception e)
+            {
+                // ONLY happens if user somehow writes letters with numeric keyboard?  
+                // Can happen in a simulator
+            }
+            InitializeCollection();
+            sender.PopUpLayout.DismissPopup();
+        }
+
+        /// <summary>
+        /// Method that handles a Back message from the page
+        /// Calls dispose, sets report route to null and navigates to mainpage
+        /// </summary>
         private void HandleDeleteMessage(object sender)
         {
             Definitions.Report.Route = null;
@@ -114,54 +190,26 @@ namespace OS2Indberetning.ViewModel
             App.Navigation.PopToRootAsync();
         }
 
+        /// <summary>
+        /// Method that handles a Upload message from the page
+        /// Calls dispose and navigates to uploadingpage
+        /// </summary>
         private void UploadHandler()
         {
             Dispose();
             Navigation.PushAsync<UploadingViewModel>();
         }
 
-        private void InitializeCollection()
-        {
-            driveReport.Clear();
-            DriveReportList.Clear();
-
-            driveReport.Add(new DriveReportCellModel
-            {
-                Name = purposeText,
-                Description = Definitions.Report.Purpose,
-            });
-            driveReport.Add(new DriveReportCellModel
-            {
-                Name = organisatoriskText,
-                Description = Definitions.Report.Profile.Employments.FirstOrDefault(x => x.Id == Definitions.Report.EmploymentId).EmploymentPosition,
-            });
-            driveReport.Add(new DriveReportCellModel
-            {
-                Name = takstText,
-                Description = Definitions.Report.Rate.Description,
-            });
-            driveReport.Add(new DriveReportCellModel
-            {
-                Name = ekstraText,
-                Description = Definitions.Report.ManualEntryRemark,
-            });
-            driveReport.Add(new DriveReportCellModel
-            {
-                Name = kilometerText,
-                Description = Definitions.Report.Route.TotalDistance.ToString(),
-            });
-
-            DriveReportList = driveReport;
-        }
+        #endregion
 
         #region properties
         public const string DriveProperty = "DriveReportList";
         public ObservableCollection<DriveReportCellModel> DriveReportList
         {
-            get { return driveReport; }
+            get { return _driveReport; }
             set
             {
-                driveReport = value;
+                _driveReport = value;
                 OnPropertyChanged(DriveProperty);
             }
         }
@@ -171,11 +219,11 @@ namespace OS2Indberetning.ViewModel
         {
             get
             {
-                return startHomeCheck;
+                return _startHomeCheck;
             }
             set
             {
-                startHomeCheck = value;
+                _startHomeCheck = value;
                 Definitions.Report.StartsAtHome = value;
                 OnPropertyChanged(StartHomeCheckProperty);
             }
@@ -186,11 +234,11 @@ namespace OS2Indberetning.ViewModel
         {
             get
             {
-                return endHomeCheck;
+                return _endHomeCheck;
             }
             set
             {
-                endHomeCheck = value;
+                _endHomeCheck = value;
                 Definitions.Report.EndsAtHome = value;
                 OnPropertyChanged(EndHomeCheckProperty);
             }
@@ -199,10 +247,10 @@ namespace OS2Indberetning.ViewModel
         public const string NewKmProperty = "NewKm";
         public string NewKm
         {
-            get { return newKm; }
+            get { return _newKm; }
             set
             {
-                newKm = value;
+                _newKm = value;
                 OnPropertyChanged(NewKmProperty);
             }
         }
@@ -212,11 +260,11 @@ namespace OS2Indberetning.ViewModel
         {
             get
             {
-                return date;
+                return _date;
             }
             set
             {
-                date = value;
+                _date = value;
                 OnPropertyChanged(DateProperty);
             }
         }
@@ -226,12 +274,12 @@ namespace OS2Indberetning.ViewModel
         {
             get
             {
-                return username;
+                return _username;
             }
             set
             {
-                username = value;
-                OnPropertyChanged(EndHomeCheckProperty);
+                _username = value;
+                OnPropertyChanged(UsernameProperty);
             }
         }
 

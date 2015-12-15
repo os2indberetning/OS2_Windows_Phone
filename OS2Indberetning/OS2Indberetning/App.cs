@@ -17,9 +17,13 @@ namespace OS2Indberetning
 {
     public class App : Application
     {
+        // used when testing
         private ISecureStorage storage;
 
+        // Navigation used when viewmodels need to pop to root.
+        // Doing so without this caused problems.
         public static INavigation Navigation;
+
         public App()
         {
             var app = Resolver.Resolve<IXFormsApp>();
@@ -84,13 +88,6 @@ namespace OS2Indberetning
             ViewFactory.Register<UploadingPage, UploadingViewModel>();
             ViewFactory.Register<StoredReportsPage, StoredReportsViewModel>();
         }
-
-        //private void RegisterPages()
-        //{
-            
-        //    //var test = new NavigationService();
-        //    //test.RegisterPage("MainPage", typeof(MainPage));
-        //}
 
         private void FakeModel()
         {

@@ -4,15 +4,24 @@ using Xamarin.Forms;
 
 namespace OS2Indberetning.Pages
 {
+    /// <summary>
+    /// Page that makes it possible to view and select a taxation catagory
+    /// </summary>
     public class TaxPage : ContentPage
     {
-        public TaxString selected;
+        public TaxString Selected;
 
+        /// <summary>
+        /// Constructor that handles initialization of the page
+        /// </summary>
         public TaxPage()
         {
             SetContent();
         }
 
+        /// <summary>
+        /// Method that creates the page content
+        /// </summary>
         public void SetContent()
         {
             var header = new Label
@@ -58,7 +67,7 @@ namespace OS2Indberetning.Pages
 
                 if (item == null) return;
                 item.Selected = true;
-                selected = item;
+                Selected = item;
                 SendSelectedMessage();
             };
 
@@ -72,24 +81,40 @@ namespace OS2Indberetning.Pages
             layout.Children.Add(list);
 
             this.Content = layout;
-
         }
 
+        #region Message Handlers
+
+        /// <summary>
+        /// Method that handles sending a Back message
+        /// </summary>
         private void SendBackMessage()
         {
             MessagingCenter.Send<TaxPage>(this, "Back");
         }
 
+        /// <summary>
+        /// Method that handles sending a Selected message
+        /// </summary>
         private void SendSelectedMessage()
         {
-            MessagingCenter.Send<TaxPage, string>(this, "Selected", selected.Name);
+            MessagingCenter.Send<TaxPage, string>(this, "Selected", Selected.Name);
         }
+
+        #endregion 
+
+        #region Overrides
+
+        /// <summary>
+        /// Method that overrides the BackbuttonPressed event. 
+        /// Calls SendBackMessage so that the logic is handles by the viewmodel
+        /// </summary>
         protected override bool OnBackButtonPressed()
         {
             SendBackMessage();
             return true;
         }
 
-
+        #endregion
     }
 }

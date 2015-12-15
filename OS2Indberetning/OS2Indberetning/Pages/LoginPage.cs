@@ -11,60 +11,39 @@ using XLabs.Platform.Services;
 
 namespace OS2Indberetning.Pages
 {
+    /// <summary>
+    /// Page that displays a _list of Municiplitys that the user can couple with
+    /// </summary>
     public class LoginPage : ContentPage
     {
-        private ISecureStorage storage;
-        private readonly string key = "login_data";
+        private ListView _list;
 
-        private LoginViewModel viewModel;
-        private ListView list;
-
+        /// <summary>
+        /// Constructor handles initialization of the page
+        /// </summary>
         public LoginPage()
         {
-            ApiCallerMethod();
-            storage = DependencyService.Get<ISecureStorage>();
-            this.Content = SetTempContent();
+            SetContent();
         }
 
-        private void ApiCallerMethod()
+        /// <summary>
+        /// Method that creates the page content
+        /// </summary>
+        private void SetContent()
         {
-            var objectList = APICaller.GetMunicipalityList().ContinueWith((result) =>
-            {
-                SetContent(result.Result);
-            }, TaskScheduler.FromCurrentSynchronizationContext());
-        }
-
-        private View SetTempContent()
-        {
-            Label ne = new Label
-            {
-                Text = "Waiting",
-            };
-            var layout = new StackLayout
-            {
-                Children =
-                {
-                    ne
-                }
-            };
-
-            return layout;
-        }
-
-        private void SetContent(List<Municipality> objectList )
-        {
-            var stringList = new List<string>();
-            foreach (var item in objectList)
-            {
-                stringList.Add(item.Name);
-            }
-
-            list = new ListView
+            _list = new ListView
             {
                 ItemTemplate = new DataTemplate(typeof(MunCell)),
-                ItemsSource = InitList(objectList),
                 SeparatorColor = Color.FromHex("#EE2D2D"),
                 SeparatorVisibility = SeparatorVisibility.Default,
+            };
+            _list.SetBinding(ListView.ItemsSourceProperty, LoginViewModel.MunListProperty);
+
+            // Using this method instead of messagingcenter 
+            // to make it easiere disposeable when popping to root after coupling is complete
+            _list.ItemSelected += (sender, args) =>
+            {
+                (BindingContext as LoginViewModel).OnSelectedItem((MunCellModel)args.SelectedItem);
             };
 
             var header = new Label
@@ -87,63 +66,42 @@ namespace OS2Indberetning.Pages
                 }
             };
 
-            list.ItemSelected += async (sender, e) =>
-            {
-                var selectedItem = (MunCellModel)e.SelectedItem;
-                if (selectedItem == null) return;
-
-                foreach (var item in objectList)
-                {
-                    if (item.Name == selectedItem.Name)
-                    {
-                        await App.Navigation.PushAsync(
-                                (ContentPage)
-                                    ViewFactory.CreatePage<CouplingViewModel, CouplingPage>((v, vm) =>
-                                    {
-                                        v.InitVm(item);
-                                        vm.SetMunicipality(item);
-                                    } ));
-                        break;
-                    }
-                }
-                // resetter selected property så alt kan selected hvis man popper page
-                list.ClearValue(ListView.SelectedItemProperty);
-            };
-
             var layout = new StackLayout
             {
                 VerticalOptions = LayoutOptions.Center,
                 Children =
                 {
                     headerstack,
-                    list
+                    _list
                 },
                 BackgroundColor = Color.FromHex(Definitions.BackgroundColor),
             };
-            
            
             this.Content = layout;
         }
 
-        private List<MunCellModel> InitList(List<Municipality> list)
-        {
-            List<MunCellModel> cellList = new List<MunCellModel>();
+        #region Overrides
 
-            foreach (var item in list)
-            {
-                cellList.Add(new MunCellModel
-                {
-                    ImageSource = new UriImageSource { Uri = new Uri(item.ImgUrl) },
-                    Name = item.Name
-                });
-            }
-
-            return cellList;
-        }
-
+        /// <summary>
+        /// Override of the BackbuttonPressed event. 
+        /// </summary>
+        /// <returns>true so that the event is "overlooked" and therefore nothing happens</returns>
         protected override bool OnBackButtonPressed()
         {
             return true;
         }
+
+        /// <summary>
+        /// Override of the OnAppearing event. 
+        /// Resets Selected item, if any 
+        /// </summary>
+        protected override void OnAppearing()
+        {
+            if (_list != null)
+            {
+                _list.SelectedItem = null;
+            }
+        }
+        #endregion
     }
 }

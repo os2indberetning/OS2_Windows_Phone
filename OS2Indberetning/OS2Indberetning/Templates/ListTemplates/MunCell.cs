@@ -52,7 +52,7 @@ namespace OS2Indberetning.Templates
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Children = { vetProfileImage, vetDetailsLayout, tapImage }
             };
-
+            
             this.View = cellLayout;
         }
     }

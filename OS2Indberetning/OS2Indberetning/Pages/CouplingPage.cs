@@ -7,28 +7,36 @@ using XLabs.Forms.Controls;
 
 namespace OS2Indberetning.Pages
 {
+    /// <summary>
+    /// Page that is displayed when trying to couple your phone with a Municipality
+    /// </summary>
     public class CouplingPage : ContentPage
     {
-        private Municipality municipality;
-        private CouplingViewModel viewModel;
+        private Municipality _municipality;
 
         public CouplingPage()
         {
         }
 
+        /// <summary>
+        /// Method is used as a constructor. The real constructor needs to be parameterless
+        /// </summary>
+        /// <param name="m">Municipality that the user is trying to couple with</param>
         public void SetMunicipality(Municipality m)
         {
-            municipality = m;
-            Definitions.TextColor = municipality.TextColor;
-            Definitions.PrimaryColor = municipality.PrimaryColor;
-            Definitions.SecondaryColor = municipality.SecondaryColor;
+            _municipality = m;
+            Definitions.TextColor = _municipality.TextColor;
+            Definitions.PrimaryColor = _municipality.PrimaryColor;
+            Definitions.SecondaryColor = _municipality.SecondaryColor;
             Definitions.MunIcon = new UriImageSource {Uri = new Uri(m.ImgUrl)};
-            Definitions.MunUrl = municipality.APIUrl;
+            Definitions.MunUrl = _municipality.APIUrl;
             this.Content = SetContent();
         }
 
 
-
+        /// <summary>
+        /// Method used to create the layout of the page
+        /// </summary>
         private View SetContent()
         {
 
@@ -52,14 +60,13 @@ namespace OS2Indberetning.Pages
                 }
             };
 
-            var entry = new ExtendedEntry()
+            var entry = new Entry
             {
                 Placeholder = "Tast Parringskode",
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
-                HasBorder = true,
             };
-            entry.SetBinding(ExtendedEntry.TextProperty, CouplingViewModel.TokenProperty);
+            entry.SetBinding(Entry.TextProperty, CouplingViewModel.TokenProperty);
 
             var informationText = new Label
             {
@@ -112,16 +119,27 @@ namespace OS2Indberetning.Pages
             return layout;
         }
 
+        /// <summary>
+        /// Method that sends a Couple message
+        /// </summary>
         private void SendCoupleMessage()
         {
             MessagingCenter.Send<CouplingPage>(this, "Couple");
         }
 
+        /// <summary>
+        /// Method that sends a Back message
+        /// </summary>
         private void SendBackMessage()
         {
             MessagingCenter.Send<CouplingPage>(this, "Back");
         }
 
+        /// <summary>
+        /// Method that overrides the BackbuttonPressed event. 
+        /// Calls SendBackMessage so that the logic is handles by the viewmodel
+        /// </summary>
+        /// <returns>true so that the event is "overlooked"</returns>
         protected override bool OnBackButtonPressed()
         {
             SendBackMessage();

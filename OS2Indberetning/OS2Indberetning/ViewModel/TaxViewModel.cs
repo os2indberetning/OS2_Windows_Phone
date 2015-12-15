@@ -7,49 +7,77 @@ using Xamarin.Forms;
 
 namespace OS2Indberetning.ViewModel
 {
+    /// <summary>
+    /// Viewmodel of the Tax page. Handles all view logic
+    /// </summary>
     public class TaxViewModel : XLabs.Forms.Mvvm.ViewModel, INotifyPropertyChanged, IDisposable
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private ObservableCollection<TaxString> taxes = new ObservableCollection<TaxString>();
+        private ObservableCollection<TaxString> _taxes;
 
+        /// <summary>
+        /// Constructor that handles initialization of the viewmodel
+        /// </summary>
         public TaxViewModel()
         {
-            foreach (var rate in Definitions.User.Rates)
-            {
-                if (rate.Description == Definitions.Report.Rate.Description)
-                {
-                    taxes.Add(new TaxString { Name = rate.Description, Selected = true });
-                    continue;
-                }
-                taxes.Add(new TaxString { Name = rate.Description, Selected = false });
-            }
-            TaxList = taxes;
+            _taxes = new ObservableCollection<TaxString>();
+            InitializeCollection();
             Subscribe();
         }
 
+        /// <summary>
+        /// Method that handles cleanup of the viewmodel
+        /// </summary>
         public void Dispose()
         {
             Unsubscribe();
-            taxes = null;
+            _taxes = null;
         }
 
-        public void Subscribe()
+        /// <summary>
+        /// Method that handles subscribing to the needed messages
+        /// </summary>
+        private void Subscribe()
         {
             MessagingCenter.Subscribe<TaxPage>(this, "Back", (sender) => { HandleBackMessage(); });
             MessagingCenter.Subscribe<TaxPage, string>(this, "Selected", (sender, arg) => { HandleSelectedMessage(arg); });
         }
 
-        public void Unsubscribe()
+        /// <summary>
+        /// Method that handles unsubscribing
+        /// </summary>
+        private void Unsubscribe()
         {
             MessagingCenter.Unsubscribe<TaxPage>(this, "Back");
-            MessagingCenter.Unsubscribe<TaxPage>(this, "Selected");
+            MessagingCenter.Unsubscribe<TaxPage, string>(this, "Selected");
+        }
+
+        /// <summary>
+        /// Method that handles initialization of the observerable collection
+        /// </summary>
+        private void InitializeCollection()
+        {
+            foreach (var rate in Definitions.User.Rates)
+            {
+                if (rate.Description == Definitions.Report.Rate.Description)
+                {
+                    _taxes.Add(new TaxString { Name = rate.Description, Selected = true });
+                    continue;
+                }
+                _taxes.Add(new TaxString { Name = rate.Description, Selected = false });
+            }
+            TaxList = _taxes;
         }
 
         #region Message Handlers
+
+        /// <summary>
+        /// Method that handles the Selected message
+        /// </summary>
         private void HandleSelectedMessage(string arg)
         {
-            foreach (var item in taxes)
+            foreach (var item in _taxes)
             {
                 if (item.Name == arg)
                 {
@@ -59,8 +87,12 @@ namespace OS2Indberetning.ViewModel
                 }
                 item.Selected = false;
             }
-            TaxList = taxes;
+            TaxList = _taxes;
         }
+
+        /// <summary>
+        /// Method that handles the Back message
+        /// </summary>
         private void HandleBackMessage()
         {
             Dispose();
@@ -74,11 +106,11 @@ namespace OS2Indberetning.ViewModel
         {
             get
             {
-                return taxes;
+                return _taxes;
             }
             set
             {
-                taxes = value;
+                _taxes = value;
                 OnPropertyChanged(TaxListProperty);
             }
         }
@@ -92,6 +124,7 @@ namespace OS2Indberetning.ViewModel
 
     }
 
+    // List template model
     #region TaxString
     public class TaxString : INotifyPropertyChanged
     {

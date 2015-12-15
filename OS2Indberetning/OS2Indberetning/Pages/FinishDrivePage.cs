@@ -9,33 +9,32 @@ using XLabs.Platform.Device;
 namespace OS2Indberetning
 {
     /// <summary>
-    /// Page is shown after GPS tracking is done
+    /// Page that is shown after GPS tracking is done
     /// </summary>
     public class FinishDrivePage : ContentPage
     {
-        public ListView list;
-        public PopupLayout _PopUpLayout;
+        // public layout items so they are reachable from the viewmodel.
+        public ListView List;
+        public PopupLayout PopUpLayout;
 
-        // used to pop back to mainpage from viewmodel
-        public IReadOnlyList<Page> NavigationStack;
-        public INavigation Nav;
+        // temp variable to store user inputted km number, before he pressed "ok"
+        public string NewKm;
 
-        public string newKm;
+        // popup definitions
+        private readonly double _popupWidth = Definitions.ScreenWidth - 2 * Definitions.Padding;
+        private readonly double _yesNoButtonWidth = (Definitions.ScreenHeight - Definitions.Padding) / 2;
 
-        private readonly double popupWidth = Definitions.ScreenWidth - 2 * Definitions.Padding;
-        private readonly double yesNoButtonWidth = (Definitions.ScreenHeight - Definitions.Padding) / 2;
-
+        /// <summary>
+        /// Constructor that handles initialization of the page
+        /// </summary>
         public FinishDrivePage()
         {
-            NavigationStack = Navigation.NavigationStack;
-            Nav = Navigation;
-
             this.Content = this.SetContent();
         }
 
         #region View Setup
         /// <summary>
-        /// Creates the view content
+        /// Method that creates the view content
         /// </summary>
         /// <returns>the view to be displayed</returns>
         public View SetContent()
@@ -80,17 +79,17 @@ namespace OS2Indberetning
             };
             user.SetBinding(Label.TextProperty, FinishDriveViewModel.UsernameProperty);
 
-            list = new ListView
+            List = new ListView
             {
                 ItemTemplate = new DataTemplate(typeof(DriveFinishedCell)),
                 SeparatorColor = Color.FromHex("#EE2D2D"),
                 SeparatorVisibility = SeparatorVisibility.Default,
                 VerticalOptions = LayoutOptions.StartAndExpand,
             };
-            list.SetBinding(ListView.ItemsSourceProperty, MainViewModel.DriveProperty);
+            List.SetBinding(ListView.ItemsSourceProperty, MainViewModel.DriveProperty);
 
 
-            list.ItemSelected += async (sender, e) =>
+            List.ItemSelected += async (sender, e) =>
             {
                 if (e.SelectedItem == null) return;
                 SendSelectedMessage();
@@ -123,20 +122,20 @@ namespace OS2Indberetning
                     headerstack,
                     date,
                     user,
-                    list,
+                    List,
                     CheckStack(),
                     buttomStack
                 },
                 BackgroundColor = Color.FromHex(Definitions.BackgroundColor),
             };
 
-            _PopUpLayout = new PopupLayout();
-            _PopUpLayout.Content = layout;
-            return _PopUpLayout;
+            PopUpLayout = new PopupLayout();
+            PopUpLayout.Content = layout;
+            return PopUpLayout;
         }
 
         /// <summary>
-        /// Creates the stacklayout for the Checkboxes
+        /// Method that creates the stacklayout for the Checkboxes
         /// </summary>
         /// <returns>Stacklayout of the checkboxes</returns>
         private StackLayout CheckStack()
@@ -239,7 +238,7 @@ namespace OS2Indberetning
                 VerticalOptions = LayoutOptions.End,
                 HorizontalOptions = LayoutOptions.Start,
                 HeightRequest = Definitions.ButtonHeight,
-                WidthRequest = yesNoButtonWidth,
+                WidthRequest = _yesNoButtonWidth,
                 Children = { noButton }
             };
             var yesButton = new ButtomButton("OK", SendDeleteMessage);
@@ -248,7 +247,7 @@ namespace OS2Indberetning
                 VerticalOptions = LayoutOptions.End,
                 HorizontalOptions = LayoutOptions.End,
                 HeightRequest = Definitions.ButtonHeight,
-                WidthRequest = yesNoButtonWidth,
+                WidthRequest = _yesNoButtonWidth,
                 Children = { yesButton }
             };
 
@@ -269,7 +268,7 @@ namespace OS2Indberetning
 
             var PopUp = new StackLayout
             {
-                WidthRequest = popupWidth,
+                WidthRequest = _popupWidth,
                 //HeightRequest = popupHeight,
                 BackgroundColor = Color.White,
                 Orientation = StackOrientation.Vertical,
@@ -346,13 +345,13 @@ namespace OS2Indberetning
             entry.SetBinding(Entry.TextProperty, FinishDriveViewModel.NewKmProperty);
             entry.Focus();
             
-            var noButton = new ButtomButton("Fortryd", () => _PopUpLayout.DismissPopup());
+            var noButton = new ButtomButton("Fortryd", () => PopUpLayout.DismissPopup());
             var noStack = new StackLayout
             {
                 VerticalOptions = LayoutOptions.End,
                 HorizontalOptions = LayoutOptions.Start,
                 HeightRequest = Definitions.ButtonHeight,
-                WidthRequest = yesNoButtonWidth,
+                WidthRequest = _yesNoButtonWidth,
                 Children = { noButton }
             };
             var yesButton = new ButtomButton("Gem", SendNewKmMessage);
@@ -361,7 +360,7 @@ namespace OS2Indberetning
                 VerticalOptions = LayoutOptions.End,
                 HorizontalOptions = LayoutOptions.End,
                 HeightRequest = Definitions.ButtonHeight,
-                WidthRequest = yesNoButtonWidth,
+                WidthRequest = _yesNoButtonWidth,
                 Children = { yesButton }
             };
 
@@ -382,7 +381,7 @@ namespace OS2Indberetning
 
             var PopUp = new StackLayout
             {
-                WidthRequest = popupWidth,
+                WidthRequest = _popupWidth,
 
                 BackgroundColor = Color.White,
                 Orientation = StackOrientation.Vertical,
@@ -420,7 +419,7 @@ namespace OS2Indberetning
         /// </summary>
         private void OpenPopup()
         {
-            _PopUpLayout.ShowPopup(CreateDeletePopup());
+            PopUpLayout.ShowPopup(CreateDeletePopup());
         }
 
         /// <summary>
@@ -428,7 +427,7 @@ namespace OS2Indberetning
         /// </summary>
         private void ClosePopup()
         {
-            _PopUpLayout.DismissPopup();
+            PopUpLayout.DismissPopup();
         }
         #endregion
 
@@ -484,21 +483,32 @@ namespace OS2Indberetning
         #endregion
 
         #region Overrides
+
+        /// <summary>
+        /// Method that overrides the BackbuttonPressed event. 
+        /// Opens the same popup as if the user where to delete the drive 
+        /// because there is no option to return to the gps view from here
+        /// </summary>
         protected override bool OnBackButtonPressed()
         {
-            if (!_PopUpLayout.IsPopupActive)
+            if (!PopUpLayout.IsPopupActive)
             {
-                _PopUpLayout.ShowPopup(CreateDeletePopup());
+                PopUpLayout.ShowPopup(CreateDeletePopup());
             }
             
             return true;
         }
 
+        /// <summary>
+        /// Method that overrides the OnAppearing event. 
+        /// Resets the _list selection if any, and sends an Update message
+        /// to the viewmodel to get the content updated.
+        /// </summary>
         protected override void OnAppearing()
         {
-            if (list != null)
+            if (List != null)
             {
-                list.SelectedItem = null;
+                List.SelectedItem = null;
             }
             base.OnAppearing();
             MessagingCenter.Send<FinishDrivePage>(this, "Update");

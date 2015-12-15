@@ -14,61 +14,62 @@ using XLabs.Platform.Services;
 
 namespace OS2Indberetning.ViewModel
 {
+    /// <summary>
+    /// Viewmodel of the StoredReports page. Handles all view logic
+    /// </summary>
     public class StoredReportsViewModel : XLabs.Forms.Mvvm.ViewModel, INotifyPropertyChanged, IDisposable
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private ObservableCollection<StoredReportCellModel> storedList;
+        private readonly string _datePre = "Rapporteret den ";
+        private readonly string  _distancePre = "Distance: ";
+        private readonly string _purposePre = "Formål: ";
+        private readonly string _taxePre = "Takst: ";
 
-        private Token token;
-        private ISecureStorage storage;
+        private ObservableCollection<StoredReportCellModel> _storedList;
 
+        private readonly Token _token;
+
+        /// <summary>
+        /// Constructor that handles initialization of the viewmodel
+        /// </summary>
         public StoredReportsViewModel()
         {
-            storedList = new ObservableCollection<StoredReportCellModel>();
+            _storedList = new ObservableCollection<StoredReportCellModel>();
 
-            storage = DependencyService.Get<ISecureStorage>();
+            var storage = DependencyService.Get<ISecureStorage>();
             var tokenByte = storage.Retrieve(Definitions.TokenKey);
 
-            token = JsonConvert.DeserializeObject<Token>(Encoding.UTF8.GetString(tokenByte, 0, tokenByte.Length));
+            _token = JsonConvert.DeserializeObject<Token>(Encoding.UTF8.GetString(tokenByte, 0, tokenByte.Length));
 
             ReportListHandler.GetReportList().ContinueWith((result) => { InitializeCollection(result.Result); });
             Subscribe();
         }
 
+        /// <summary>
+        /// Destructor 
+        /// </summary>
         public void Dispose()
         {
             Unsubscribe();
-            storedList = null;
+            _storedList = null;
         }
 
+        /// <summary>
+        /// Method that subscribes to nessecary calls
+        /// </summary>
         private void Subscribe()
         {
-            MessagingCenter.Subscribe<StoredReportsPage>(this, "Back", (sender) =>
-            {
-                Dispose();
-                App.Navigation.PopToRootAsync();
-            });
+            MessagingCenter.Subscribe<StoredReportsPage>(this, "Back", (sender) => { HandleBackMessage(); });
 
-            MessagingCenter.Subscribe<StoredReportsPage>(this, "Upload", (sender) =>
-            {
-                var item =  (StoredReportCellModel)sender.list.SelectedItem;
-                
-                APICaller.SubmitDrive(item.report, token, Definitions.MunUrl).ContinueWith((result) =>
-                {
-                    HandleUploadResult(result.Result, sender);
-                }, TaskScheduler.FromCurrentSynchronizationContext());
-            });
+            MessagingCenter.Subscribe<StoredReportsPage>(this, "Upload", HandleUploadMessage);
 
-
-            MessagingCenter.Subscribe<StoredReportsPage>(this, "Remove", (sender) =>
-            {
-                var item = (StoredReportCellModel)sender.list.SelectedItem;
-
-                RemoveItemFromList(item, sender);
-            });
+            MessagingCenter.Subscribe<StoredReportsPage>(this, "Remove", HandleRemoveMessage);
         }
 
+        /// <summary>
+        /// Method that handles all unsubscribing
+        /// </summary>
         private void Unsubscribe()
         {
             MessagingCenter.Unsubscribe<StoredReportsPage>(this, "Back");
@@ -76,65 +77,111 @@ namespace OS2Indberetning.ViewModel
             MessagingCenter.Unsubscribe<StoredReportsPage>(this, "Remove");
         }
 
+        /// <summary>
+        /// Method that handles the upload result
+        /// </summary>
+        /// <param name="item">the StoredReportCellModel the user tried to uploaded</param>
+        /// <param name="page">the parent page, used to open popup</param>
         private void HandleUploadResult(UserInfoModel item, StoredReportsPage page)
         {
             if (item == null)
             {
                 page.ClosePopup();
                 var popup = page.CreateErrorPopup("Kunne ikke upload på nuværende tidspunkt. Prøv igen senere");
-                page._PopUpLayout.ShowPopup(popup);
+                page.PopUpLayout.ShowPopup(popup);
                 return;
             }
             else
             {
-                RemoveItemFromList((StoredReportCellModel)page.list.SelectedItem, page);
+                RemoveItemFromList((StoredReportCellModel)page.List.SelectedItem, page);
             }
         }
 
+        /// <summary>
+        /// Method that removes an item from the stored list
+        /// </summary>
+        /// <param name="item">the StoredReportCellModel that needs to be removed</param>
+        /// <param name="page">the parent page, used to open popup</param>
         private void RemoveItemFromList(StoredReportCellModel item, StoredReportsPage page)
         {
             ReportListHandler.RemoveReportFromList(item.report).ContinueWith((result) =>
             {
                 page.ClosePopup();
                 InitializeCollection(result.Result);
-                var popup = page.CreateErrorPopup("Kørsels rapport blev uploaded");
-                page._PopUpLayout.ShowPopup(popup);
+                var popup = page.CreateDeletedPopup("Kørsels rapport blev slettet");
+                page.PopUpLayout.ShowPopup(popup);
             }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
+        /// <summary>
+        /// Method that handles initialization of the observerable collection
+        /// </summary>
+        /// <param name="list">the list used to initialize the observerable collection</param>
         private void InitializeCollection(List<DriveReport> list)
         {
-            storedList.Clear();
+            _storedList.Clear();
             StoredList.Clear();
-
-            var datePre = "Rapporteret den ";
-            var distancePre = "Distance: ";
-            var purposePre = "Formål: ";
-            var taxePre = "Takst: ";
 
             foreach (var item in list)
             {
-                storedList.Add(new StoredReportCellModel
+                _storedList.Add(new StoredReportCellModel
                 {
-                    Date = datePre + item.Date,
-                    Distance = distancePre + item.Route.TotalDistance.ToString() + " km",
-                    Purpose = purposePre + item.Purpose,
-                    Taxe = item.Rate.Description,
+                    Date = _datePre + item.Date,
+                    Distance = _distancePre + item.Route.TotalDistance.ToString() + " km",
+                    Purpose = _purposePre + item.Purpose,
+                    Taxe = _taxePre + item.Rate.Description,
                     report = item,
                 });
             }
 
-            StoredList = storedList;
+            StoredList = _storedList;
         }
+
+        #region Message Handlers
+
+        /// <summary>
+        /// Method that handles a Back message from the page
+        /// Calls dispose and pops to root
+        /// </summary>
+        private void HandleBackMessage()
+        {
+            Dispose();
+            App.Navigation.PopToRootAsync();
+        }
+
+        /// <summary>
+        /// Method that handles the Upload message
+        /// </summary>
+        private void HandleUploadMessage(StoredReportsPage sender)
+        {
+            var item = (StoredReportCellModel)sender.List.SelectedItem;
+
+            APICaller.SubmitDrive(item.report, _token, Definitions.MunUrl).ContinueWith((result) =>
+            {
+                HandleUploadResult(result.Result, sender);
+            }, TaskScheduler.FromCurrentSynchronizationContext());
+        }
+
+        /// <summary>
+        /// Method that handles the Remove message
+        /// </summary>
+        private void HandleRemoveMessage(StoredReportsPage sender)
+        {
+            var item = (StoredReportCellModel)sender.List.SelectedItem;
+
+            RemoveItemFromList(item, sender);
+        }
+
+        #endregion
 
         #region Properties
         public const string ListProperty = "StoredList";
         public ObservableCollection<StoredReportCellModel> StoredList
         {
-            get { return storedList; }
+            get { return _storedList; }
             set
             {
-                storedList = value;
+                _storedList = value;
                 OnPropertyChanged(ListProperty);
             }
         }

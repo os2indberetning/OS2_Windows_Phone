@@ -4,15 +4,24 @@ using Xamarin.Forms;
 
 namespace OS2Indberetning.Pages
 {
+    /// <summary>
+    /// Page where Organization can be Selected for the drivereport
+    /// </summary>
     public class OrganizationPage : ContentPage
     {
-        public OrganizationString selected;
+        public OrganizationString Selected;
 
+        /// <summary>
+        /// Constructor that handles initialization of the page
+        /// </summary>
         public OrganizationPage()
         {
             SetContent();
         }
 
+        /// <summary>
+        /// Method that creates a layout for the page and sets it as the page content
+        /// </summary>
         public void SetContent()
         {
             var header = new Label
@@ -57,7 +66,7 @@ namespace OS2Indberetning.Pages
 
                 if (item == null) return;
                 item.Selected = true;
-                selected = item;
+                Selected = item;
                 SendSelectedMessage();
             };
 
@@ -74,21 +83,37 @@ namespace OS2Indberetning.Pages
 
         }
 
+        #region Message Handlers
+
+        /// <summary>
+        /// Method that handles sending a Back message to the viewmodel
+        /// </summary>
         private void SendBackMessage()
         {
             MessagingCenter.Send<OrganizationPage>(this, "Back");
         }
 
+        /// <summary>
+        /// Method that handles sending a Selected message to the viewmodel, with the Selected items name
+        /// </summary>
         private void SendSelectedMessage()
         {
-            MessagingCenter.Send<OrganizationPage, string>(this, "Selected", selected.Name);
+            MessagingCenter.Send<OrganizationPage, string>(this, "Selected", Selected.Name);
         }
+
+        #endregion
+
+        #region Overrides
+        /// <summary>
+        /// Override of the OnBackButtonPressed event
+        /// </summary>
+        /// <returns>Returns true, meaning nothing happens</returns>
         protected override bool OnBackButtonPressed()
         {
             SendBackMessage();
             return true;
         }
 
-
+        #endregion
     }
 }

@@ -12,59 +12,61 @@ using XLabs.Platform.Services;
 
 namespace OS2Indberetning.ViewModel
 {
+    /// <summary>
+    /// Viewmodel of the Uploading page. Handles all view logic
+    /// </summary>
     public class UploadingViewModel : XLabs.Forms.Mvvm.ViewModel, INotifyPropertyChanged, IDisposable
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private string uploaderText;
-        private double rotate;
-        private ISecureStorage storage;
-        private double minimumWait = 3;
-        private bool timerContinue;
-        private bool errorVisibility;
-        private bool uploadingVisibility;
+        private string _uploaderText;
+        private double _rotate;
+        private ISecureStorage _storage;
+        private readonly double _minimumWait = 3;
+        private bool _timerContinue;
+        private bool _errorVisibility;
+        private bool _uploadingVisibility;
 
-        private string errorText;
+        private string _errorText;
+        private readonly Token _token;
 
-        private Token token;
-
+        /// <summary>
+        /// Constructor that handles initialization of the viewmodel
+        /// </summary>
         public UploadingViewModel()
         {
             UploaderText = "Uploader kørselsdata";
-            storage = DependencyService.Get<ISecureStorage>();
-            var tokenByte = storage.Retrieve(Definitions.TokenKey);
+            _storage = DependencyService.Get<ISecureStorage>();
+            var tokenByte = _storage.Retrieve(Definitions.TokenKey);
 
-            token = JsonConvert.DeserializeObject<Token>(Encoding.UTF8.GetString(tokenByte, 0, tokenByte.Length));
+            _token = JsonConvert.DeserializeObject<Token>(Encoding.UTF8.GetString(tokenByte, 0, tokenByte.Length));
 
             Subscribe();
         }
-
-        public void Upload(object sender)
-        {
-            UploadingVisibility = true;
-            ErrorVisibility = false;
-            timerContinue = true;
-            RotateSpinner();
-            APICaller.SubmitDrive(Definitions.Report, token, Definitions.MunUrl).ContinueWith((result) =>
-            {
-                HandleUploadResult(result.Result, sender);
-            }, TaskScheduler.FromCurrentSynchronizationContext());
-        }
-
+        
+        /// <summary>
+        /// Method that handles cleanup of the viewmodel
+        /// </summary>
         public void Dispose()
         {
-            timerContinue = false;
+            _timerContinue = false;
             Unsubscribe();
-            storage = null;
+            _storage = null;
         }
 
+        /// <summary>
+        /// Method that handles subscribing to the needed messages
+        /// </summary>
         private void Subscribe()
         {
-            MessagingCenter.Subscribe<UploadingPage>(this, "Upload", (sender) => { Upload(sender); });
+            MessagingCenter.Subscribe<UploadingPage>(this, "Upload", HandleUploadMessage);
 
-            MessagingCenter.Subscribe<UploadingPage>(this, "Store", (sender) => { HandleSaving(sender); });
+            MessagingCenter.Subscribe<UploadingPage>(this, "Store", HandleStoreMessage);
         }
 
+        /// <summary>
+        /// Method that handles unsubscribing
+        /// </summary>
         private void Unsubscribe()
         {
             MessagingCenter.Unsubscribe<UploadingPage>(this, "Upload");
@@ -72,9 +74,12 @@ namespace OS2Indberetning.ViewModel
             MessagingCenter.Unsubscribe<UploadingPage>(this, "Store");
         }
 
+        /// <summary>
+        /// Method that handles the Upload Result
+        /// </summary>
         private void HandleUploadResult(UserInfoModel user, object sender)
         {
-            Device.StartTimer(TimeSpan.FromSeconds(minimumWait), () =>
+            Device.StartTimer(TimeSpan.FromSeconds(_minimumWait), () =>
             {
                 if (user == null)
                 {
@@ -82,7 +87,7 @@ namespace OS2Indberetning.ViewModel
                         "Der skete en fejl ved afsendelsen af din rapport!" +
                         " Prøv igen eller tryk på 'Gem' og send rapporten fra hovedmenuen på et andet tidspunkt.";
                     UploadingVisibility = false;
-                    timerContinue = false;
+                    _timerContinue = false;
                     ErrorVisibility = true;
                 }
                 else
@@ -90,11 +95,45 @@ namespace OS2Indberetning.ViewModel
                     Dispose();
                     App.Navigation.PopToRootAsync();
                 }
-            return false; //not continue
+                return false; //not continue
             });
         }
 
-        private void HandleSaving(object sender)
+        /// <summary>
+        /// Method that handles the rotation of the spinner
+        /// </summary>
+        private void RotateSpinner()
+        {
+            Device.StartTimer(TimeSpan.FromSeconds(0.05), () =>
+            {
+                if (_timerContinue)
+                {
+                    Rotate = Rotate + 25;
+                    return true;
+                }
+                return false; //not continue
+            });
+        }
+
+        /// <summary>
+        /// Method that handles the Upload message
+        /// </summary>
+        public void HandleUploadMessage(UploadingPage sender)
+        {
+            UploadingVisibility = true;
+            ErrorVisibility = false;
+            _timerContinue = true;
+            RotateSpinner();
+            APICaller.SubmitDrive(Definitions.Report, _token, Definitions.MunUrl).ContinueWith((result) =>
+            {
+                HandleUploadResult(result.Result, sender);
+            }, TaskScheduler.FromCurrentSynchronizationContext());
+        }
+
+        /// <summary>
+        /// Method that handles the Store message
+        /// </summary>
+        private void HandleStoreMessage(UploadingPage sender)
         {
             ReportListHandler.AddReportToList(Definitions.Report).ContinueWith((result) =>
             {
@@ -108,19 +147,6 @@ namespace OS2Indberetning.ViewModel
                 }
             }, TaskScheduler.FromCurrentSynchronizationContext());
         }
-
-        private void RotateSpinner()
-        {
-            Device.StartTimer(TimeSpan.FromSeconds(0.05), () =>
-            {
-                if (timerContinue)
-                {
-                    Rotate = Rotate + 25;
-                    return true;
-                }
-                return false; //not continue
-            });
-        }
       
         #region properties
         public const string UploaderTextProperty = "UploaderText";
@@ -128,11 +154,11 @@ namespace OS2Indberetning.ViewModel
         {
             get
             {
-                return uploaderText;
+                return _uploaderText;
             }
             set
             {
-                uploaderText = value;
+                _uploaderText = value;
                 OnPropertyChanged(UploaderTextProperty);
             }
         }
@@ -142,11 +168,11 @@ namespace OS2Indberetning.ViewModel
         {
             get
             {
-                return errorVisibility;
+                return _errorVisibility;
             }
             set
             {
-                errorVisibility = value;
+                _errorVisibility = value;
                 OnPropertyChanged(ErrorVisibilityProperty);
             }
         }
@@ -157,11 +183,11 @@ namespace OS2Indberetning.ViewModel
         {
             get
             {
-                return uploadingVisibility;
+                return _uploadingVisibility;
             }
             set
             {
-                uploadingVisibility = value;
+                _uploadingVisibility = value;
                 OnPropertyChanged(UploadingVisibilityProperty);
             }
         }
@@ -171,11 +197,11 @@ namespace OS2Indberetning.ViewModel
         {
             get
             {
-                return errorText;
+                return _errorText;
             }
             set
             {
-                errorText = value;
+                _errorText = value;
                 OnPropertyChanged(ErrorTextProperty);
             }
         }
@@ -185,11 +211,11 @@ namespace OS2Indberetning.ViewModel
         {
             get
             {
-                return rotate;
+                return _rotate;
             }
             set
             {
-                rotate = value;
+                _rotate = value;
                 OnPropertyChanged(RotateProperty);
             }
         }

@@ -4,16 +4,24 @@ using Xamarin.Forms;
 
 namespace OS2Indberetning.Pages
 {
+    /// <summary>
+    /// Page that makes it possible for the user to add new purposes to a _list and select a specific purpose
+    /// </summary>
     public class PurposePage : ContentPage
     {
-        private PurposeViewModel viewModel;
-        public PurposeString selected;
-        private string[] purposeArray;
+        public PurposeString Selected;
+
+        /// <summary>
+        /// Constructor that handles initialization of the page
+        /// </summary>
         public PurposePage()
         {
             SetContent();
         }
 
+        /// <summary>
+        /// Method that creates the page layout and sets the page content, to that layout
+        /// </summary>
         public void SetContent()
         {
             var header = new Label
@@ -55,7 +63,7 @@ namespace OS2Indberetning.Pages
 
                 if (item == null) return;
                 item.Selected = true;
-                selected = item;
+                Selected = item;
                 SendSelectedMessage();
             };
 
@@ -107,28 +115,46 @@ namespace OS2Indberetning.Pages
 
         }
 
+        #region Message Handlers
+
+        /// <summary>
+        /// Method that handles sending an Add message
+        /// </summary>
         private void SendAddMessage()
         {
             MessagingCenter.Send<PurposePage>(this, "Add");
         }
 
+        /// <summary>
+        /// Method that handles sending an Back message
+        /// </summary>
         private void SendBackMessage()
         {
             MessagingCenter.Send<PurposePage>(this, "Back");
         }
 
+        /// <summary>
+        /// Method that handles sending an Selected message
+        /// </summary>
         private void SendSelectedMessage()
         {
             MessagingCenter.Send<PurposePage>(this, "Selected");
-
-            MessagingCenter.Send<PurposePage, string>(this, "Selected", selected.Name);
         }
+
+        #endregion
+
+        #region Overrides
+
+        /// <summary>
+        /// Override of the OnBackButtonPressed event.
+        /// Calls SendBackMessage so the viewmodel handles the back event
+        /// </summary>
+        /// <returns>Returns true, meaning nothing happens</returns>
         protected override bool OnBackButtonPressed()
         {
             SendBackMessage();
             return true;
         }
-
-
+        #endregion
     }
 }

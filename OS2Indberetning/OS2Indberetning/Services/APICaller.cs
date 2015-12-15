@@ -15,11 +15,10 @@ namespace OS2Indberetning.BuisnessLogic
     public static class APICaller
     {
         private static readonly string AppInfoUrl = "https://ework.favrskov.dk/FavrskovMobilityAPI/api/AppInfo";
-        private static readonly string MunicipalityUrl = "something";
-        private static HttpClient httpClient;
+        private static HttpClient _httpClient;
         static APICaller()
         {
-            httpClient = new HttpClient();
+            _httpClient = new HttpClient();
         }
 
         /// <summary>
@@ -29,7 +28,7 @@ namespace OS2Indberetning.BuisnessLogic
         public static async Task<List<Municipality>> GetMunicipalityList()
         {
             List<Municipality> list = new List<Municipality>();
-            var T = await httpClient.GetStringAsync(AppInfoUrl);
+            var T = await _httpClient.GetStringAsync(AppInfoUrl);
             list = JsonConvert.DeserializeObject<List<Municipality>>(T);
             return list;
         }
@@ -45,7 +44,7 @@ namespace OS2Indberetning.BuisnessLogic
             try
             {
                 HttpClientHandler handler = new HttpClientHandler();
-                httpClient = new HttpClient(handler);
+                _httpClient = new HttpClient(handler);
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url + "/SyncWithToken");
                 request.Content = new FormUrlEncodedContent( new[] 
                 {
@@ -58,7 +57,7 @@ namespace OS2Indberetning.BuisnessLogic
                 }
                 
                 // Send request
-                HttpResponseMessage response = await httpClient.SendAsync(request);
+                HttpResponseMessage response = await _httpClient.SendAsync(request);
                 // Read response
                 string jsonString = await response.Content.ReadAsStringAsync();
                 // Deserialize string to object
@@ -85,7 +84,7 @@ namespace OS2Indberetning.BuisnessLogic
             try
             {
                 HttpClientHandler handler = new HttpClientHandler();
-                httpClient = new HttpClient(handler);
+                _httpClient = new HttpClient(handler);
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, mun.APIUrl + "/UserData");
                 request.Content = new FormUrlEncodedContent(new[]
                 {
@@ -98,7 +97,7 @@ namespace OS2Indberetning.BuisnessLogic
                 }
 
                 // Send request
-                HttpResponseMessage response = await httpClient.SendAsync(request);
+                HttpResponseMessage response = await _httpClient.SendAsync(request);
                 // Read response
                 string jsonString = await response.Content.ReadAsStringAsync();
                 // Deserialize string to object
@@ -131,14 +130,14 @@ namespace OS2Indberetning.BuisnessLogic
                 var json = JsonConvert.SerializeObject(sendthis);
 
                 HttpClientHandler handler = new HttpClientHandler();
-                httpClient = new HttpClient(handler);
+                _httpClient = new HttpClient(handler);
 
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, munUrl + "SubmitDrive");
 
                 var stringContent = new StringContent(json, Encoding.UTF8, "application/json");
                 request.Content = stringContent;
                 // Send request
-                HttpResponseMessage response = await httpClient.SendAsync(request);
+                HttpResponseMessage response = await _httpClient.SendAsync(request);
                 // Read response
                 string jsonString = await response.Content.ReadAsStringAsync();
                 // Deserialize string to object
