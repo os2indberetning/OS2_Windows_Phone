@@ -82,18 +82,25 @@ namespace OS2Indberetning.ViewModel
         /// </summary>
         /// <param name="item">the StoredReportCellModel the user tried to uploaded</param>
         /// <param name="page">the parent page, used to open popup</param>
-        private void HandleUploadResult(UserInfoModel item, StoredReportsPage page)
+        private void HandleUploadResult(UserInfoModel user, StoredReportsPage page)
         {
-            if (item == null)
+            if (user == null)
             {
                 page.ClosePopup();
-                var popup = page.CreateErrorPopup("Kunne ikke upload på nuværende tidspunkt. Prøv igen senere");
+                var popup = page.CreateMessagePopup("Kunne ikke upload på nuværende tidspunkt. Prøv igen senere");
                 page.PopUpLayout.ShowPopup(popup);
                 return;
             }
             else
             {
-                RemoveItemFromList((StoredReportCellModel)page.List.SelectedItem, page);
+                var item = (StoredReportCellModel) page.List.SelectedItem;
+                ReportListHandler.RemoveReportFromList(item.report).ContinueWith((result) =>
+                {
+                    page.ClosePopup();
+                    InitializeCollection(result.Result);
+                    var popup = page.CreateMessagePopup("Kørsels rapport blev uploadet");
+                    page.PopUpLayout.ShowPopup(popup);
+                }, TaskScheduler.FromCurrentSynchronizationContext());
             }
         }
 
@@ -108,7 +115,7 @@ namespace OS2Indberetning.ViewModel
             {
                 page.ClosePopup();
                 InitializeCollection(result.Result);
-                var popup = page.CreateDeletedPopup("Kørsels rapport blev slettet");
+                var popup = page.CreateMessagePopup("Kørsels rapport blev slettet");
                 page.PopUpLayout.ShowPopup(popup);
             }, TaskScheduler.FromCurrentSynchronizationContext());
         }

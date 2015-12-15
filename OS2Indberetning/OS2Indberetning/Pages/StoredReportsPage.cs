@@ -197,16 +197,16 @@ namespace OS2Indberetning
         }
 
         /// <summary>
-        /// Method that creates the stacklayout for the error popup
+        /// Method that creates the stacklayout for the message popup
         /// </summary>
         /// <param name="message">Text to be displayed in the popup</param>
         /// <returns>Stacklayout of the popup</returns>
-        public StackLayout CreateErrorPopup(string message)
+        public StackLayout CreateMessagePopup(string message)
         {
             var display = Resolver.Resolve<IDevice>().Display;
             var header = new Label
             {
-                Text = "Send Rapport",
+                Text = "Status",
                 TextColor = Color.FromHex(Definitions.TextColor),
                 FontSize = Definitions.HeaderFontSize,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
@@ -248,109 +248,6 @@ namespace OS2Indberetning
                 }
             };
             
-            var cancelButton = new ButtomButton("Ok", ClosePopup);
-
-            cancelButton.WidthRequest = _yesNoButtonWidth;
-
-            var ButtonStack = new StackLayout
-            {
-                BackgroundColor = Color.White, // for Android and WP
-                Orientation = StackOrientation.Horizontal,
-                VerticalOptions = LayoutOptions.End,
-                Padding = new Thickness(Definitions.Padding, 0, Definitions.Padding, Definitions.Padding),
-                Spacing = Definitions.Padding,
-                HorizontalOptions = LayoutOptions.CenterAndExpand,
-                Children =
-                {
-                    cancelButton,
-                }
-            };
-
-            var PopUp = new StackLayout
-            {
-                WidthRequest = _popupWidth,
-                HeightRequest = _popupHeight,
-                BackgroundColor = Color.White,
-                Orientation = StackOrientation.Vertical,
-                VerticalOptions = LayoutOptions.Center,
-                HorizontalOptions = LayoutOptions.Center,
-                Children =
-                {
-                    headerstack,
-                    textStack,
-                    ButtonStack
-                }
-            };
-            var topPadding = display.Height / 2 - 150;
-            var PopUpBackground = new StackLayout
-            {
-                Padding = new Thickness(0, topPadding, 0, 0),
-                WidthRequest = display.Width,
-                HeightRequest = display.Height,
-                BackgroundColor = Color.FromRgba(0, 0, 0, 0.85),
-                Orientation = StackOrientation.Vertical,
-                VerticalOptions = LayoutOptions.Center,
-                Children =
-                {
-                    PopUp
-                }
-            };
-
-            return PopUpBackground;
-        }
-
-        /// <summary>
-        /// Method that creates the stacklayout for the deleted popup
-        /// </summary>
-        /// <param name="message">Text to be displayed in the popup</param>
-        /// <returns>Stacklayout of the popup</returns>
-        public StackLayout CreateDeletedPopup(string message)
-        {
-            var display = Resolver.Resolve<IDevice>().Display;
-            var header = new Label
-            {
-                Text = "Rapport slettet",
-                TextColor = Color.FromHex(Definitions.TextColor),
-                FontSize = Definitions.HeaderFontSize,
-                HorizontalOptions = LayoutOptions.CenterAndExpand,
-                YAlign = TextAlignment.Center,
-                XAlign = TextAlignment.Center,
-            };
-            var headerstack = new StackLayout
-            {
-                Orientation = StackOrientation.Horizontal,
-                BackgroundColor = Color.FromHex(Definitions.PrimaryColor),
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                HeightRequest = Definitions.HeaderHeight,
-                Children =
-                {
-                    header,
-                }
-            };
-            var text = new Label
-            {
-                Text = message,
-                TextColor = Color.FromHex(Definitions.DefaultTextColor),
-                FontSize = Definitions.PopupTextSize,
-                HorizontalOptions = LayoutOptions.CenterAndExpand,
-                VerticalOptions = LayoutOptions.CenterAndExpand,
-                YAlign = TextAlignment.Center,
-                XAlign = TextAlignment.Center,
-            };
-
-            var textStack = new StackLayout
-            {
-                BackgroundColor = Color.White, // for Android and WP
-                Orientation = StackOrientation.Vertical,
-                VerticalOptions = LayoutOptions.CenterAndExpand,
-                Padding = new Thickness(Definitions.Padding, 0, Definitions.Padding, 0),
-                HorizontalOptions = LayoutOptions.CenterAndExpand,
-                Children =
-                {
-                    text,
-                }
-            };
-
             var cancelButton = new ButtomButton("Ok", ClosePopup);
 
             cancelButton.WidthRequest = _yesNoButtonWidth;

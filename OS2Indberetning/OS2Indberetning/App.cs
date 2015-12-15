@@ -39,8 +39,8 @@ namespace OS2Indberetning
             RegisterPages();
 
             // For testing
-            storage = DependencyService.Get<ISecureStorage>();
-            FakeModel();
+            //storage = DependencyService.Get<ISecureStorage>();
+            //FakeModel();
             // The root page of your application
            
             ViewFactory.EnableCache = false;
