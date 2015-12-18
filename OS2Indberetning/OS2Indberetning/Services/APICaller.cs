@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -98,18 +99,32 @@ namespace OS2Indberetning.BuisnessLogic
 
                 // Send request
                 HttpResponseMessage response = await _httpClient.SendAsync(request);
-                // Read response
-                string jsonString = await response.Content.ReadAsStringAsync();
-                // Deserialize string to object
-                UserInfoModel model = JsonConvert.DeserializeObject<UserInfoModel>(jsonString);
 
-                model = RemoveTrailer(model);
-                //return model;
-                return model;
+                // NO INTERNET ERROR
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                    throw new ArgumentException("NotFound");
+
+                // If model deserialisation goes wrong. null is returned
+                try
+                {
+                    // Read response
+                    string jsonString = await response.Content.ReadAsStringAsync();
+                    // Deserialize string to object
+                    UserInfoModel model = JsonConvert.DeserializeObject<UserInfoModel>(jsonString);
+
+                    model = RemoveTrailer(model);
+                    //return model;
+                    return model;
+                }
+                catch
+                {
+                    return null;
+                }
+                
             }
             catch (Exception e)
             {
-                return null;
+                throw e;
             }
         }
 

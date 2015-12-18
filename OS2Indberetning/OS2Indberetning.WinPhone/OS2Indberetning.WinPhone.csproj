@@ -155,6 +155,7 @@
     <Content Include="Resources\done.png" />
     <Content Include="Resources\done_black.png" />
     <Content Include="Resources\left.png" />
+    <Content Include="Resources\refresh.png" />
     <Content Include="Resources\right.png" />
     <Content Include="Resources\spinner.png" />
     <Content Include="Resources\tap.png" />

@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using OS2Indberetning.BuisnessLogic;
 using Xamarin.Forms;
@@ -26,6 +27,8 @@ namespace OS2Indberetning.ViewModel
         private const string TakstText = "Takst";
         private const string EkstraText = "Ekstra Bemærkning:";
 
+        private ISecureStorage _storage;
+
         /// <summary>
         /// Constructor that handles initialization of the viewmodel
         /// </summary>
@@ -37,6 +40,7 @@ namespace OS2Indberetning.ViewModel
             }
             
             _driveReport = new ObservableCollection<DriveReportCellModel>();
+            _storage = DependencyService.Get<ISecureStorage>();
             Subscribe();
         }
 
@@ -72,6 +76,8 @@ namespace OS2Indberetning.ViewModel
             {
                 Navigation.PushAsync<CrossPathViewModel>();
             });
+
+            MessagingCenter.Subscribe<MainPage>(this, "Refresh", (sender) => { HandleRefreshMessage(); });
         }
 
         /// <summary>
@@ -89,6 +95,8 @@ namespace OS2Indberetning.ViewModel
             MessagingCenter.Unsubscribe<MainPage>(this, "ViewStored");
 
             MessagingCenter.Unsubscribe<MainPage>(this, "ShowCross");
+
+            MessagingCenter.Unsubscribe<MainPage>(this, "Refresh");
         }
 
         /// <summary>
@@ -145,18 +153,66 @@ namespace OS2Indberetning.ViewModel
             switch (item.Name)
             {
                 case PurposeText:
-                    Navigation.PushAsync<PurposeViewModel>();
-                    break;
+                    Navigation.PushModalAsync<PurposeViewModel>();
+                      break;
                 case OrganisatoriskText:
-                    Navigation.PushAsync<OrganizationViewModel>();
+                    Navigation.PushModalAsync<OrganizationViewModel>();
                     break;
                 case TakstText:
-                    Navigation.PushAsync<TaxViewModel>();
+                    Navigation.PushModalAsync<TaxViewModel>();
                     break;
                 case EkstraText:
-                    Navigation.PushAsync<RemarkViewModel>();
+                    Navigation.PushModalAsync<RemarkViewModel>();
                     break;
             }
+        }
+
+        /// <summary>
+        /// Method that handles the Refresh message
+        /// </summary>
+        private void HandleRefreshMessage()
+        {
+            var byteArray = _storage.Retrieve(Definitions.TokenKey);
+            var mstring = Encoding.UTF8.GetString(byteArray, 0, byteArray.Length);
+            var userToken = JsonConvert.DeserializeObject<Token>(mstring);
+            // Get Token from storage and deserialize
+            if (!_storage.Contains(Definitions.MunKey))
+            {
+                // HMM
+                return;
+            }
+            if (!_storage.Contains(Definitions.UserDataKey))
+            {
+                // HMmm
+                return;
+            }
+            var munByte = _storage.Retrieve(Definitions.MunKey);
+            var munString = Encoding.UTF8.GetString(munByte, 0, munByte.Length);
+            var mun = JsonConvert.DeserializeObject<Municipality>(munString);
+            APICaller.RefreshModel(userToken, mun).ContinueWith((result) =>
+            {
+                try
+                {
+                    if (result.Result == null)
+                    {
+                        // maybe notify the user it couldnt be done?
+                        return;
+                    }
+                }
+                catch // If API threw an exception, use old model
+                {
+                    // maybe notify the user it couldnt be done?
+                }
+
+                Definitions.User = result.Result;
+                Definitions.MunIcon = new UriImageSource { Uri = new Uri(mun.ImgUrl) };
+                Definitions.TextColor = mun.TextColor;
+                Definitions.PrimaryColor = mun.PrimaryColor;
+                Definitions.SecondaryColor = mun.SecondaryColor;
+                Definitions.MunUrl = mun.APIUrl;
+                _storage.Store(Definitions.UserDataKey, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(result.Result)));
+
+            }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         #endregion

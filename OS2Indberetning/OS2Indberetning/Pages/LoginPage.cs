@@ -50,10 +50,12 @@ namespace OS2Indberetning.Pages
             {
                 Text = "OS2Indberetning",
                 TextColor = Color.FromHex(Definitions.TextColor),
-                FontSize = Definitions.HeaderFontSize,
+                FontSize = Definitions.HeaderFontSize - 3,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
                 YAlign = TextAlignment.Center,
             };
+            var filler = new Filler(null);
+            var refreshButton = new RefreshButton(SendRefreshMessage);
 
             var headerstack = new StackLayout
             {
@@ -62,7 +64,9 @@ namespace OS2Indberetning.Pages
                 HeightRequest = Definitions.HeaderHeight,
                 Children =
                 {
+                    refreshButton,
                     header,
+                    filler,
                 }
             };
 
@@ -78,6 +82,14 @@ namespace OS2Indberetning.Pages
             };
            
             this.Content = layout;
+        }
+
+        /// <summary>
+        /// Method that handles sending a Refresh message
+        /// </summary>
+        public void SendRefreshMessage()
+        {
+            MessagingCenter.Send<LoginPage>(this, "Refresh");
         }
 
         #region Overrides

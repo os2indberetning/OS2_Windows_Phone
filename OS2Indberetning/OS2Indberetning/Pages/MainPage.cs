@@ -72,23 +72,23 @@ namespace OS2Indberetning
                 YAlign = TextAlignment.Center,
             };
             var vertButton = new VertsButton(SendViewStoredMessage);
-            var filler = new Filler();
+            var refreshButton = new RefreshButton(SendRefreshMessage);
 
             vertButton.WidthRequest = 60;
             vertButton.HeightRequest = 60;
-            filler.WidthRequest = 60;
-            filler.HeightRequest = 60;
+            refreshButton.WidthRequest = 60;
+            refreshButton.HeightRequest = 60;
 
             var headerstack = new StackLayout
             {
                 Orientation = StackOrientation.Horizontal,
                 BackgroundColor = Color.FromHex(Definitions.PrimaryColor),
                 HeightRequest = Definitions.HeaderHeight,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                Padding = 5,
+                //HorizontalOptions = LayoutOptions.FillAndExpand,
+                //Padding = 5,
                 Children =
                 {
-                    filler,
+                    refreshButton,
                     header,
                     vertButton,
                 }
@@ -148,7 +148,7 @@ namespace OS2Indberetning
                 },
                 BackgroundColor = Color.FromHex(Definitions.BackgroundColor),
             };
-
+            
             _popUpLayout = new PopupLayout();
             _popUpLayout.Content = layout;
             return _popUpLayout;
@@ -339,6 +339,14 @@ namespace OS2Indberetning
         private void SendViewStoredMessage()
         {
             MessagingCenter.Send<MainPage>(this, "ViewStored");
+        }
+
+        /// <summary>
+        /// Method that handles sending an Refresh message
+        /// </summary>
+        private void SendRefreshMessage()
+        {
+            MessagingCenter.Send<MainPage>(this, "Refresh");
         }
 
         #endregion

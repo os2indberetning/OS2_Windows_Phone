@@ -39,13 +39,14 @@ namespace OS2Indberetning
             RegisterPages();
 
             // For testing
-            //storage = DependencyService.Get<ISecureStorage>();
-            //FakeModel();
+            storage = DependencyService.Get<ISecureStorage>();
+            FakeModel();
             // The root page of your application
            
             ViewFactory.EnableCache = false;
 
             this.MainPage = GetMainPage();
+            
 
         }
 
@@ -185,7 +186,10 @@ namespace OS2Indberetning
 
         protected override void OnResume()
         {
-            // Handle when your app resumes
+            if (Definitions.GpsIsActive)
+            {
+                MessagingCenter.Send(this, "Appeared");
+            }
         }
     }
 }

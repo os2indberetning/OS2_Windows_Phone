@@ -120,6 +120,10 @@ namespace OS2Indberetning.ViewModel
         /// </summary>
         public void HandleUploadMessage(UploadingPage sender)
         {
+            // for testing
+            //HandleUploadResult(null, null);
+            //return;
+
             UploadingVisibility = true;
             ErrorVisibility = false;
             _timerContinue = true;

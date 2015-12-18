@@ -11,6 +11,9 @@ namespace OS2Indberetning.Templates
         private string _text1;
         private string _text2;
         private bool _toggle;
+        private bool _active;
+
+        private double _opacity;
 
         /// <summary>
         /// Creates a new instance of the animation button
@@ -19,11 +22,12 @@ namespace OS2Indberetning.Templates
         /// /// <param name="text2">the text to set when pressed once</param>
         /// /// /// <param name="text3">the text to set when pressed twice</param>
         /// <param name="callback">action to call when the animation is complete</param>
-        public ToggleButton(string text1, string text2, string text3, Action callback = null)
+        public ToggleButton(string text1, string text2, string text3, Action callback = null, bool active = true)
         {
             _text = text1;
             _text1 = text2;
             _text2 = text3;
+            Active = active;
             // create the layout
             _layout = new StackLayout
             {
@@ -53,12 +57,15 @@ namespace OS2Indberetning.Templates
             {
                 Command = new Command(async (o) =>
                 {
-                    _toggle = !_toggle;
-                    _textLabel.Text = _toggle ? _text1 : _text2;
-                    await this.ScaleTo(0.95, 50, Easing.CubicOut);
-                    await this.ScaleTo(1, 50, Easing.CubicIn);
-                    if (callback != null)
-                        callback.Invoke();
+                    if (_active)
+                    {
+                        _toggle = !_toggle;
+                        _textLabel.Text = _toggle ? _text1 : _text2;
+                        await this.ScaleTo(0.95, 50, Easing.CubicOut);
+                        await this.ScaleTo(1, 50, Easing.CubicIn);
+                        if (callback != null)
+                            callback.Invoke();
+                    }
                 })
             });
 
@@ -105,7 +112,10 @@ namespace OS2Indberetning.Templates
             set
             {
                 _textLabel.Text = value;
-                _toggle = !_toggle;
+                if (_textLabel.Text == _text2)
+                {
+                    _toggle = false;
+                }
             }
         }
 
@@ -121,6 +131,39 @@ namespace OS2Indberetning.Templates
             set
             {
                 _layout.HeightRequest = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the height for the button
+        /// </summary>
+        public virtual bool Active
+        {
+            get
+            {
+                return _active;
+            }
+            set
+            {
+                _active = value;
+                if (!_active)
+                {
+                    _toggle = false;
+                    Opacity = 0.7;
+                    BackgroundColor = Color.Red;
+                    if (_textLabel.Text == _text1 || _textLabel.Text == _text2)
+                    {
+                        _textLabel.Text = _text2;
+                    }
+                    else
+                    {
+                        _textLabel.Text = _text; 
+                    }
+                }
+                else
+                {
+                    Opacity = 1;
+                }
             }
         }
     }

@@ -96,7 +96,7 @@ namespace OS2Indberetning.ViewModel
         private void HandleBackMessage()
         {
             Dispose();
-            Navigation.PopToRootAsync();
+            Navigation.PopModalAsync();
         }
         #endregion
 

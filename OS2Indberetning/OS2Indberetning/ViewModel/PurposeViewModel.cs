@@ -98,7 +98,7 @@ namespace OS2Indberetning.ViewModel
         private void HandleBackMessage()
         {
             Dispose();
-            App.Navigation.PopToRootAsync();
+            Navigation.PopModalAsync();
         }
 
         /// <summary>

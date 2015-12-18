@@ -1,4 +1,5 @@
-﻿using Microsoft.Phone.Controls;
+﻿using System.IO.IsolatedStorage;
+using Microsoft.Phone.Controls;
 
 namespace OS2Indberetning.WinPhone
 {
@@ -14,6 +15,9 @@ namespace OS2Indberetning.WinPhone
             global::Xamarin.Forms.Forms.Init();
 
             LoadApplication(new OS2Indberetning.App());
+
+            IsolatedStorageSettings.ApplicationSettings["LocationConsent"] = true;
+            IsolatedStorageSettings.ApplicationSettings.Save();
         }
     }
 }

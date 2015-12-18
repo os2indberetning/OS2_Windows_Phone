@@ -1,4 +1,5 @@
-﻿using OS2Indberetning.Templates;
+﻿using System;
+using OS2Indberetning.Templates;
 using OS2Indberetning.ViewModel;
 using Xamarin.Forms;
 
@@ -11,11 +12,23 @@ namespace OS2Indberetning.Pages
     {
         public PurposeString Selected;
 
+        private int _hackSpaces;
+        private string _placeholder = "";
+
         /// <summary>
         /// Constructor that handles initialization of the page
         /// </summary>
         public PurposePage()
         {
+
+            // HACK to center placeholder text. best method i could find
+            _hackSpaces = (int)Math.Round(Definitions.ScreenWidth / 46);
+            for (int i = 0; i < _hackSpaces; i++)
+            {
+                _placeholder = _placeholder + " ";
+            }
+            _placeholder = _placeholder + "Tast nyt formål";
+
             SetContent();
         }
 
@@ -74,7 +87,7 @@ namespace OS2Indberetning.Pages
 
             var entry = new Entry
             {
-                Placeholder = "Tast nyt formål",
+                Placeholder = _placeholder,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
             };

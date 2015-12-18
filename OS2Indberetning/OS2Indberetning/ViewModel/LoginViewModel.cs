@@ -18,9 +18,10 @@ namespace OS2Indberetning.ViewModel
     /// Viewmodel to the Login page. Setups the list for display in the page
     /// and handles pushing to the couple page with the correct model
     /// </summary>
-    public class LoginViewModel : XLabs.Forms.Mvvm.ViewModel, INotifyPropertyChanged
+    public class LoginViewModel : XLabs.Forms.Mvvm.ViewModel, INotifyPropertyChanged, IDisposable
     {
         public event PropertyChangedEventHandler PropertyChanged;
+        //private ICommand _refreshListCommand;
 
         private ObservableCollection<MunCellModel> _munList;
         private List<Municipality> _objectList;
@@ -31,11 +32,35 @@ namespace OS2Indberetning.ViewModel
         public LoginViewModel()
         {
             MunList = new ObservableCollection<MunCellModel>();
-            APICaller.GetMunicipalityList().ContinueWith((result) =>
+            CallApi();
+            Subscribe();
+        }
+
+        /// <summary>
+        /// Method that handles cleanup of the viewmodel
+        /// </summary>
+        public void Dispose()
+        {
+            Unsubscribe();
+        }
+
+        /// <summary>
+        /// Method that handles subscribing to the needed messages
+        /// </summary>
+        private void Subscribe()
+        {
+            MessagingCenter.Subscribe<LoginPage>(this, "Refresh", (sender) =>
             {
-                _objectList = result.Result;
-                InitList(result.Result);
-            }, TaskScheduler.FromCurrentSynchronizationContext());
+                HandleRefreshMessage();
+            });   
+        }
+
+        /// <summary>
+        /// Method that handles unsubscribing
+        /// </summary>
+        private void Unsubscribe()
+        {
+            MessagingCenter.Unsubscribe<LoginPage>(this, "Refresh");
         }
 
         /// <summary>
@@ -58,6 +83,17 @@ namespace OS2Indberetning.ViewModel
         }
 
         /// <summary>
+        /// Method that handles the call to API service and directs the result
+        /// </summary>
+        private void CallApi()
+        {
+            APICaller.GetMunicipalityList().ContinueWith((result) =>
+            {
+                _objectList = result.Result;
+                InitList(result.Result);
+            }, TaskScheduler.FromCurrentSynchronizationContext());
+        }
+        /// <summary>
         /// Method called from the page when an item is Selected.
         /// It pushes a coupling page initialized to the Selected Municipality.
         /// Used instead of messagingcenter
@@ -78,6 +114,14 @@ namespace OS2Indberetning.ViewModel
                     break;
                 }
             }
+        }
+
+        /// <summary>
+        /// Method that handles the call to API service and directs the result
+        /// </summary>
+        private void HandleRefreshMessage()
+        {
+            CallApi();
         }
 
         #region Properties

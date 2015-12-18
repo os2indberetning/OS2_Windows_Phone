@@ -1,15 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using OS2Indberetning.BuisnessLogic;
 using Xamarin.Forms;
-
 using OS2Indberetning.Model;
 using XLabs.Platform.Services.Geolocation;
-
 
 namespace OS2Indberetning.ViewModel
 {
@@ -33,29 +31,41 @@ namespace OS2Indberetning.ViewModel
         private double _positionLatitude;
         private double _positionLongitude;
 
-        private double pauseLatitude;
-        private double pauseLongitude;
+        private double _pauseLatitude;
+        private double _pauseLongitude;
 
         private double _distance;
         private bool _firstRun = true;
         private bool _finishedHome = false;
-        private bool _pause = true;
+        private bool _pause = false;
 
         private CancellationTokenSource _cancelSource;
 
-        private int _countDown = 5;
+        private double _countDown = Definitions.GpsCountDown;
+        private double _noSignalCountDown;
         private bool _trackChanges = false;
+        private bool _error;
+        private DateTime _errorDateTime;
+        private bool _errorCountdownStarted;
         private bool _doTestCheck;
-
+        private bool _isListening = false;
+        private bool _stopErrorTimer;
+        private bool _doCountdown;
+        private bool _noGpsForTooLong = false;
+        
         /// <summary>
         /// Constructor that handles initialization of the viewmodel
         /// </summary>
         public GpsViewModel()
         {
+            Definitions.GpsIsActive = true;
             TraveledDistance = 0;
             PositionStatus = DateTime.Now.ToString("HH:mm:ss");
-            Accuracy = "GPS Nøjagtighed: " + Convert.ToString(Definitions.Accuracy) + " m";
+            SetAccuracy();
             Subscribe();
+            SetupGps();
+            _noSignalCountDown = Definitions.NoGpsSignalTimer;
+            Timer(); // start timer
         }
 
         /// <summary>
@@ -63,12 +73,14 @@ namespace OS2Indberetning.ViewModel
         /// </summary>
         public void Dispose()
         {
+            Definitions.GpsIsActive = false;
             _parentPage.Dispose();
             Unsubscribe();
             HandleStopGpsMessage();
+            _stopErrorTimer = true; // stop timer;
             if (_cancelSource != null)
             {
-                _cancelSource.Dispose();
+                _cancelSource.Cancel();
             }
             _locator = null;
         }
@@ -97,6 +109,11 @@ namespace OS2Indberetning.ViewModel
                 FinishedHome = !FinishedHome;
                 Definitions.EndsAtHome = FinishedHome;
             });
+            MessagingCenter.Subscribe<GpsPage>(this, "Here", (sender) =>
+            {
+                _parentPage = sender;
+            });
+            MessagingCenter.Subscribe<App>(this, "Appeared", HandleAppearedMessage);
         }
 
         /// <summary>
@@ -108,6 +125,8 @@ namespace OS2Indberetning.ViewModel
             MessagingCenter.Unsubscribe<GpsPage>(this, "Finish");
             MessagingCenter.Unsubscribe<GpsPage>(this, "Stop");
             MessagingCenter.Unsubscribe<GpsPage>(this, "ToggleFinishedHome");
+            MessagingCenter.Unsubscribe<GpsPage>(this, "Here");
+            MessagingCenter.Unsubscribe<App>(this, "Appeared");
         }
 
         /// <summary>
@@ -123,25 +142,86 @@ namespace OS2Indberetning.ViewModel
         /// </summary>
         public void GpsNotAvailable()
         {
-            Accuracy = "Gps er ikke tilgængelig";
+            _error = true;
+            if (!_doCountdown)
+            {
+                _errorDateTime = DateTime.Now;
+            }
+            
+
+            //_trackChanges = false;
+            //_locator.StopListening();
+            //_pause = false;
+            _doCountdown = true;
+            SetAccuracy();
+            //if (_parentPage != null) _parentPage.HandleStartButtonNotPressable();
+
         }
 
+        /// <summary>
+        /// Method to do stuff when gps is not available
+        /// </summary>
+        public void GpsIsvailable()
+        {
+            _noSignalCountDown = Definitions.NoGpsSignalTimer; // reset countdown
+
+            _doCountdown = false;
+            SetAccuracy();
+            //if (_parentPage != null) _parentPage.HandleStartButtonPressable();
+
+        }
+
+
+        public void Timer()
+        {
+            Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+            {
+                // if flag already set, return
+                if (_noGpsForTooLong) return true;
+
+                _errorCountdownStarted = true;
+                if (_doCountdown)
+                {
+                    if (_noSignalCountDown > 0)
+                    {
+                        _noSignalCountDown--;
+                        PositionChanged(null, null);
+                        return true;
+                    }
+                    // reset timer og vis popup
+                    //_parentPage.HandleNoGpsError();
+                    _noGpsForTooLong = true;
+                    return false;
+                }
+
+                if(_stopErrorTimer)
+                   return false; //not continue
+                _noSignalCountDown = Definitions.NoGpsSignalTimer;
+                _errorCountdownStarted = false;
+                return true; // continue 
+            });
+        }
+ 
         /// <summary>
         /// Method that handles change in positions from the gps signal
         /// </summary>
         public void PositionChanged(object sender, PositionEventArgs e)
         {
             IsBusy = true;
-            _locator.GetPositionAsync(timeout: (int)Definitions.MinInterval, cancelToken: this._cancelSource.Token, includeHeading: false)
+            _locator.GetPositionAsync(timeout: 25000, cancelToken: this._cancelSource.Token, includeHeading: false)
                 .ContinueWith(t =>
                 {
                     IsBusy = false;
                     if (t.IsFaulted)
-                        PositionStatus = ((GeolocationException)t.Exception.InnerException).Error.ToString();
+                    {
+                        GpsNotAvailable();
+                        //PositionStatus = ((GeolocationException)t.Exception.InnerException).Error.ToString();
+                    }
                     else if (t.IsCanceled)
                         PositionStatus = "Canceled";
                     else
                     {
+                        GpsIsvailable();
                         if (_trackChanges)
                         {
                             if (_firstRun)
@@ -149,20 +229,24 @@ namespace OS2Indberetning.ViewModel
                                 _positionLatitude = t.Result.Latitude;
                                 _positionLongitude = t.Result.Longitude;
                                 _firstRun = false;
-                                _doTestCheck = false;
+                                return;
                             }
                             if (_doTestCheck)
                             {
-                                _doTestCheck = !_doTestCheck;
                                 var testDistance = Math.Round(GpsCalculator.Distance(_positionLatitude, _positionLongitude, t.Result.Latitude, t.Result.Longitude, 'K'), 3);
                                 if (testDistance > 0.2)
                                 {
-                                    _locator.StopListening();
+                                    //_locator.StopListening();
+                                    //_isListening = false;
+                                    _trackChanges = false;
                                     _pause = !_pause;
+                                    _locator.StopListening();
                                     PauseDistanceTooBig(testDistance);
                                     return;
                                 }
+                                _doTestCheck = false;
                             }
+                            
                             TraveledDistance = Math.Round(GpsCalculator.Distance(_positionLatitude, _positionLongitude, t.Result.Latitude, t.Result.Longitude, 'K'), 3);
                             _positionLatitude = t.Result.Latitude;
                             _positionLongitude = t.Result.Longitude;
@@ -190,7 +274,16 @@ namespace OS2Indberetning.ViewModel
             }
             _cancelSource = new CancellationTokenSource();
             _locator.PositionChanged += PositionChanged;
-            _locator.StartListening(Definitions.MinInterval, Definitions.Accuracy, false);
+            _locator.PositionError += PositionError;
+        }
+
+
+        /// <summary>
+        /// Method that gets called when an error event is triggered in the locator
+        /// </summary>
+        private void PositionError(object sender, PositionErrorEventArgs e)
+        {
+            GpsNotAvailable();
         }
 
         /// <summary>
@@ -208,7 +301,7 @@ namespace OS2Indberetning.ViewModel
                     return true;
                 }
 
-                _countDown = 5; // reset timer
+                _countDown = Definitions.GpsCountDown; // reset timer
                 PositionStatus = DateTime.Now.ToString("HH:mm:ss");
                 _trackChanges = true;
                 return false; //not continue
@@ -222,13 +315,17 @@ namespace OS2Indberetning.ViewModel
         /// </summary>
         public void SetAccuracy()
         {
-            if (_pause)
+            if (_doCountdown)
             {
-                Accuracy = "GPS sat på _pause";
+                Accuracy = "Intet GPS signal"; 
+            }
+            else if (!_pause)
+            {
+                Accuracy = "GPS sat på pause";
             }
             else
             {
-                Accuracy = "GPS Nøjagtighed: " + Convert.ToString(Definitions.Accuracy) + " m";
+                Accuracy = "GPS Nøjagtighed: 10 m";
             }
 
         }
@@ -284,12 +381,15 @@ namespace OS2Indberetning.ViewModel
             {
                 CountDown();
                 SetupGps();
+                //_locator.StartListening(Definitions.MinInterval, Definitions.Accuracy, false);
+                _isListening = true;
                 return;
             }
-
+            
             _pause = !_pause;
             if (_pause)
             {
+                SetAccuracy();
                 var test = _locator.IsGeolocationAvailable;
                 if (!test)
                 {
@@ -297,20 +397,24 @@ namespace OS2Indberetning.ViewModel
                 }
                 else
                 {
-                    _doTestCheck = true;
+                    if(!_firstRun)
+                        _doTestCheck = true;
+
                     CountDown();
-                    _locator.StartListening(Definitions.MinInterval, Definitions.Accuracy);
+                    _locator.StartListening(Definitions.MinInterval, Definitions.Accuracy, false);
                 }
             }
             else
             {
+                SetAccuracy();
                 _locator.StopListening();
-                pauseLatitude = _positionLatitude;
-                pauseLongitude = _positionLongitude;
+                _trackChanges = false;
+                _pauseLatitude = _positionLatitude;
+                _pauseLongitude = _positionLongitude;
                 if (Definitions.Route.GPSCoordinates.Count > 0)
                 {
                     Definitions.Route.GPSCoordinates.Last().IsViaPoint = "true";
-                    _trackChanges = true;
+                   
                 }
             }
         }
@@ -325,6 +429,7 @@ namespace OS2Indberetning.ViewModel
                 if (_locator.IsGeolocationEnabled)
                 {
                     _locator.StopListening();
+                    _isListening = false;
                     _cancelSource.Cancel(false);
                     _locator.PositionChanged -= PositionChanged;
                 }
@@ -337,6 +442,13 @@ namespace OS2Indberetning.ViewModel
         /// </summary>
         public void HandleFinishDriveMessage()
         {
+            if (_noGpsForTooLong)
+            {
+                _noGpsForTooLong = false;
+                _parentPage.HandleNoGpsError();
+                return;
+            }
+
             Definitions.Report.EmploymentId = Definitions.Organization.Id;
             Definitions.Report.Date = Definitions.Date;
 
@@ -350,6 +462,23 @@ namespace OS2Indberetning.ViewModel
             Dispose();
             Navigation.PushAsync<FinishDriveViewModel>();
         }
+
+        /// <summary>
+        /// Method that handles the Appeared message
+        /// </summary>
+        public void HandleAppearedMessage(object sender)
+        {
+            if (_error && !_errorCountdownStarted)
+            {
+                var seconds = (DateTime.Now - _errorDateTime).TotalSeconds;
+                _noSignalCountDown = (double)Definitions.NoGpsSignalTimer - seconds;
+            }
+            else
+            {
+                PositionChanged(null, null);
+            }
+        }
+
 
         #endregion
 

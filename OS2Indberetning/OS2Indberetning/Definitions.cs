@@ -24,8 +24,14 @@ namespace OS2Indberetning
         #endregion
 
         #region GPS properties
-        public static double Accuracy = 10.00;
-        public static uint MinInterval = 2000;
+
+        public static double Accuracy = 0;
+        public static uint MinInterval = 3000;
+
+        public static int NoGpsSignalTimer = 10;
+        public static int GpsCountDown = 5;
+
+        public static bool GpsIsActive;
         #endregion
 
         #region Loading message

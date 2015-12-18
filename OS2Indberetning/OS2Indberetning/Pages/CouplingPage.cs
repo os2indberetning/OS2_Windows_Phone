@@ -14,8 +14,17 @@ namespace OS2Indberetning.Pages
     {
         private Municipality _municipality;
 
+        private int hackSpaces;
+        private string _placeholder = "";
         public CouplingPage()
         {
+            // HACK to center placeholder text. best method i could find
+            hackSpaces = (int)Math.Round(Definitions.ScreenWidth/27);
+            for (int i = 0; i < hackSpaces; i++)
+            {
+                _placeholder = _placeholder + " ";
+            }
+            _placeholder = _placeholder + "Tast Parringskode";
         }
 
         /// <summary>
@@ -62,7 +71,7 @@ namespace OS2Indberetning.Pages
 
             var entry = new Entry
             {
-                Placeholder = "Tast Parringskode",
+                Placeholder = _placeholder,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
             };

@@ -133,16 +133,16 @@ namespace OS2Indberetning.ViewModel
             switch (item.Name)
             {
                 case PurposeText:
-                    Navigation.PushAsync<PurposeViewModel>();
+                    Navigation.PushModalAsync<PurposeViewModel>();
                     break;
                 case OrganisatoriskText:
-                    Navigation.PushAsync<OrganizationViewModel>();
+                    Navigation.PushModalAsync<OrganizationViewModel>();
                     break;
                 case TakstText:
-                    Navigation.PushAsync<TaxViewModel>();
+                    Navigation.PushModalAsync<TaxViewModel>();
                     break;
                 case EkstraText:
-                    Navigation.PushAsync<RemarkViewModel>();
+                    Navigation.PushModalAsync<RemarkViewModel>();
                     break;
                 case KilometerText:
                     sender.PopUpLayout.ShowPopup(sender.EditKmPopup());

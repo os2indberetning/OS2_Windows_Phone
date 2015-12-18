@@ -25,7 +25,6 @@ namespace OS2Indberetning.ViewModel
         {
             _storage = DependencyService.Get<ISecureStorage>();
             Subscribe();
-            App.ShowLoading(true);
         }
 
         /// <summary>
@@ -62,7 +61,6 @@ namespace OS2Indberetning.ViewModel
         private void ShowMainPage()
         {
             Definitions.Report = new DriveReport();
-            App.ShowLoading(false, true);
             Dispose();
             App.Navigation.PopToRootAsync();
         }
@@ -73,7 +71,6 @@ namespace OS2Indberetning.ViewModel
         private void ShowLoginPage()
         {
             Definitions.Report = new DriveReport();
-            App.ShowLoading(false, true);
             Dispose();
             Navigation.PushAsync<LoginViewModel>();
         }
@@ -102,16 +99,38 @@ namespace OS2Indberetning.ViewModel
                     ShowLoginPage();
                     return;
                 }
-                var userTokenByte = _storage.Retrieve(Definitions.MunKey);
-                var userTokenString = Encoding.UTF8.GetString(userTokenByte, 0, userTokenByte.Length);
-                var mun = JsonConvert.DeserializeObject<Municipality>(userTokenString);
+                if (!_storage.Contains(Definitions.UserDataKey))
+                {
+                    ShowLoginPage();
+                    return;
+                }
+                var munByte = _storage.Retrieve(Definitions.MunKey);
+                var munString = Encoding.UTF8.GetString(munByte, 0, munByte.Length);
+                var mun = JsonConvert.DeserializeObject<Municipality>(munString);
+
+                var userByte = _storage.Retrieve(Definitions.UserDataKey);
+                var userString = Encoding.UTF8.GetString(userByte, 0, userByte.Length);
+                var user = JsonConvert.DeserializeObject<UserInfoModel>(userString);
 
                 APICaller.RefreshModel(userToken, mun).ContinueWith((result) =>
                 {
-                    if (result.Result == null)
+                    try
                     {
-                        ShowLoginPage();
-                        return;
+                        if (result.Result == null)
+                        {
+                            ShowLoginPage();
+                            return;
+                        }
+                    }
+                    catch // If API threw an exception, use old model
+                    {
+                        Definitions.User = user;
+                        Definitions.MunIcon = new UriImageSource { Uri = new Uri(mun.ImgUrl) };
+                        Definitions.TextColor = mun.TextColor;
+                        Definitions.PrimaryColor = mun.PrimaryColor;
+                        Definitions.SecondaryColor = mun.SecondaryColor;
+                        Definitions.MunUrl = mun.APIUrl;
+                        ShowMainPage();
                     }
 
                     Definitions.User = result.Result;
@@ -128,7 +147,6 @@ namespace OS2Indberetning.ViewModel
             }
             catch (Exception e)
             {
-                App.ShowLoading(false, true);
                 ShowLoginPage();
                 return;
             }
