@@ -74,6 +74,7 @@ namespace OS2Indberetning.Pages
                 Placeholder = _placeholder,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
+                Keyboard = Keyboard.Numeric,
             };
             entry.SetBinding(Entry.TextProperty, CouplingViewModel.TokenProperty);
 
