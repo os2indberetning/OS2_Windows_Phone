@@ -162,7 +162,7 @@ namespace OS2Indberetning.ViewModel
         private void HandleUploadMessage(StoredReportsPage sender)
         {
             var item = (StoredReportCellModel)sender.List.SelectedItem;
-
+          
             APICaller.SubmitDrive(item.report, _token, Definitions.MunUrl).ContinueWith((result) =>
             {
                 HandleUploadResult(result.Result, sender);

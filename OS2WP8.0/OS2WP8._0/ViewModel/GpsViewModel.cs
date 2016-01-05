@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using OS2Indberetning.BuisnessLogic;
 using Xamarin.Forms;
 using OS2Indberetning.Model;
@@ -38,6 +39,7 @@ namespace OS2Indberetning.ViewModel
         private bool _firstRun = true;
         private bool _finishedHome = false;
         private bool _pause = false;
+        private bool _signal;
 
         private CancellationTokenSource _cancelSource;
 
@@ -52,6 +54,8 @@ namespace OS2Indberetning.ViewModel
         private bool _stopErrorTimer;
         private bool _doCountdown;
         private bool _noGpsForTooLong = false;
+
+        private string _lastAccuracy = "10";
         
         /// <summary>
         /// Constructor that handles initialization of the viewmodel
@@ -66,6 +70,8 @@ namespace OS2Indberetning.ViewModel
             SetupGps();
             _noSignalCountDown = Definitions.NoGpsSignalTimer;
             Timer(); // start timer
+            TestGpsSignalTimer(); // timer that checks for gps signal when on pause
+            TestForAvailibility();
         }
 
         /// <summary>
@@ -142,36 +148,33 @@ namespace OS2Indberetning.ViewModel
         /// </summary>
         public void GpsNotAvailable()
         {
+            Signal = true;
             _error = true;
             if (!_doCountdown)
             {
                 _errorDateTime = DateTime.Now;
             }
             
-
-            //_trackChanges = false;
-            //_locator.StopListening();
-            //_pause = false;
             _doCountdown = true;
             SetAccuracy();
-            //if (_parentPage != null) _parentPage.HandleStartButtonNotPressable();
-
         }
 
         /// <summary>
         /// Method to do stuff when gps is not available
         /// </summary>
-        public void GpsIsvailable()
+        public void GpsIsAvailable()
         {
+            Signal = false;
+            _error = false;
             _noSignalCountDown = Definitions.NoGpsSignalTimer; // reset countdown
 
             _doCountdown = false;
             SetAccuracy();
-            //if (_parentPage != null) _parentPage.HandleStartButtonPressable();
-
         }
 
-
+        /// <summary>
+        /// Method that handles that tracks if gps signal have been missing for 30 seconds
+        /// </summary>
         public void Timer()
         {
             Device.StartTimer(TimeSpan.FromSeconds(3), () =>
@@ -184,82 +187,125 @@ namespace OS2Indberetning.ViewModel
                 {
                     if (_noSignalCountDown > 0)
                     {
-                        _noSignalCountDown += -3;
+                        // dont count down while on pause
+                        if (!_pause)
+                            return true;
+
                         PositionChanged(null, null);
+                        _noSignalCountDown += -3;
                         return true;
                     }
-                    // reset timer og vis popup
-                    //_parentPage.HandleNoGpsError();
                     _noGpsForTooLong = true;
                     return false;
                 }
 
                 if(_stopErrorTimer)
                    return false; //not continue
+
                 _noSignalCountDown = Definitions.NoGpsSignalTimer;
                 _errorCountdownStarted = false;
                 return true; // continue 
             });
         }
- 
+
+        /// <summary>
+        /// Method that checks for gps signal when the gps in on pause
+        /// The cause of this is to notify the user of gps signal even when he isnt tracking
+        /// </summary>
+        public void TestGpsSignalTimer()
+        {
+            Device.StartTimer(TimeSpan.FromSeconds(10), () =>
+            {
+                if (_stopErrorTimer)
+                    return false; //not continue
+
+                if (_pause)
+                    return true; // dont test when NOT paused
+
+                TestForAvailibility();
+
+                return true; // continue 
+            });
+        }
+
         /// <summary>
         /// Method that handles change in positions from the gps signal
         /// </summary>
         public void PositionChanged(object sender, PositionEventArgs e)
         {
             IsBusy = true;
-            _locator.GetPositionAsync(timeout: 25000, cancelToken: this._cancelSource.Token, includeHeading: false)
-                .ContinueWith(t =>
-                {
-                    IsBusy = false;
-                    if (t.IsFaulted)
+            if (_locator != null)
+            {
+                _locator.GetPositionAsync(timeout: 3500, cancelToken: this._cancelSource.Token, includeHeading: false)
+                    .ContinueWith(t =>
                     {
-                        GpsNotAvailable();
-                        //PositionStatus = ((GeolocationException)t.Exception.InnerException).Error.ToString();
-                    }
-                    else if (t.IsCanceled)
-                        PositionStatus = "Canceled";
-                    else
-                    {
-                        GpsIsvailable();
-                        if (_trackChanges)
+                        IsBusy = false;
+                        if (t.IsFaulted)
                         {
-                            if (_firstRun)
+                            GpsNotAvailable();
+                            //PositionStatus = ((GeolocationException)t.Exception.InnerException).Error.ToString();
+                        }
+                        else if (t.IsCanceled)
+                            PositionStatus = "Canceled";
+                        else
+                        {
+                            GpsIsAvailable();
+                            if (_trackChanges)
                             {
-                                _positionLatitude = t.Result.Latitude;
-                                _positionLongitude = t.Result.Longitude;
-                                _firstRun = false;
-                                return;
-                            }
-                            if (_doTestCheck)
-                            {
-                                var testDistance = Math.Round(GpsCalculator.Distance(_positionLatitude, _positionLongitude, t.Result.Latitude, t.Result.Longitude, 'K'), 3);
-                                if (testDistance > 0.2)
+                                if (_firstRun)
                                 {
-                                    //_locator.StopListening();
-                                    //_isListening = false;
-                                    _trackChanges = false;
-                                    _pause = !_pause;
-                                    _locator.StopListening();
-                                    PauseDistanceTooBig(testDistance);
+                                    _positionLatitude = t.Result.Latitude;
+                                    _positionLongitude = t.Result.Longitude;
+                                    _firstRun = false;
                                     return;
                                 }
-                                _doTestCheck = false;
-                            }
-                            
-                            TraveledDistance = Math.Round(GpsCalculator.Distance(_positionLatitude, _positionLongitude, t.Result.Latitude, t.Result.Longitude, 'K'), 3);
-                            _positionLatitude = t.Result.Latitude;
-                            _positionLongitude = t.Result.Longitude;
-                            PositionStatus = t.Result.Timestamp.ToString("HH:mm:ss");
-                            Definitions.Route.GPSCoordinates.Add(new GPSCoordinate
-                            {
-                                Latitude = t.Result.Latitude.ToString("#.######", CultureInfo.InvariantCulture),
-                                Longitude = t.Result.Longitude.ToString("#.######", CultureInfo.InvariantCulture),
-                            });
-                        }
-                    }
 
-                });
+                                var testDistance = Math.Round(GpsCalculator.Distance(_positionLatitude, _positionLongitude, t.Result.Latitude, t.Result.Longitude, 'K'), 3);
+
+                                // Check after resuming.  
+                                if (_doTestCheck)
+                                {
+                                    // If the user moved more than 200 meters. Resuming is not allowed.
+                                    if (testDistance > 0.2)
+                                    {
+                                        _trackChanges = false;
+                                        _pause = !_pause;
+                                        _locator.StopListening();
+                                        PauseDistanceTooBig(testDistance);
+                                        return;
+                                    }
+                                    _doTestCheck = false;
+                                }
+                            
+                                // Discard if distance is below 10 meters
+                                if (t.Result.Accuracy != null)
+                                {
+                                    SetAccuracy(t.Result.Accuracy);
+                                    if (testDistance < t.Result.Accuracy/1000)
+                                        return;
+                                }
+                                else
+                                {
+                                    // default accuracy
+                                    if (testDistance < 0.01)
+                                        return;
+                                }                                
+
+                                SetAccuracy(t.Result.Accuracy);
+                                TraveledDistance = testDistance;
+                                _positionLatitude = t.Result.Latitude;
+                                _positionLongitude = t.Result.Longitude;
+                                PositionStatus = t.Result.Timestamp.ToString("HH:mm:ss");
+                                Definitions.Route.GPSCoordinates.Add(new GPSCoordinate
+                                {
+                                    Latitude = t.Result.Latitude.ToString("#.######", CultureInfo.InvariantCulture),
+                                    Longitude = t.Result.Longitude.ToString("#.######", CultureInfo.InvariantCulture),
+                                });
+                            }
+                        }
+
+                    });
+            }
         }
 
         /// <summary>
@@ -313,19 +359,24 @@ namespace OS2Indberetning.ViewModel
         /// <summary>
         /// Method to help with setting the correct text for Accuracy
         /// </summary>
-        public void SetAccuracy()
+        public void SetAccuracy(double? dist = null)
         {
-            if (_doCountdown)
-            {
-                Accuracy = "Intet GPS signal"; 
-            }
-            else if (!_pause)
+            //if (_doCountdown)
+            //{
+            //    Accuracy = "Intet GPS signal"; 
+            //}
+            if (!_pause)
             {
                 Accuracy = "GPS sat på pause";
             }
             else
             {
-                Accuracy = "GPS Nøjagtighed: 10 m";
+                if (dist != null)
+                {
+                    _lastAccuracy = dist.ToString();
+                }
+                
+                Accuracy = "GPS Nøjagtighed: " + _lastAccuracy + " m";
             }
 
         }
@@ -409,6 +460,7 @@ namespace OS2Indberetning.ViewModel
                 SetAccuracy();
                 _locator.StopListening();
                 _trackChanges = false;
+                
                 _pauseLatitude = _positionLatitude;
                 _pauseLongitude = _positionLongitude;
                 if (Definitions.Route.GPSCoordinates.Count > 0)
@@ -453,9 +505,7 @@ namespace OS2Indberetning.ViewModel
             Definitions.Report.Date = Definitions.Date;
 
             Definitions.Report.ProfileId = Definitions.User.Profile.Id;
-            Definitions.Report.RateId = Definitions.Taxe.Id;
             Definitions.Report.Profile = Definitions.User.Profile;
-            Definitions.Report.Rate = Definitions.Taxe;
             Definitions.Report.Route = Definitions.Route;
             Definitions.Report.Route.TotalDistance = TraveledDistance;
 
@@ -468,15 +518,15 @@ namespace OS2Indberetning.ViewModel
         /// </summary>
         public void HandleAppearedMessage(object sender)
         {
-            if (_error && !_errorCountdownStarted)
+            if (_error && !_errorCountdownStarted && _pause)
             {
                 var seconds = (DateTime.Now - _errorDateTime).TotalSeconds;
                 _noSignalCountDown = (double)Definitions.NoGpsSignalTimer - seconds;
             }
-            else
-            {
-                PositionChanged(null, null);
-            }
+            //else
+            //{
+            //    TestForAvailibility();
+            //}
         }
 
 
@@ -526,6 +576,20 @@ namespace OS2Indberetning.ViewModel
             }
         }
 
+        public const string SignalProperty = "Signal";
+        public bool Signal
+        {
+            get
+            {
+                return _signal;
+            }
+            set
+            {
+                _signal = value;
+                OnPropertyChanged(SignalProperty);
+            }
+        }
+
         public const string DrivenProperty = "Driven";
         public string Driven
         {
@@ -562,5 +626,32 @@ namespace OS2Indberetning.ViewModel
 
         #endregion
 
+        /// <summary>
+        /// Method that checks for gps signal
+        /// </summary>
+        public void TestForAvailibility()
+        {
+            IsBusy = true;
+            if(_locator != null)
+            {
+                _locator.GetPositionAsync(timeout: 3500, cancelToken: this._cancelSource.Token, includeHeading: false)
+                    .ContinueWith(t =>
+                    {
+                        IsBusy = false;
+                        if (t.IsFaulted)
+                        {
+                            GpsNotAvailable();
+                            //PositionStatus = ((GeolocationException)t.Exception.InnerException).Error.ToString();
+                        }
+                        else if (t.IsCanceled)
+                            PositionStatus = "Canceled";
+                        else
+                        {
+                            GpsIsAvailable();
+                        }
+
+                    });
+            }
+        }
     }
 }

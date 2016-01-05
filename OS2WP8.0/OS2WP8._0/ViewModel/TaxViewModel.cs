@@ -89,7 +89,8 @@ namespace OS2Indberetning.ViewModel
                 if (item.Name == arg)
                 {
                     Definitions.Taxe = Definitions.User.Rates.FirstOrDefault(x => x.Description == arg);
-                    Definitions.Report.Rate = Definitions.Taxe;
+                    Definitions.Report.Rate = Definitions.User.Rates.FirstOrDefault(x => x.Description == arg);
+                    Definitions.Report.RateId = Definitions.User.Rates.FirstOrDefault(x => x.Description == arg).Id;
                     continue;
                 }
                 item.Selected = false;

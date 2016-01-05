@@ -47,6 +47,22 @@ namespace OS2Indberetning
         /// </summary>
         public View SetContent()
         {
+            var signalStatus = new Label
+            {
+
+                TextColor = Color.Red,
+                FontSize = Definitions.AccuracyTextSize,
+                HorizontalOptions = LayoutOptions.CenterAndExpand,
+                YAlign = TextAlignment.Center,
+                Text = "Intet GPS signal",
+            };
+            signalStatus.SetBinding(Label.IsVisibleProperty, GpsViewModel.SignalProperty);
+
+            var signalStack = new StackLayout
+            {
+                HeightRequest = 45,
+                Children = { signalStatus}
+            };
             var gpsStatus = new Label
             {
 
@@ -84,9 +100,10 @@ namespace OS2Indberetning
                 Orientation = StackOrientation.Vertical,
                 BackgroundColor = Color.FromHex(Definitions.BackgroundColor),
                 VerticalOptions = LayoutOptions.Center,
-                Padding = new Thickness(0, 100, 0, 100),
+                Padding = new Thickness(0, 80, 0, 100),
                 Children =
                 {
+                    signalStack,
                     gpsStatus,
                     gpsDriven,
                     gpsUpdate,
