@@ -89,6 +89,10 @@ namespace OS2Indberetning.ViewModel
         /// </summary>
         private void InitializeCollection()
         {
+            if (String.IsNullOrEmpty(Definitions.Report.ManualEntryRemark))
+            {
+                Definitions.Report.ManualEntryRemark = "Ingen kommentar angivet";
+            }
             _driveReport.Clear();
             DriveReportList.Clear();
 
