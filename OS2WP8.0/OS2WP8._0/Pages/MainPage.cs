@@ -307,7 +307,7 @@ namespace OS2Indberetning
                 _popUpLayout.ShowPopup(CreatePopup("Vælg venligst en organisatorisk placering"));
                 return;
             }
-            if (Definitions.Report.Rate == null)
+            if (Definitions.Report.RateId == 0)
             {
                 _popUpLayout.ShowPopup(CreatePopup("Vælg venligst en takst"));
                 return;
