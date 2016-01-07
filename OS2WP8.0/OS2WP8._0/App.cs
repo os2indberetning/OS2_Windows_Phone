@@ -1,4 +1,9 @@
-﻿using System;
+﻿/* 
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
+ */
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Acr.UserDialogs;
@@ -66,10 +71,6 @@ namespace OS2Indberetning
             //var scale = Resolver.Resolve<IDevice>().Display.Scale;
             var height = Resolver.Resolve<IDevice>().Display.Height;
             var width = Resolver.Resolve<IDevice>().Display.Width;
-            //var scale = Definitions.Scale;
-            ////var scale = 1;
-            //Definitions.ScreenHeight = height/scale;
-            //Definitions.ScreenWidth = width/scale;
 
             Definitions.Padding = Definitions.ScreenWidth/32;
             var test = Definitions.User;

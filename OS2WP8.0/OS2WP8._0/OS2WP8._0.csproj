@@ -100,6 +100,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="GettingStarted.Xamarin" />
+    <None Include="OS2WP8._0.licenseheader" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
