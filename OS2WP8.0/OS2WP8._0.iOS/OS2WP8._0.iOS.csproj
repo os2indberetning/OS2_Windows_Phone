@@ -96,6 +96,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <ITunesArtwork Include="iTunesArtwork" />
     <ITunesArtwork Include="iTunesArtwork@2x" />
+    <None Include="OS2WP8._0.iOS.licenseheader" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
