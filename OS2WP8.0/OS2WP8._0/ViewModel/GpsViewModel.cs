@@ -77,7 +77,7 @@ namespace OS2Indberetning.ViewModel
             SetupGps();
             _noSignalCountDown = Definitions.NoGpsSignalTimer;
             Timer(); // start timer
-            TestGpsSignalTimer(); // timer that checks for gps signal when on pause
+            /*TestGpsSignalTimer();*/ // timer that checks for gps signal when on pause
             TestForAvailibility();
         }
 
@@ -476,7 +476,7 @@ namespace OS2Indberetning.ViewModel
                 SetAccuracy();
                 _locator.StopListening();
                 _trackChanges = false;
-                
+                Signal = false;
                 _pauseLatitude = _positionLatitude;
                 _pauseLongitude = _positionLongitude;
                 if (Definitions.Route.GPSCoordinates.Count > 0)
@@ -524,6 +524,9 @@ namespace OS2Indberetning.ViewModel
             Definitions.Report.Profile = Definitions.User.Profile;
             Definitions.Report.Route = Definitions.Route;
             Definitions.Report.Route.TotalDistance = TraveledDistance;
+
+            if(Definitions.Report.Route.GPSCoordinates.Count == 1)
+                Definitions.Report.Route.GPSCoordinates.Clear();
 
             Dispose();
             Navigation.PushAsync<FinishDriveViewModel>();
