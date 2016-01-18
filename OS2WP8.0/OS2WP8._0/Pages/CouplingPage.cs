@@ -85,6 +85,11 @@ namespace OS2Indberetning.Pages
             };
             entry.SetBinding(Entry.TextProperty, CouplingViewModel.TokenProperty);
 
+            entry.Completed += (sender, args) =>
+            {
+                SendCoupleMessage();
+            };
+
             var informationText = new Label
             {
                 Text = "For at bruge appen skal du parre din telefon med din bruger på OS2Indberetning.\n" +
