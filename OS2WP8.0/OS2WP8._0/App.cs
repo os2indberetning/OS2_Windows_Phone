@@ -24,9 +24,6 @@ namespace OS2Indberetning
 {
     public class App : Application
     {
-        // used when testing
-        private ISecureStorage storage;
-
         // Navigation used when viewmodels need to pop to root.
         // Doing so without this caused problems.
         public static INavigation Navigation;
@@ -44,17 +41,11 @@ namespace OS2Indberetning
 
             //Register pages before initializing the first page
             RegisterPages();
-
-            // For testing
-            //storage = DependencyService.Get<ISecureStorage>();
-            //FakeModel();
-            // The root page of your application
            
             ViewFactory.EnableCache = false;
 
+            // The root page of your application
             this.MainPage = GetMainPage();
-            
-
         }
 
         /// <summary>
@@ -93,52 +84,6 @@ namespace OS2Indberetning
             ViewFactory.Register<FinishDrivePage, FinishDriveViewModel>();
             ViewFactory.Register<UploadingPage, UploadingViewModel>();
             ViewFactory.Register<StoredReportsPage, StoredReportsViewModel>();
-        }
-
-        private void FakeModel()
-        {
-            UserInfoModel model = new UserInfoModel();
-            
-            model.Profile = new Profile();
-            model.Rates = new List<Rate>();
-
-            model.Rates.Add(new Rate
-            {
-                Description = "rate description",
-                Year = "2016"
-            });
-
-            model.Rates.Add(new Rate
-            {
-                Description = "Cykel",
-                Year = "2016"
-            });
-
-            model.Profile.Employments = new List<Employment>();
-            model.Profile.Employments.Add(new Employment
-            {
-                EmploymentPosition = "test employment"
-            });
-
-
-            //Definitions.User = model;
-
-            var token = new Token();
-            var Mun = new Municipality();
-            var user = new UserInfoModel();
-
-            token.GuId = "077b95ab-8c38-4c39-9d5e-d8158bcd1a96";
-            token.TokenString = "7460529413";
-
-            Mun.APIUrl = "https://os2indberetningmobil.syddjurs.dk/api/";
-            Mun.ImgUrl = "https://www.syddjurs.dk/sites/default/files/vaabenskjold-ikon.png";
-            Mun.TextColor = "#FFFFFF";
-            Mun.PrimaryColor = "#6b2d52";
-            Mun.SecondaryColor = "#6583d3";
-
-            storage.Store(Definitions.TokenKey, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(token)));
-            storage.Store(Definitions.MunKey, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(Mun)));
-            storage.Store(Definitions.UserDataKey, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(user)));
         }
 
         public static void ShowLoading(bool isRunning, bool isCancel = false)
