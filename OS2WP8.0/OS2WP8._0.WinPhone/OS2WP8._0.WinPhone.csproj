@@ -156,6 +156,7 @@
     <Content Include="Resources\verts%402x.png" />
     <Content Include="Resources\verts%403x.png" />
     <Content Include="Resources\verts.png" />
+    <Content Include="Resources\verts2.png" />
     <Content Include="Resources\verts_black%402x.png" />
     <Content Include="Resources\verts_black%403x.png" />
     <Content Include="Resources\verts_black.png" />

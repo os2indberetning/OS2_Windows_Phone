@@ -122,6 +122,7 @@ namespace OS2Indberetning
         #region MainPage
 
         public static bool HasAppeared = false;
+        public static int storedReportsCount;
 
         #endregion
     }

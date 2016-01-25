@@ -40,6 +40,8 @@ namespace OS2Indberetning.BuisnessLogic
                 var toBeWritten = JsonConvert.SerializeObject(list);
 
                 var test = await FileHandler.WriteFileContent(Definitions.ReportsFileName, Definitions.ReportsFolderName, toBeWritten);
+                if(test)
+                    Definitions.storedReportsCount = list.Count;
 
                 return test;
             }
@@ -92,12 +94,32 @@ namespace OS2Indberetning.BuisnessLogic
                 var toBeWritten = JsonConvert.SerializeObject(list);
 
                 await FileHandler.WriteFileContent(Definitions.ReportsFileName, Definitions.ReportsFolderName, toBeWritten);
-               
+                Definitions.storedReportsCount = list.Count;
                 return list;
             }
             catch (Exception e)
             {
                 return new List<DriveReport>(); ;
+            }
+        }
+
+        /// <summary>
+        /// Gets the amount of stored reports
+        /// </summary>
+        /// <returns>integer representing the amount of stored reports</returns>
+        public static async Task GetCount()
+        {
+            try
+            {
+                var content = await FileHandler.ReadFileContent(Definitions.ReportsFileName, Definitions.ReportsFolderName);
+
+                var list = JsonConvert.DeserializeObject<List<DriveReport>>(content);
+
+                Definitions.storedReportsCount = list.Count;
+            }
+            catch (Exception e)
+            {
+                Definitions.storedReportsCount = 0;
             }
         }
     }

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Text;
 using Acr.UserDialogs;
 using Newtonsoft.Json;
+using OS2Indberetning.BuisnessLogic;
 using OS2Indberetning.Model;
 using OS2Indberetning.Pages;
 using OS2Indberetning.ViewModel;
@@ -41,6 +42,9 @@ namespace OS2Indberetning
 
             //Register pages before initializing the first page
             RegisterPages();
+
+            // Sets the count of stored reports in the definitions file.
+            ReportListHandler.GetCount();
            
             ViewFactory.EnableCache = false;
 

@@ -133,6 +133,7 @@ namespace OS2Indberetning.ViewModel
                         Definitions.SecondaryColor = mun.SecondaryColor;
                         Definitions.MunUrl = mun.APIUrl;
                         ShowMainPage();
+                        return;
                     }
                     else if (result.Result.User == null)
                     { 
@@ -147,7 +148,7 @@ namespace OS2Indberetning.ViewModel
                     Definitions.PrimaryColor = mun.PrimaryColor;
                     Definitions.SecondaryColor = mun.SecondaryColor;
                     Definitions.MunUrl = mun.APIUrl;
-                    _storage.Store(Definitions.UserDataKey, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(result.Result)));
+                    _storage.Store(Definitions.UserDataKey, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(result.Result.User)));
 
                     ShowMainPage();
                 }, TaskScheduler.FromCurrentSynchronizationContext());

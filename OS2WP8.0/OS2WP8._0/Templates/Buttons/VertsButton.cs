@@ -14,12 +14,13 @@ namespace OS2Indberetning.Templates
     {
         private Image _image;
         private StackLayout _layout;
+        private Label _label;
 
         /// <summary>
         /// Creates a new instance of an animated + button
         /// </summary>
         /// <param name="callback">action to call when the animation is complete</param>
-        public VertsButton(Action callback = null)
+        public VertsButton(Action callback = null, string stored = "0")
         {
             // create the layout
             _layout = new StackLayout
@@ -28,13 +29,26 @@ namespace OS2Indberetning.Templates
                 VerticalOptions = LayoutOptions.Center,
                 Orientation = StackOrientation.Horizontal,
                 Padding = 5,
+                Spacing = -1,
                 WidthRequest = Definitions.HeaderHeight,
             };
 
-            // create the label
+            if (stored != "0")
+            {
+                _label = new Label
+                {
+                    Text = stored,
+                    FontFamily = Definitions.FontFamily,
+                    FontSize = Definitions.HeaderFontSize - 25,
+                    TextColor = Color.FromHex(Definitions.TextColor),
+                    VerticalOptions = LayoutOptions.End,
+                };
+                _layout.Children.Add(_label);
+            }
+
             _image = new Image
             {
-                Source = "Resources/verts.png",
+                Source = "Resources/verts2.png",
             };
             _layout.Children.Add(_image);
 

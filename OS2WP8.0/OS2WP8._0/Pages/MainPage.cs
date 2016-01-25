@@ -78,7 +78,7 @@ namespace OS2Indberetning
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
                 YAlign = TextAlignment.Center,
             };
-            var vertButton = new VertsButton(SendViewStoredMessage);
+            var vertButton = new VertsButton(SendViewStoredMessage, Definitions.storedReportsCount.ToString());
             var refreshButton = new RefreshButton(SendRefreshMessage);
 
             vertButton.WidthRequest = 60;
