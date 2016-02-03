@@ -9,6 +9,8 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using Newtonsoft.Json;
+using OS2Indberetning.BuisnessLogic;
 using OS2Indberetning.Pages;
 using Xamarin.Forms;
 
@@ -67,7 +69,7 @@ namespace OS2Indberetning.ViewModel
         {
             foreach (var employment in Definitions.User.Profile.Employments)
             {
-                if (employment.Id == Definitions.Report.EmploymentId)
+                if (employment.Id == Definitions.Organization.Id)
                 {
                     _organizations.Add(new OrganizationString { Name = employment.EmploymentPosition, Selected = true });
                     continue;
@@ -90,6 +92,8 @@ namespace OS2Indberetning.ViewModel
                     Definitions.Organization =
                         Definitions.User.Profile.Employments.FirstOrDefault(x => x.EmploymentPosition == arg);
                     Definitions.Report.EmploymentId = Definitions.Organization.Id;
+                    var json = JsonConvert.SerializeObject(Definitions.Organization);
+                    FileHandler.WriteFileContent(Definitions.OrganizationFileName, Definitions.OrganizationFolder, json);
                     continue;
                 }
                 item.Selected = false;

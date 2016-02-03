@@ -9,6 +9,8 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using Newtonsoft.Json;
+using OS2Indberetning.BuisnessLogic;
 using OS2Indberetning.Pages;
 using Xamarin.Forms;
 
@@ -98,6 +100,8 @@ namespace OS2Indberetning.ViewModel
                     Definitions.Taxe = Definitions.User.Rates.FirstOrDefault(x => x.Description == arg);
                     Definitions.Report.Rate = Definitions.User.Rates.FirstOrDefault(x => x.Description == arg);
                     Definitions.Report.RateId = Definitions.User.Rates.FirstOrDefault(x => x.Description == arg).Id;
+                    var json = JsonConvert.SerializeObject(Definitions.Taxe);
+                    FileHandler.WriteFileContent(Definitions.TaxeFileName, Definitions.TaxeFolder, json);
                     continue;
                 }
                 item.Selected = false;

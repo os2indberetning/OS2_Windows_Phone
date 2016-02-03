@@ -243,7 +243,7 @@ namespace OS2Indberetning.ViewModel
             IsBusy = true;
             if (_locator != null)
             {
-                _locator.GetPositionAsync(timeout: 3500, cancelToken: this._cancelSource.Token, includeHeading: false)
+                _locator.GetPositionAsync(timeout: Definitions.MinIntervalTimeout, cancelToken: this._cancelSource.Token, includeHeading: false)
                     .ContinueWith(t =>
                     {
                         IsBusy = false;
@@ -524,6 +524,9 @@ namespace OS2Indberetning.ViewModel
             Definitions.Report.Profile = Definitions.User.Profile;
             Definitions.Report.Route = Definitions.Route;
             Definitions.Report.Route.TotalDistance = TraveledDistance;
+
+            Definitions.Report.Rate = Definitions.Taxe;
+            Definitions.Report.RateId = Definitions.Taxe.Id;
 
             if(Definitions.Report.Route.GPSCoordinates.Count == 1)
                 Definitions.Report.Route.GPSCoordinates.Clear();

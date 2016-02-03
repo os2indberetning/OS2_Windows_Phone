@@ -82,8 +82,12 @@ namespace OS2Indberetning.ViewModel
         {
             FileHandler.ReadFileContent(Definitions.PurposeFileName, Definitions.PurposeFolderName).ContinueWith((result) =>
             {
-                if (result.Result == null) return;
-                if (result.Result == "") return;
+                if (String.IsNullOrEmpty(result.Result))
+                {
+                    HideField = true;
+                    return;
+                }
+
                 var temp = JsonConvert.DeserializeObject<ObservableCollection<PurposeString>>(result.Result);
                 foreach (PurposeString item in temp)
                 {

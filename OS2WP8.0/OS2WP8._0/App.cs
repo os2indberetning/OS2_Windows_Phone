@@ -65,12 +65,7 @@ namespace OS2Indberetning
         
         private void SetScreenHeightAndWidth()
         {
-            //var scale = Resolver.Resolve<IDevice>().Display.Scale;
-            var height = Resolver.Resolve<IDevice>().Display.Height;
-            var width = Resolver.Resolve<IDevice>().Display.Width;
-
             Definitions.Padding = Definitions.ScreenWidth/32;
-            var test = Definitions.User;
         }
 
 

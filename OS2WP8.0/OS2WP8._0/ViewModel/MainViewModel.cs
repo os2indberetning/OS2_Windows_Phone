@@ -49,6 +49,32 @@ namespace OS2Indberetning.ViewModel
             _driveReport = new ObservableCollection<DriveReportCellModel>();
             _storage = DependencyService.Get<ISecureStorage>();
             Subscribe();
+
+            FileHandler.ReadFileContent(Definitions.OrganizationFileName, Definitions.OrganizationFolder).ContinueWith(
+         (result) =>
+         {
+             if (!string.IsNullOrEmpty(result.Result))
+             {
+                 var obj = JsonConvert.DeserializeObject<Employment>(result.Result);
+                 Definitions.Report.EmploymentId = obj.Id;
+                 Definitions.Organization = obj;
+
+
+             }
+             FileHandler.ReadFileContent(Definitions.TaxeFileName, Definitions.TaxeFolder).ContinueWith(
+                (result2) =>
+                {
+                    if (!string.IsNullOrEmpty(result2.Result))
+                    {
+                        var obj = JsonConvert.DeserializeObject<Rate>(result2.Result);
+                        Definitions.Report.Rate = obj;
+                        Definitions.Report.RateId = obj.Id;
+                        Definitions.Taxe = obj;
+                    }
+                });
+
+             InitializeCollection();
+         }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         /// <summary>

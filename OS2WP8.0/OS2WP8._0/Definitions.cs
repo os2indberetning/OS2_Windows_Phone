@@ -32,8 +32,9 @@ namespace OS2Indberetning
 
         #region GPS properties
 
-        public static double Accuracy = 0;
-        public static uint MinInterval = 3000;
+        public static double Accuracy = 10;
+        public static uint MinInterval = 8000;
+        public static int MinIntervalTimeout = 10000;
 
         public static int NoGpsSignalTimer = 30;
         public static int GpsCountDown = 5;
@@ -65,6 +66,12 @@ namespace OS2Indberetning
 
         public static string ReportsFileName = "reports.txt";
         public static string ReportsFolderName = "reports";
+
+        public static string OrganizationFileName = "organization.txt";
+        public static string OrganizationFolder = "organization";
+
+        public static string TaxeFileName = "taxe.txt";
+        public static string TaxeFolder = "taxe";
 
         #endregion
 

@@ -9,6 +9,7 @@ using System;
 using System.Text;
 using Newtonsoft.Json;
 using OS2Indberetning.Model;
+using OS2Indberetning.PlatformInterfaces;
 using OS2Indberetning.Templates;
 using OS2Indberetning.ViewModel;
 using Xamarin.Forms;
@@ -309,12 +310,12 @@ namespace OS2Indberetning
                 _popUpLayout.ShowPopup(CreatePopup("Vælg venligst et formål"));
                 return;
             }
-            if (Definitions.Report.EmploymentId == 0)
+            if (Definitions.Organization.Id == 0)
             {
                 _popUpLayout.ShowPopup(CreatePopup("Vælg venligst en organisatorisk placering"));
                 return;
             }
-            if (Definitions.Report.RateId == 0)
+            if (Definitions.Taxe.Id == 0)
             {
                 _popUpLayout.ShowPopup(CreatePopup("Vælg venligst en takst"));
                 return;
@@ -366,6 +367,7 @@ namespace OS2Indberetning
         /// <returns>Returns true, meaning nothing happens</returns>
         protected override bool OnBackButtonPressed()
         {
+            DependencyService.Get<IPlatformMethods>().TerminateApp();
             return true;
         }
 
@@ -386,7 +388,6 @@ namespace OS2Indberetning
             
             if (!Definitions.HasAppeared)
             {
-                
                 Definitions.HasAppeared = true;
                 MessagingCenter.Send<MainPage>(this, "ShowCross");
             }
