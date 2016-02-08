@@ -6,6 +6,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
  */
 using Xamarin.Forms;
+using XLabs.Ioc;
+using XLabs.Platform.Device;
 
 namespace OS2Indberetning.Templates
 {
@@ -31,6 +33,7 @@ namespace OS2Indberetning.Templates
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
                 YAlign = TextAlignment.Center,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
+                WidthRequest = Resolver.Resolve<IDevice>().Display.Width - 50,
             };
             description.SetBinding(Label.TextProperty, "Description");
 

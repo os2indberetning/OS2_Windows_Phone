@@ -73,7 +73,7 @@ namespace OS2Indberetning
                 BackgroundColor = Color.FromHex(Definitions.BackgroundColor),
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
                 FontSize = Definitions.LoginLabelText,
-                HeightRequest = 40,
+                HeightRequest = 35,
             };
             date.SetBinding(Label.TextProperty, FinishDriveViewModel.DateProperty);
             var user = new Label
@@ -82,7 +82,7 @@ namespace OS2Indberetning
                 BackgroundColor = Color.FromHex(Definitions.BackgroundColor),
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
                 FontSize = Definitions.LoginLabelText,
-                HeightRequest = 40,
+                HeightRequest = 35,
             };
             user.SetBinding(Label.TextProperty, FinishDriveViewModel.UsernameProperty);
 
@@ -92,6 +92,7 @@ namespace OS2Indberetning
                 SeparatorColor = Color.FromHex("#EE2D2D"),
                 SeparatorVisibility = SeparatorVisibility.Default,
                 VerticalOptions = LayoutOptions.StartAndExpand,
+                HorizontalOptions = LayoutOptions.EndAndExpand
             };
             List.SetBinding(ListView.ItemsSourceProperty, MainViewModel.DriveProperty);
 
