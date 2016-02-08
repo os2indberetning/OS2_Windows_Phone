@@ -197,7 +197,7 @@ namespace OS2Indberetning.BuisnessLogic
                 HttpClientHandler handler = new HttpClientHandler();
                 _httpClient = new HttpClient(handler);
 
-                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, munUrl + "SubmitDrive");
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, munUrl + "/SubmitDrive");
 
                 var stringContent = new StringContent(json, Encoding.UTF8, "application/json");
                 request.Content = stringContent;
@@ -226,17 +226,19 @@ namespace OS2Indberetning.BuisnessLogic
                 else
                 {
                     // Deserialize string to object
-                    UserInfoModel user = JsonConvert.DeserializeObject<UserInfoModel>(jsonString);
-                    user = RemoveTrailer(user);
-                    model.User = user;
-                    model.Error = new Error(); // tom
+                    // NOT LONG IN USE - the return value changed and the model is no longer returned. Only error is used now
+                    //UserInfoModel user = JsonConvert.DeserializeObject<UserInfoModel>(jsonString);
+                    //user = RemoveTrailer(user);
+                    //model.User = user;
+                    model.Error = null; // tom
                 }
                 //return model;
                 return model;
             }
             catch (Exception e)
             {
-                return null;
+                model.Error = new Error { ErrorCode = "Exception", ErrorMessage = "Der skete en uhåndteret fejl. Kontakt venligst Support" };
+                return model;
             }
         }
 

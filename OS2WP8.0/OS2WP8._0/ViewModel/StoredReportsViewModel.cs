@@ -91,7 +91,7 @@ namespace OS2Indberetning.ViewModel
         /// <param name="page">the parent page, used to open popup</param>
         private void HandleUploadResult(ReturnUserModel model, StoredReportsPage page)
         {
-            if (model.User == null)
+            if (model.Error != null)
             {
                 page.ClosePopup();
                 var popup = page.CreateMessagePopup("Kunne ikke upload på nuværende tidspunkt. Prøv igen senere\nFejl: " + model.Error.ErrorMessage);

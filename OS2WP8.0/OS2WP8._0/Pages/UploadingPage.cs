@@ -36,7 +36,8 @@ namespace OS2Indberetning
             var emblem = new Image
             {
                 HorizontalOptions = LayoutOptions.Center,
-                VerticalOptions = LayoutOptions.Start
+                VerticalOptions = LayoutOptions.Start,
+                HeightRequest = 200
             };
             emblem.SetBinding(Image.SourceProperty, UploadingViewModel.EmblemProperty);
 

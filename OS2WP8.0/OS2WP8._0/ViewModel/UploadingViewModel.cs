@@ -84,14 +84,14 @@ namespace OS2Indberetning.ViewModel
         /// <summary>
         /// Method that handles the Upload Result
         /// </summary>
-        private void HandleUploadResult(ReturnUserModel user, object sender)
+        private void HandleUploadResult(ReturnUserModel model, object sender)
         {
             Device.StartTimer(TimeSpan.FromSeconds(_minimumWait), () =>
             {
-                if (user.User == null)
+                if (model.Error != null)
                 {
                     ErrorText =
-                        "Der skete en fejl ved afsendelsen af din rapport!" + "\nFejl: " + user.Error.ErrorMessage +
+                        "Der skete en fejl ved afsendelsen af din rapport!" + "\nFejl: " + model.Error.ErrorMessage +
                         "\nPrøv igen eller tryk på 'Gem' og send rapporten fra hovedmenuen på et andet tidspunkt.";
                     UploadingVisibility = false;
                     _timerContinue = false;
