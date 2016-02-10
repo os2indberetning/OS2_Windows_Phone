@@ -6,6 +6,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
  */
 using System;
+using OS2WP8._0.Platform;
 using Xamarin.Forms;
 
 namespace OS2Indberetning.Templates
@@ -25,31 +26,48 @@ namespace OS2Indberetning.Templates
             // create the layout
             _layout = new StackLayout
             {
-                HorizontalOptions = LayoutOptions.End,
+                HorizontalOptions = LayoutOptions.EndAndExpand,
                 VerticalOptions = LayoutOptions.Center,
                 Orientation = StackOrientation.Horizontal,
-                Padding = 5,
-                Spacing = -1,
+                Padding = new Thickness(-20, 5, 20, 5),
                 WidthRequest = Definitions.HeaderHeight,
+                
             };
-
-            if (stored != "0")
+            var circleButton = new MyButton
             {
-                _label = new Label
-                {
-                    Text = stored,
-                    FontFamily = Definitions.FontFamily,
-                    FontSize = Definitions.HeaderFontSize - 25,
-                    TextColor = Color.FromHex(Definitions.TextColor),
-                    VerticalOptions = LayoutOptions.End,
-                };
-                _layout.Children.Add(_label);
-            }
+                Text = stored,
+                BorderColor = Color.FromHex(Definitions.TextColor),
+                TextColor = Color.FromHex(Definitions.PrimaryColor),
+                BackgroundColor = Color.FromHex(Definitions.TextColor),
+                HorizontalOptions = LayoutOptions.End,
+                VerticalOptions = LayoutOptions.Center,
+                AnchorY = (double)TextAlignment.Center,
+                FontSize = 14,
+                BorderRadius = 30,
+                HeightRequest = 60,
+                WidthRequest = 60,
+            };
+            var _inner = new StackLayout
+            {
+                HorizontalOptions = LayoutOptions.End,
+                VerticalOptions = LayoutOptions.Center,
+                Padding = new Thickness(13, 0, -13, 0)
+            };
 
             _image = new Image
             {
                 Source = "Resources/verts2.png",
+                HorizontalOptions = LayoutOptions.EndAndExpand,
+
             };
+
+            if (stored == "0")
+            {
+                _layout.Padding = new Thickness(-25, 5, 25, 5);
+                circleButton.IsVisible = false;
+            }
+            _inner.Children.Add(circleButton);
+            _layout.Children.Add(_inner);
             _layout.Children.Add(_image);
 
             // add a gester reco

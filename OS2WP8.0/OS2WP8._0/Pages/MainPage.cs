@@ -82,9 +82,9 @@ namespace OS2Indberetning
             var vertButton = new VertsButton(SendViewStoredMessage, Definitions.storedReportsCount.ToString());
             var refreshButton = new RefreshButton(SendRefreshMessage);
 
-            vertButton.WidthRequest = 60;
+            vertButton.WidthRequest = 100;
             vertButton.HeightRequest = 60;
-            refreshButton.WidthRequest = 60;
+            refreshButton.WidthRequest = 100;
             refreshButton.HeightRequest = 60;
 
             var headerstack = new StackLayout

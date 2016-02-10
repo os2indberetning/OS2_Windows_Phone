@@ -110,7 +110,7 @@ namespace OS2Indberetning.Pages
                 VerticalOptions = LayoutOptions.Center,
                 AnchorY = (double)TextAlignment.Center,
                 FontSize = 20,
-                BorderRadius = 100,
+                
             };
             addPurpose.SetBinding(Button.CommandProperty, PurposeViewModel.AddPurposeCommand);
 
