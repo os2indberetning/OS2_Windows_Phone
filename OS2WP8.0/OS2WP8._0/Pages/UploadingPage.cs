@@ -37,7 +37,7 @@ namespace OS2Indberetning
             {
                 HorizontalOptions = LayoutOptions.Center,
                 VerticalOptions = LayoutOptions.Start,
-                HeightRequest = 200
+                HeightRequest = 160
             };
             emblem.SetBinding(Image.SourceProperty, UploadingViewModel.EmblemProperty);
 
@@ -52,7 +52,7 @@ namespace OS2Indberetning
             var text = new Label
             {
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
-                FontSize = Definitions.HeaderFontSize,
+                FontSize = Definitions.HeaderFontSize - 8,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
                 YAlign = TextAlignment.Center,
             };
