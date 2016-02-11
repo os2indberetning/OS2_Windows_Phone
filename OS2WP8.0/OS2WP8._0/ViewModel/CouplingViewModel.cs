@@ -27,7 +27,8 @@ namespace OS2Indberetning.ViewModel
 
         private Municipality _model;
         private ISecureStorage _storage;
-        private string _token;
+        private string _username;
+        private string _pw;
 
         /// <summary>
         /// Constructor that handles initialization of the viewmodel
@@ -90,13 +91,14 @@ namespace OS2Indberetning.ViewModel
                 return false;
             }
             Definitions.User = user;
-            var specificToken = user.Profile.Tokens.Find(x => x.TokenString == _token);
-            if (specificToken == null)
-            {
-                App.ShowLoading(false, true);
-                return false;
-            }
-            _storage.Store(Definitions.TokenKey, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(specificToken)));
+            //var specificToken = user.Profile.Tokens.Find(x => x.TokenString == _token);
+            //if (specificToken == null)
+            //{
+            //    App.ShowLoading(false, true);
+            //    return false;
+            //}
+            // TODO : fix
+            //_storage.Store(Definitions.TokenKey, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(specificToken)));
             _storage.Store(Definitions.MunKey, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(_model)));
             _storage.Store(Definitions.UserDataKey, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(user)));
             return true;
@@ -133,17 +135,31 @@ namespace OS2Indberetning.ViewModel
         #endregion
 
         #region Properties
-        public const string TokenProperty = "Token";
-        public string Token
+        public const string UsernameProperty = "Username";
+        public string Username
         {
             get
             {
-                return _token;
+                return _username;
             }
             set
             {
-                _token = value;
-                OnPropertyChanged(TokenProperty);
+                _username = value;
+                OnPropertyChanged(UsernameProperty);
+            }
+        }
+
+        public const string PasswordProperty = "Pw";
+        public string Pw
+        {
+            get
+            {
+                return _pw;
+            }
+            set
+            {
+                _pw = value;
+                OnPropertyChanged(PasswordProperty);
             }
         }
 

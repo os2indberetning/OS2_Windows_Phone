@@ -76,16 +76,24 @@ namespace OS2Indberetning.Pages
                 }
             };
 
-            var entry = new Entry
+            var username = new Entry
             {
                 Placeholder = _placeholder,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
-                Keyboard = Keyboard.Numeric,
             };
-            entry.SetBinding(Entry.TextProperty, CouplingViewModel.TokenProperty);
+            username.SetBinding(Entry.TextProperty, CouplingViewModel.UsernameProperty);
 
-            entry.Completed += (sender, args) =>
+            var pw = new Entry
+            {
+                Placeholder = _placeholder,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                TextColor = Color.FromHex(Definitions.DefaultTextColor),
+                IsPassword = true,
+            };
+            pw.SetBinding(Entry.TextProperty, CouplingViewModel.PasswordProperty);
+
+            pw.Completed += (sender, args) =>
             {
                 SendCoupleMessage();
             };
