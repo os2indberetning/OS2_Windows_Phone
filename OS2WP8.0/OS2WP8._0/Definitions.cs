@@ -104,8 +104,13 @@ namespace OS2Indberetning
         public static string PrimaryColor = "#d3d3d3";
         public static string SecondaryColor = "#d3d3d3";
         public static string TextColor = "#000000";
-        public static string DefaultTextColor = "#000000";
         public static string BackgroundColor = "#ffffff";
+
+        // Default - Used when logging out
+        public static string DefaultPrimaryColor = "#d3d3d3";
+        public static string DefaultSecondaryColor = "#d3d3d3";
+        public static string DefaultTextColor = "#000000";
+        public static string DefaultBackgroundColor = "#ffffff";
         #endregion
 
         #region Municipality icon and url

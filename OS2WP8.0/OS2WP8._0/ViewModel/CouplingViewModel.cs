@@ -7,6 +7,7 @@
  */
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -91,16 +92,15 @@ namespace OS2Indberetning.ViewModel
                 return false;
             }
             Definitions.User = user;
-            //var specificToken = user.Profile.Tokens.Find(x => x.TokenString == _token);
             //if (specificToken == null)
             //{
             //    App.ShowLoading(false, true);
             //    return false;
             //}
-            // TODO : fix
-            //_storage.Store(Definitions.TokenKey, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(specificToken)));
+            _storage.Store(Definitions.TokenKey, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(user.Profile.Tokens.FirstOrDefault())));
             _storage.Store(Definitions.MunKey, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(_model)));
             _storage.Store(Definitions.UserDataKey, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(user)));
+            App.ShowLoading(false, true);
             return true;
         }
 
@@ -110,18 +110,22 @@ namespace OS2Indberetning.ViewModel
         /// </summary>
         private void HandleCoupleMessage()
         {
-            string message;
             App.ShowLoading(true);
-            APICaller.Couple(_model.APIUrl, _token).ContinueWith((result) =>
+            APICaller.Couple(_model.APIUrl, _username, _pw).ContinueWith((result) =>
             {
-                if(result.Result.User == null)
+                //TODO  only for testing
+                App.ShowLoading(false, true);
+                Dispose();
+                App.Navigation.PopToRootAsync();
+                return;
+
+                if (result.Result.User == null)
                 {
                     App.ShowMessage("Parring fejlede\n" + "Fejl besked: " + result.Result.Error.ErrorMessage);
                     return;
                 }
 
                 var success = Couple(result.Result.User);
-                App.ShowLoading(false, true);
                 if (!success)
                 {
                     App.ShowMessage("Parring fejlede\n" + "Fejl besked: Coupling Error");

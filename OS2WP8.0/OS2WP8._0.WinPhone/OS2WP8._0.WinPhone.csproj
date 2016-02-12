@@ -142,6 +142,7 @@
     <Content Include="Resources\done_black%402x.png" />
     <Content Include="Resources\done_black%403x.png" />
     <Content Include="Resources\done_black.png" />
+    <Content Include="Resources\exit.png" />
     <Content Include="Resources\left%402x.png" />
     <Content Include="Resources\left%403x.png" />
     <Content Include="Resources\left.png" />

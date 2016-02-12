@@ -80,12 +80,12 @@ namespace OS2Indberetning
                 YAlign = TextAlignment.Center,
             };
             var vertButton = new VertsButton(SendViewStoredMessage, Definitions.storedReportsCount.ToString());
-            var refreshButton = new RefreshButton(SendRefreshMessage);
+            var exitButton = new LogoutButton(SendLogoutMessage);
 
             vertButton.WidthRequest = 100;
             vertButton.HeightRequest = 60;
-            refreshButton.WidthRequest = 100;
-            refreshButton.HeightRequest = 60;
+            exitButton.WidthRequest = 100;
+            exitButton.HeightRequest = 60;
 
             var headerstack = new StackLayout
             {
@@ -96,7 +96,7 @@ namespace OS2Indberetning
                 //Padding = 5,
                 Children =
                 {
-                    refreshButton,
+                    exitButton,
                     header,
                     vertButton,
                 }
@@ -352,9 +352,9 @@ namespace OS2Indberetning
         /// <summary>
         /// Method that handles sending an Refresh message
         /// </summary>
-        private void SendRefreshMessage()
+        private void SendLogoutMessage()
         {
-            MessagingCenter.Send<MainPage>(this, "Refresh");
+            MessagingCenter.Send<MainPage>(this, "Logout");
         }
 
         #endregion

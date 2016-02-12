@@ -51,31 +51,31 @@ namespace OS2Indberetning.ViewModel
             Subscribe();
 
             FileHandler.ReadFileContent(Definitions.OrganizationFileName, Definitions.OrganizationFolder).ContinueWith(
-         (result) =>
-         {
-             if (!string.IsNullOrEmpty(result.Result))
+             (result) =>
              {
-                 var obj = JsonConvert.DeserializeObject<Employment>(result.Result);
-                 Definitions.Report.EmploymentId = obj.Id;
-                 Definitions.Organization = obj;
+                 if (!string.IsNullOrEmpty(result.Result))
+                 {
+                     var obj = JsonConvert.DeserializeObject<Employment>(result.Result);
+                     Definitions.Report.EmploymentId = obj.Id;
+                     Definitions.Organization = obj;
 
 
-             }
-             FileHandler.ReadFileContent(Definitions.TaxeFileName, Definitions.TaxeFolder).ContinueWith(
-                (result2) =>
-                {
-                    if (!string.IsNullOrEmpty(result2.Result))
+                 }
+                 FileHandler.ReadFileContent(Definitions.TaxeFileName, Definitions.TaxeFolder).ContinueWith(
+                    (result2) =>
                     {
-                        var obj = JsonConvert.DeserializeObject<Rate>(result2.Result);
-                        Definitions.Report.Rate = obj;
-                        Definitions.Report.RateId = obj.Id;
-                        Definitions.Taxe = obj;
-                    }
-                });
+                        if (!string.IsNullOrEmpty(result2.Result))
+                        {
+                            var obj = JsonConvert.DeserializeObject<Rate>(result2.Result);
+                            Definitions.Report.Rate = obj;
+                            Definitions.Report.RateId = obj.Id;
+                            Definitions.Taxe = obj;
+                        }
+                    });
 
-             InitializeCollection();
-         }, TaskScheduler.FromCurrentSynchronizationContext());
-        }
+                     InitializeCollection();
+                 }, TaskScheduler.FromCurrentSynchronizationContext());
+            }
 
         /// <summary>
         /// Method that handles subscribing to the needed messages
@@ -110,7 +110,7 @@ namespace OS2Indberetning.ViewModel
                 Navigation.PushAsync<CrossPathViewModel>();
             });
 
-            MessagingCenter.Subscribe<MainPage>(this, "Refresh", (sender) => { HandleRefreshMessage(); });
+            MessagingCenter.Subscribe<MainPage>(this, "Logout", (sender) => { HandleLogoutMessage(); });
         }
 
         /// <summary>
@@ -129,7 +129,7 @@ namespace OS2Indberetning.ViewModel
 
             MessagingCenter.Unsubscribe<MainPage>(this, "ShowCross");
 
-            MessagingCenter.Unsubscribe<MainPage>(this, "Refresh");
+            MessagingCenter.Unsubscribe<MainPage>(this, "Logout");
         }
 
         /// <summary>
@@ -203,47 +203,56 @@ namespace OS2Indberetning.ViewModel
         /// <summary>
         /// Method that handles the Refresh message
         /// </summary>
-        private void HandleRefreshMessage()
+        private void HandleLogoutMessage()
         {
-            var byteArray = _storage.Retrieve(Definitions.TokenKey);
-            var mstring = Encoding.UTF8.GetString(byteArray, 0, byteArray.Length);
-            var userToken = JsonConvert.DeserializeObject<Token>(mstring);
+            _storage.Delete(Definitions.TokenKey);
+
+            // Theme removed and Default colors are set
+            Definitions.PrimaryColor = Definitions.DefaultPrimaryColor;
+            Definitions.SecondaryColor = Definitions.DefaultSecondaryColor;
+            Definitions.BackgroundColor = Definitions.DefaultBackgroundColor;
+            Definitions.TextColor = Definitions.DefaultTextColor;
+
+            Navigation.PushAsync<CrossPathViewModel>();
+            //var byteArray = _storage.Retrieve(Definitions.TokenKey);
+            //var mstring = Encoding.UTF8.GetString(byteArray, 0, byteArray.Length);
+            //var userToken = JsonConvert.DeserializeObject<Token>(mstring);
             // Get Token from storage and deserialize
-            if (_storage.Retrieve(Definitions.MunKey) == null)
-            {
-                // HMM
-                return;
-            }
-            if (_storage.Retrieve(Definitions.UserDataKey) == null)
-            {
-                // HMmm
-                return;
-            }
-            var munByte = _storage.Retrieve(Definitions.MunKey);
-            var munString = Encoding.UTF8.GetString(munByte, 0, munByte.Length);
-            var mun = JsonConvert.DeserializeObject<Municipality>(munString);
-            APICaller.RefreshModel(userToken, mun).ContinueWith((result) =>
-            {
-                if (result.Result.Error.ErrorCode == "404")
-                {
-                    App.ShowMessage(result.Result.Error.ErrorMessage + "\nKunne Ikke opdatere.");
-                    return;
-                }
-                else if (result.Result.User == null)
-                {
-                    App.ShowMessage("Fejl: " + result.Result.Error.ErrorMessage);
-                    return;
-                }
+            //if (_storage.Retrieve(Definitions.MunKey) == null)
+            //{
+            //    // HMM
+            //    return;
+            //}
+            //if (_storage.Retrieve(Definitions.UserDataKey) == null)
+            //{
+            //    // HMmm
+            //    return;
+            //}
+            //var munByte = _storage.Retrieve(Definitions.MunKey);
+            //var munString = Encoding.UTF8.GetString(munByte, 0, munByte.Length);
+            //var mun = JsonConvert.DeserializeObject<Municipality>(munString);
+            //APICaller.RefreshModel(userToken, mun).ContinueWith((result) =>
+            //{
+            //    if (result.Result.Error.ErrorCode == "404")
+            //    {
+            //        App.ShowMessage(result.Result.Error.ErrorMessage + "\nKunne Ikke opdatere.");
+            //        return;
+            //    }
+            //    else if (result.Result.User == null)
+            //    {
+            //        App.ShowMessage("Fejl: " + result.Result.Error.ErrorMessage);
+            //        return;
+            //    }
 
-                Definitions.User = result.Result.User;
-                Definitions.MunIcon = new UriImageSource { Uri = new Uri(mun.ImgUrl) };
-                Definitions.TextColor = mun.TextColor;
-                Definitions.PrimaryColor = mun.PrimaryColor;
-                Definitions.SecondaryColor = mun.SecondaryColor;
-                Definitions.MunUrl = mun.APIUrl;
-                _storage.Store(Definitions.UserDataKey, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(result.Result)));
+            //    Definitions.User = result.Result.User;
+            //    Definitions.MunIcon = new UriImageSource { Uri = new Uri(mun.ImgUrl) };
+            //    Definitions.TextColor = mun.TextColor;
+            //    Definitions.PrimaryColor = mun.PrimaryColor;
+            //    Definitions.SecondaryColor = mun.SecondaryColor;
+            //    Definitions.MunUrl = mun.APIUrl;
+            //    _storage.Store(Definitions.UserDataKey, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(result.Result)));
 
-            }, TaskScheduler.FromCurrentSynchronizationContext());
+            //}, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         #endregion

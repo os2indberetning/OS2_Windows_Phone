@@ -525,6 +525,9 @@ namespace OS2Indberetning.ViewModel
             Definitions.Report.Route = Definitions.Route;
             Definitions.Report.Route.TotalDistance = TraveledDistance;
 
+            Definitions.Report.StartsAtHome = Definitions.StartAtHome;
+            Definitions.Report.EndsAtHome = Definitions.EndsAtHome;
+
             Definitions.Report.Rate = Definitions.Taxe;
             Definitions.Report.RateId = Definitions.Taxe.Id;
 

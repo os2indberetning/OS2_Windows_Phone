@@ -159,19 +159,5 @@ namespace OS2Indberetning.ViewModel
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
-
-        public override void OnViewAppearing()
-        {
-            Debug.WriteLine("test");
-            base.OnViewAppearing();
-            Subscribe();
-        }
-
-        public override void OnViewDisappearing()
-        {
-            Debug.WriteLine("test");
-            base.OnViewDisappearing();
-            Unsubscribe();
-        }
     }
 }

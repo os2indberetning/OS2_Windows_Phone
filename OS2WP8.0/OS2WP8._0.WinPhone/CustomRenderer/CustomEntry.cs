@@ -41,11 +41,26 @@ namespace CustomRenderer.WinPhone81
                 {
                     //each.HintStyle = hintStyle;
                     //each.ApplyTemplate();
-                    each.TextAlignment = TextAlignment.Center;
+
+                    // Centered text doesnt work for password fields.. so removing it on all fields
+                    //each.TextAlignment = TextAlignment.Center;
                     each.BorderBrush = new SolidColorBrush(Colors.Black);
                     each.BorderThickness = new Thickness(1);
                     each.HorizontalContentAlignment = HorizontalAlignment.Center;
                     
+                }
+
+                // Adding borders to password box
+                var borders2 = Control.Children.OfType<PasswordBox>();
+                foreach (var each in borders2)
+                {
+                    //each.HintStyle = hintStyle;
+                    //each.ApplyTemplate();
+
+                    each.BorderBrush = new SolidColorBrush(Colors.Black);
+                    each.BorderThickness = new Thickness(1);
+                    each.HorizontalContentAlignment = HorizontalAlignment.Center;
+
                 }
             }
         }

@@ -47,6 +47,7 @@
     <Compile Include="Model\Domain Models\Token.cs" />
     <Compile Include="Model\Domain Models\UserInfoModel.cs" />
     <Compile Include="Model\DriveSubmit.cs" />
+    <Compile Include="Model\LoginModel.cs" />
     <Compile Include="Model\Return Value Models\Error.cs" />
     <Compile Include="Model\Return Value Models\ReturnUserModel.cs" />
     <Compile Include="Model\TemplateModels\DriveReportCellModel.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Services\GpsCalculator.cs" />
     <Compile Include="Services\ReportListHandler.cs" />
     <Compile Include="Templates\Buttons\AddButton.cs" />
+    <Compile Include="Templates\Buttons\LogoutButton.cs" />
     <Compile Include="Templates\Buttons\BackButton.cs" />
     <Compile Include="Templates\Buttons\ButtomButton.cs" />
     <Compile Include="Templates\Buttons\ForwardButton.cs" />

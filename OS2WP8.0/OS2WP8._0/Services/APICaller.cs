@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using OS2Indberetning.Model;
+using OS2WP8._0.Model;
 
 namespace OS2Indberetning.BuisnessLogic
 {
@@ -47,7 +48,7 @@ namespace OS2Indberetning.BuisnessLogic
         /// <param name="url">Url to post too.</param>
         /// <param name="token">token id belonging to the user</param>
         /// <returns>ReturnUserModel</returns>
-        public static async Task<ReturnUserModel> Couple(string url, string token)
+        public static async Task<ReturnUserModel> Couple(string url, string username, string password)
         {
             var model = new ReturnUserModel();
             try
@@ -55,16 +56,15 @@ namespace OS2Indberetning.BuisnessLogic
                 HttpClientHandler handler = new HttpClientHandler();
                 _httpClient = new HttpClient(handler);
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url + "/SyncWithToken");
-                request.Content = new FormUrlEncodedContent( new[] 
-                {
-                    new KeyValuePair<string, string>("TokenString", token )
-                });
 
-                if (handler.SupportsTransferEncodingChunked())
-                {
-                    request.Headers.TransferEncodingChunked = true;
-                }
-                
+                var sendthis = new LoginModel();
+                sendthis.Username = username;
+                sendthis.Password = password;
+                var json = JsonConvert.SerializeObject(sendthis);
+
+                var stringContent = new StringContent(json, Encoding.UTF8, "application/json");
+                request.Content = stringContent;
+
                 // Send request
                 HttpResponseMessage response = await _httpClient.SendAsync(request);
                 // Read response

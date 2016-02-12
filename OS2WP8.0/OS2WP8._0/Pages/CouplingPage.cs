@@ -22,16 +22,12 @@ namespace OS2Indberetning.Pages
         private Municipality _municipality;
 
         private int hackSpaces;
-        private string _placeholder = "";
+        private string _usernamePlaceholder = "Brugernavn";
+        private string _pwPlaceholder = "Password";
+
         public CouplingPage()
         {
-            // HACK to center placeholder text. best method i could find
-            hackSpaces = (int)Math.Round(Definitions.ScreenWidth/27);
-            for (int i = 0; i < hackSpaces; i++)
-            {
-                _placeholder = _placeholder + " ";
-            }
-            _placeholder = _placeholder + "Tast Parringskode";
+
         }
 
         /// <summary>
@@ -78,7 +74,7 @@ namespace OS2Indberetning.Pages
 
             var username = new Entry
             {
-                Placeholder = _placeholder,
+                Placeholder = _usernamePlaceholder,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
             };
@@ -86,7 +82,7 @@ namespace OS2Indberetning.Pages
 
             var pw = new Entry
             {
-                Placeholder = _placeholder,
+                Placeholder = _pwPlaceholder,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
                 IsPassword = true,
@@ -139,7 +135,8 @@ namespace OS2Indberetning.Pages
                 Children =
                 {
                     headerstack,
-                    entry,
+                    username,
+                    pw,
                     textFrame,
                     buttomStack,
                 },
