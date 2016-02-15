@@ -97,7 +97,7 @@ namespace OS2Indberetning.ViewModel
             //    App.ShowLoading(false, true);
             //    return false;
             //}
-            _storage.Store(Definitions.TokenKey, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(user.Profile.Tokens.FirstOrDefault())));
+            _storage.Store(Definitions.AuthKey, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(user.Profile.Authorization)));
             _storage.Store(Definitions.MunKey, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(_model)));
             _storage.Store(Definitions.UserDataKey, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(user)));
             App.ShowLoading(false, true);
@@ -113,15 +113,9 @@ namespace OS2Indberetning.ViewModel
             App.ShowLoading(true);
             APICaller.Couple(_model.APIUrl, _username, _pw).ContinueWith((result) =>
             {
-                //TODO  only for testing
-                App.ShowLoading(false, true);
-                Dispose();
-                App.Navigation.PopToRootAsync();
-                return;
-
                 if (result.Result.User == null)
                 {
-                    App.ShowMessage("Parring fejlede\n" + "Fejl besked: " + result.Result.Error.ErrorMessage);
+                    App.ShowMessage("Parring fejlede\n" + "Fejl besked: " + result.Result.Error.Message);
                     return;
                 }
 

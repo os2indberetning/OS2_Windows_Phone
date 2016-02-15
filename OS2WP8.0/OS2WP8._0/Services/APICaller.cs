@@ -55,7 +55,7 @@ namespace OS2Indberetning.BuisnessLogic
             {
                 HttpClientHandler handler = new HttpClientHandler();
                 _httpClient = new HttpClient(handler);
-                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url + "/SyncWithToken");
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url + "/auth");
 
                 var sendthis = new LoginModel();
                 sendthis.Username = username;
@@ -74,7 +74,7 @@ namespace OS2Indberetning.BuisnessLogic
                 {
                     model.Error = new Error
                     {
-                        ErrorMessage = "Netværksfejl"
+                        Message = "Netværksfejl"
                     };
                     model.User = null;
                 }
@@ -82,6 +82,10 @@ namespace OS2Indberetning.BuisnessLogic
                 {
                     // Deserialize string to object
                     Error error = JsonConvert.DeserializeObject<Error>(jsonString);
+                    if (String.IsNullOrEmpty(error.Message))
+                        error.Message = error.ErrorCode;
+                    if (String.IsNullOrEmpty(error.ErrorMessage))
+                        error.ErrorMessage = error.Message;
                     model.Error = error;
                     model.User = null;
                 }
@@ -101,7 +105,7 @@ namespace OS2Indberetning.BuisnessLogic
                 model.User = null;
                 model.Error = new Error
                 {
-                    ErrorMessage = e.Message,
+                    Message = e.Message,
                 };
                 return model;
             }
@@ -110,37 +114,41 @@ namespace OS2Indberetning.BuisnessLogic
         /// <summary>
         /// Fetches the UserInfoModel belonging to the token.
         /// </summary>
-        /// <param name="token">the token belonging to the user.</param>
+        /// <param name="authorization">the token belonging to the user.</param>
         /// <param name="mun">the Municipality the user belongs to.</param>
         /// <returns>ReturnUserModel</returns>
-        public static async Task<ReturnUserModel> RefreshModel(Token token, Municipality mun)
+        public static async Task<ReturnUserModel> RefreshModel(Authorization authorization, Municipality mun)
         {
             var model = new ReturnUserModel();
             try
             {
                 HttpClientHandler handler = new HttpClientHandler();
                 _httpClient = new HttpClient(handler);
-                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, mun.APIUrl + "/UserData");
-                request.Content = new FormUrlEncodedContent(new[]
-                {
-                    new KeyValuePair<string, string>("GUID", token.GuId)
-                });
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, mun.APIUrl + "/userInfo");
 
-                if (handler.SupportsTransferEncodingChunked())
-                {
-                    request.Headers.TransferEncodingChunked = true;
-                }
+                var json = JsonConvert.SerializeObject(authorization);
+
+                var stringContent = new StringContent(json, Encoding.UTF8, "application/json");
+                request.Content = stringContent;
 
                 // Send request
                 HttpResponseMessage response = await _httpClient.SendAsync(request);
                 
                 // Read response
                 string jsonString = await response.Content.ReadAsStringAsync();
-                if (string.IsNullOrEmpty(jsonString))
+                if (response.IsSuccessStatusCode)
+                {
+                    // Deserialize string to object
+                    UserInfoModel user = JsonConvert.DeserializeObject<UserInfoModel>(jsonString);
+                    user = RemoveTrailer(user);
+                    model.User = user;
+                    model.Error = new Error(); // tom
+                }
+                else if (string.IsNullOrEmpty(jsonString))
                 {
                     model.Error = new Error
                     {
-                        ErrorMessage = "Netværksfejl",
+                        Message = "Netværksfejl",
                         ErrorCode = "404",
                     };
                     model.User = null;
@@ -149,16 +157,13 @@ namespace OS2Indberetning.BuisnessLogic
                 {
                     // Deserialize string to object
                     Error error = JsonConvert.DeserializeObject<Error>(jsonString);
+                    if (String.IsNullOrEmpty(error.Message))
+                        error.Message = error.ErrorCode;
+                    if (String.IsNullOrEmpty(error.ErrorMessage))
+                        error.ErrorMessage = error.Message;
+
                     model.Error = error;
                     model.User = null;
-                }
-                else
-                {
-                    // Deserialize string to object
-                    UserInfoModel user = JsonConvert.DeserializeObject<UserInfoModel>(jsonString);
-                    user = RemoveTrailer(user);
-                    model.User = user;
-                    model.Error = new Error(); // tom
                 }
 
                 //return model;
@@ -171,7 +176,7 @@ namespace OS2Indberetning.BuisnessLogic
                 model.User = null;
                 model.Error = new Error
                 {
-                    ErrorMessage = e.Message,
+                    Message = e.Message,
                 };
                 return model;
             }
@@ -181,23 +186,23 @@ namespace OS2Indberetning.BuisnessLogic
         /// Used to submit drivereport after finished drive.
         /// </summary>
         /// <param name="report">the report of the drive.</param>
-        /// <param name="token">the token belonging to the user.</param>
+        /// <param name="authorization">the token belonging to the user.</param>
         /// <param name="munUrl">the municipalicy url to be called</param>
         /// <returns>ReturnUserModel</returns>
-        public static async Task<ReturnUserModel> SubmitDrive(DriveReport report, Token token, string munUrl)
+        public static async Task<ReturnUserModel> SubmitDrive(DriveReport report, Authorization authorization, string munUrl)
         {
             var model = new ReturnUserModel();
             try
             {
                 var sendthis = new DriveSubmit();
-                sendthis.Token = token;
+                sendthis.Authorization = authorization;
                 sendthis.DriveReport = report;
                 var json = JsonConvert.SerializeObject(sendthis);
 
                 HttpClientHandler handler = new HttpClientHandler();
                 _httpClient = new HttpClient(handler);
 
-                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, munUrl + "/SubmitDrive");
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, munUrl + "/report");
 
                 var stringContent = new StringContent(json, Encoding.UTF8, "application/json");
                 request.Content = stringContent;
@@ -206,38 +211,37 @@ namespace OS2Indberetning.BuisnessLogic
                
                 // Read response
                 string jsonString = await response.Content.ReadAsStringAsync();
-
-                if (string.IsNullOrEmpty(jsonString))
+                if (response.IsSuccessStatusCode)
+                {
+                    model.Error = null;
+                }
+                else if (string.IsNullOrEmpty(jsonString))
                 {
                     model.Error = new Error
                     {
-                        ErrorMessage = "Netværksfejl",
+                        Message = "Netværksfejl",
                         ErrorCode = "404",
                     };
-                    model.User = null;
-                }
-                else if (!response.IsSuccessStatusCode)
-                {
-                    // Deserialize string to object
-                    Error error = JsonConvert.DeserializeObject<Error>(jsonString);
-                    model.Error = error;
                     model.User = null;
                 }
                 else
                 {
                     // Deserialize string to object
-                    // NOT LONG IN USE - the return value changed and the model is no longer returned. Only error is used now
-                    //UserInfoModel user = JsonConvert.DeserializeObject<UserInfoModel>(jsonString);
-                    //user = RemoveTrailer(user);
-                    //model.User = user;
-                    model.Error = null; // tom
+                    Error error = JsonConvert.DeserializeObject<Error>(jsonString);
+                    if (String.IsNullOrEmpty(error.Message))
+                        error.Message = error.ErrorCode;
+                    if (String.IsNullOrEmpty(error.ErrorMessage))
+                        error.ErrorMessage = error.Message;
+                    model.Error = error;
+                    model.User = null;
                 }
+
                 //return model;
                 return model;
             }
             catch (Exception e)
             {
-                model.Error = new Error { ErrorCode = "Exception", ErrorMessage = "Der skete en uhåndteret fejl. Kontakt venligst Support" };
+                model.Error = new Error { ErrorCode = "Exception", Message = "Der skete en uhåndteret fejl. Kontakt venligst Support" };
                 return model;
             }
         }

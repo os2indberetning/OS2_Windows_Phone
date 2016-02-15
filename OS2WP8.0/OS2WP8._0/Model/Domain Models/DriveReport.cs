@@ -9,11 +9,6 @@ namespace OS2Indberetning.Model
 {
     public class DriveReport
     {
-        public DriveReport()
-        {
-            Profile = new Profile();
-            Rate = new Rate();
-        }
         public int Id { get; set; }
         public int RouteId { get; set; }
         public int ProfileId { get; set; }
@@ -25,7 +20,5 @@ namespace OS2Indberetning.Model
         public bool StartsAtHome { get; set; }
         public bool EndsAtHome { get; set; }
         public Route Route { get; set; }
-        public Rate Rate { get; set; }
-        public Profile Profile { get; set; }
     }
 }

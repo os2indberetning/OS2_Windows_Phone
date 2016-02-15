@@ -23,7 +23,7 @@ namespace OS2Indberetning
         public static string Purpose = "Vælg Formål";
         public static string Remark = "Indtast Bemærkning";
         public static Employment Organization = new Employment { EmploymentPosition = "Vælg"};
-        public static Rate Taxe = new Rate{Description = "Vælg"};
+        public static Rate Rate = new Rate{Description = "Vælg"};
         public static string Date;
         public static bool StartAtHome = false;
         public static bool EndsAtHome = false;
@@ -76,7 +76,7 @@ namespace OS2Indberetning
         #endregion
 
         #region Storage keys
-        public static string TokenKey = "login_key";
+        public static string AuthKey = "login_key";
         public static string UserDataKey = "userKey";
         public static string MunKey = "userToken";
         #endregion
@@ -135,6 +135,8 @@ namespace OS2Indberetning
 
         public static bool HasAppeared = false;
         public static int storedReportsCount;
+
+        public static bool DoLoginCheck = false;
 
         #endregion
     }

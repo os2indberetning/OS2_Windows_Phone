@@ -47,7 +47,7 @@ namespace OS2Indberetning.ViewModel
 
             InitializeCollection();
 
-            Username = Definitions.Report.Profile.FirstName + " " + Definitions.Report.Profile.LastName;
+            Username = Definitions.User.Profile.FirstName + " " + Definitions.User.Profile.LastName;
             Date = "Dato: " + Definitions.Report.Date;
             StartHomeCheck = Definitions.Report.StartsAtHome;
             EndHomeCheck = Definitions.Report.EndsAtHome;
@@ -111,12 +111,12 @@ namespace OS2Indberetning.ViewModel
             _driveReport.Add(new DriveReportCellModel
             {
                 Name = OrganisatoriskText,
-                Description = Definitions.Report.Profile.Employments.FirstOrDefault(x => x.Id == Definitions.Report.EmploymentId).EmploymentPosition,
+                Description = Definitions.User.Profile.Employments.FirstOrDefault(x => x.Id == Definitions.Report.EmploymentId).EmploymentPosition,
             });
             _driveReport.Add(new DriveReportCellModel
             {
                 Name = TakstText,
-                Description = Definitions.Report.Rate.Description,
+                Description = Definitions.Rate.Description,
             });
             _driveReport.Add(new DriveReportCellModel
             {

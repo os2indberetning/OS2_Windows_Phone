@@ -71,7 +71,6 @@ namespace OS2Indberetning
 
         private void RegisterPages()
         {
-            ViewFactory.Register<CrossPathPage, CrossPathViewModel>();
             ViewFactory.Register<CouplingPage, CouplingViewModel>();
             ViewFactory.Register<LoginPage, LoginViewModel>();
             ViewFactory.Register<MainPage, MainViewModel>();
@@ -123,11 +122,7 @@ namespace OS2Indberetning
 
         protected override void OnStart()
         {
-            // Handle when your app starts
-            //var container = new SimpleContainer();
-            
-
-            //Resolver.SetResolver(container.GetResolver());
+            Definitions.DoLoginCheck = true;
         }
 
         protected override void OnSleep()
@@ -137,6 +132,7 @@ namespace OS2Indberetning
 
         protected override void OnResume()
         {
+            Definitions.DoLoginCheck = true;
             if (Definitions.GpsIsActive)
             {
                 MessagingCenter.Send(this, "Appeared");

@@ -30,6 +30,11 @@ namespace OS2Indberetning.Pages
         /// </summary>
         public LoginPage()
         {
+            Definitions.PrimaryColor = Definitions.DefaultPrimaryColor;
+            Definitions.SecondaryColor = Definitions.DefaultSecondaryColor;
+            Definitions.BackgroundColor = Definitions.DefaultBackgroundColor;
+            Definitions.TextColor = Definitions.DefaultTextColor;
+
             SetContent();
         }
 

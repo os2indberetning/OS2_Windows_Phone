@@ -44,7 +44,7 @@
     <Compile Include="Model\Domain Models\Profile.cs" />
     <Compile Include="Model\Domain Models\Rate.cs" />
     <Compile Include="Model\Domain Models\Route.cs" />
-    <Compile Include="Model\Domain Models\Token.cs" />
+    <Compile Include="Model\Domain Models\Authorization.cs" />
     <Compile Include="Model\Domain Models\UserInfoModel.cs" />
     <Compile Include="Model\DriveSubmit.cs" />
     <Compile Include="Model\LoginModel.cs" />
@@ -54,7 +54,6 @@
     <Compile Include="Model\TemplateModels\MunCellModel.cs" />
     <Compile Include="Model\TemplateModels\StoredReportCellModel.cs" />
     <Compile Include="Pages\CouplingPage.cs" />
-    <Compile Include="Pages\CrossPathPage.cs" />
     <Compile Include="Pages\FinishDrivePage.cs" />
     <Compile Include="Pages\GpsPage.cs" />
     <Compile Include="Pages\LoginPage.cs" />
@@ -89,7 +88,6 @@
     <Compile Include="Templates\ListTemplates\MunCell.cs" />
     <Compile Include="Templates\ListTemplates\StoredReportCell.cs" />
     <Compile Include="ViewModel\CouplingViewModel.cs" />
-    <Compile Include="ViewModel\CrossPathViewModel.cs" />
     <Compile Include="ViewModel\FinishDriveViewModel.cs" />
     <Compile Include="ViewModel\GpsViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />

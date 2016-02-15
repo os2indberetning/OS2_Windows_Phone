@@ -39,6 +39,11 @@ namespace OS2Indberetning.ViewModel
         /// </summary>
         public LoginViewModel()
         {
+            Definitions.PrimaryColor = Definitions.DefaultPrimaryColor;
+            Definitions.SecondaryColor = Definitions.DefaultSecondaryColor;
+            Definitions.BackgroundColor = Definitions.DefaultBackgroundColor;
+            Definitions.TextColor = Definitions.DefaultTextColor;
+
             MunList = new ObservableCollection<MunCellModel>();
             CallApi();
             Subscribe();

@@ -40,7 +40,7 @@ namespace OS2Indberetning
         public MainPage()
         {
             InitializeTheme();
-            //this.Content = this.SetContent();
+            this.Content = this.SetContent();
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace OS2Indberetning
                 Orientation = StackOrientation.Horizontal,
                 BackgroundColor = Color.FromHex(Definitions.PrimaryColor),
                 HeightRequest = Definitions.HeaderHeight,
-                //HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
                 //Padding = 5,
                 Children =
                 {
@@ -315,7 +315,7 @@ namespace OS2Indberetning
                 _popUpLayout.ShowPopup(CreatePopup("Vælg venligst en organisatorisk placering"));
                 return;
             }
-            if (Definitions.Taxe.Id == 0)
+            if (Definitions.Rate.Id == 0)
             {
                 _popUpLayout.ShowPopup(CreatePopup("Vælg venligst en takst"));
                 return;
@@ -385,14 +385,15 @@ namespace OS2Indberetning
             {
                 List.SelectedItem = null;
             }
-            
-            if (!Definitions.HasAppeared)
-            {
-                Definitions.HasAppeared = true;
-                MessagingCenter.Send<MainPage>(this, "ShowCross");
-            }
             MessagingCenter.Send<MainPage>(this, "Update");
-            this.Content = SetContent();
+
+            if (Definitions.DoLoginCheck)
+            {
+                Definitions.DoLoginCheck = false;
+                MessagingCenter.Send<MainPage>(this, "Check");
+            }
+
+            //this.Content = SetContent();
         }
 
         #endregion

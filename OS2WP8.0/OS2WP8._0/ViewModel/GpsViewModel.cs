@@ -521,15 +521,14 @@ namespace OS2Indberetning.ViewModel
             Definitions.Report.Date = Definitions.Date;
 
             Definitions.Report.ProfileId = Definitions.User.Profile.Id;
-            Definitions.Report.Profile = Definitions.User.Profile;
+            
             Definitions.Report.Route = Definitions.Route;
             Definitions.Report.Route.TotalDistance = TraveledDistance;
 
             Definitions.Report.StartsAtHome = Definitions.StartAtHome;
             Definitions.Report.EndsAtHome = Definitions.EndsAtHome;
-
-            Definitions.Report.Rate = Definitions.Taxe;
-            Definitions.Report.RateId = Definitions.Taxe.Id;
+            
+            Definitions.Report.RateId = Definitions.Rate.Id;
 
             if(Definitions.Report.Route.GPSCoordinates.Count == 1)
                 Definitions.Report.Route.GPSCoordinates.Clear();
