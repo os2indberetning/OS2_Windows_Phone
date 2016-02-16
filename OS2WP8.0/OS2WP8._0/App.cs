@@ -122,7 +122,7 @@ namespace OS2Indberetning
 
         protected override void OnStart()
         {
-            Definitions.DoLoginCheck = true;
+            MessagingCenter.Send<App>(this, "Check");
         }
 
         protected override void OnSleep()
@@ -132,7 +132,7 @@ namespace OS2Indberetning
 
         protected override void OnResume()
         {
-            Definitions.DoLoginCheck = true;
+            MessagingCenter.Send<App>(this, "Check");
             if (Definitions.GpsIsActive)
             {
                 MessagingCenter.Send(this, "Appeared");

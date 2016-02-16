@@ -5,6 +5,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
  */
+
+using System;
 using OS2Indberetning.Model;
 using Xamarin.Forms;
 
@@ -24,7 +26,8 @@ namespace OS2Indberetning
         public static string Remark = "Indtast Bemærkning";
         public static Employment Organization = new Employment { EmploymentPosition = "Vælg"};
         public static Rate Rate = new Rate{Description = "Vælg"};
-        public static string Date;
+        public static string DateToView;
+        public static string DateToApi;
         public static bool StartAtHome = false;
         public static bool EndsAtHome = false;
         public static Route Route = new Route();
@@ -135,8 +138,6 @@ namespace OS2Indberetning
 
         public static bool HasAppeared = false;
         public static int storedReportsCount;
-
-        public static bool DoLoginCheck = false;
 
         #endregion
     }

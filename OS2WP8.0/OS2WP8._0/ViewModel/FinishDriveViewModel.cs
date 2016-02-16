@@ -48,7 +48,7 @@ namespace OS2Indberetning.ViewModel
             InitializeCollection();
 
             Username = Definitions.User.Profile.FirstName + " " + Definitions.User.Profile.LastName;
-            Date = "Dato: " + Definitions.Report.Date;
+            Date = "Dato: " + Definitions.DateToView;
             StartHomeCheck = Definitions.Report.StartsAtHome;
             EndHomeCheck = Definitions.Report.EndsAtHome;
             Subscribe();
@@ -98,7 +98,7 @@ namespace OS2Indberetning.ViewModel
         {
             if (String.IsNullOrEmpty(Definitions.Report.ManualEntryRemark))
             {
-                Definitions.Report.ManualEntryRemark = "Ingen kommentar angivet";
+                Definitions.Report.ManualEntryRemark = "Ingen kommentar indtastet";
             }
             _driveReport.Clear();
             DriveReportList.Clear();

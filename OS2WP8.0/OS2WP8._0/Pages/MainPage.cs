@@ -92,7 +92,7 @@ namespace OS2Indberetning
                 Orientation = StackOrientation.Horizontal,
                 BackgroundColor = Color.FromHex(Definitions.PrimaryColor),
                 HeightRequest = Definitions.HeaderHeight,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                //HorizontalOptions = LayoutOptions.FillAndExpand,
                 //Padding = 5,
                 Children =
                 {
@@ -101,17 +101,17 @@ namespace OS2Indberetning
                     vertButton,
                 }
             };
-            Definitions.Date = DateTime.Now.ToString("d/M/yyyy");
+            Definitions.DateToView = DateTime.Now.ToString("d/M/yyyy");
+            Definitions.DateToApi = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
             var date = new Label
             {
-                Text = Definitions.Date,
+                Text = Definitions.DateToView,
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
                 BackgroundColor = Color.FromHex(Definitions.BackgroundColor),
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
                 FontSize = Definitions.LoginLabelText,
                 HeightRequest = 40,
             };
-            Definitions.Date = DateTime.Now.ToString("d/M/yyyy");
 
             List = new ListView
             {
@@ -387,13 +387,7 @@ namespace OS2Indberetning
             }
             MessagingCenter.Send<MainPage>(this, "Update");
 
-            if (Definitions.DoLoginCheck)
-            {
-                Definitions.DoLoginCheck = false;
-                MessagingCenter.Send<MainPage>(this, "Check");
-            }
-
-            //this.Content = SetContent();
+            this.Content = SetContent();
         }
 
         #endregion

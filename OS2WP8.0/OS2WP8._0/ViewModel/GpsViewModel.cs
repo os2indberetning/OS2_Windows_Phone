@@ -518,7 +518,7 @@ namespace OS2Indberetning.ViewModel
             }
 
             Definitions.Report.EmploymentId = Definitions.Organization.Id;
-            Definitions.Report.Date = Definitions.Date;
+            Definitions.Report.Date = Definitions.DateToApi;
 
             Definitions.Report.ProfileId = Definitions.User.Profile.Id;
             
@@ -547,10 +547,6 @@ namespace OS2Indberetning.ViewModel
                 var seconds = (DateTime.Now - _errorDateTime).TotalSeconds;
                 _noSignalCountDown = (double)Definitions.NoGpsSignalTimer - seconds;
             }
-            //else
-            //{
-            //    TestForAvailibility();
-            //}
         }
 
 

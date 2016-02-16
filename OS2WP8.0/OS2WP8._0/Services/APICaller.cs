@@ -80,13 +80,7 @@ namespace OS2Indberetning.BuisnessLogic
                 }
                 else if (!response.IsSuccessStatusCode)
                 {
-                    // Deserialize string to object
-                    Error error = JsonConvert.DeserializeObject<Error>(jsonString);
-                    if (String.IsNullOrEmpty(error.Message))
-                        error.Message = error.ErrorCode;
-                    if (String.IsNullOrEmpty(error.ErrorMessage))
-                        error.ErrorMessage = error.Message;
-                    model.Error = error;
+                    model.Error = DeserializeError(jsonString);
                     model.User = null;
                 }
                 else
@@ -155,14 +149,7 @@ namespace OS2Indberetning.BuisnessLogic
                 }
                 else if (!response.IsSuccessStatusCode)
                 {
-                    // Deserialize string to object
-                    Error error = JsonConvert.DeserializeObject<Error>(jsonString);
-                    if (String.IsNullOrEmpty(error.Message))
-                        error.Message = error.ErrorCode;
-                    if (String.IsNullOrEmpty(error.ErrorMessage))
-                        error.ErrorMessage = error.Message;
-
-                    model.Error = error;
+                    model.Error = DeserializeError(jsonString);
                     model.User = null;
                 }
 
@@ -226,13 +213,7 @@ namespace OS2Indberetning.BuisnessLogic
                 }
                 else
                 {
-                    // Deserialize string to object
-                    Error error = JsonConvert.DeserializeObject<Error>(jsonString);
-                    if (String.IsNullOrEmpty(error.Message))
-                        error.Message = error.ErrorCode;
-                    if (String.IsNullOrEmpty(error.ErrorMessage))
-                        error.ErrorMessage = error.Message;
-                    model.Error = error;
+                    model.Error = DeserializeError(jsonString);
                     model.User = null;
                 }
 
@@ -262,6 +243,20 @@ namespace OS2Indberetning.BuisnessLogic
             }
             
             return model;
+        }
+
+        private static Error DeserializeError(string jsonString)
+        {
+            // Deserialize string to object
+            Error error = JsonConvert.DeserializeObject<Error>(jsonString);
+            if (String.IsNullOrEmpty(error.Message))
+                error.Message = error.ErrorMessage;
+            if (String.IsNullOrEmpty(error.ErrorMessage))
+                error.ErrorMessage = error.Message;
+            if (!String.IsNullOrEmpty(error.ErrorCode))
+                error.ErrorCode = error.ErrorCode;
+
+            return error;
         }
 
     }

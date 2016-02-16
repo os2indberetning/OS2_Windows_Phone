@@ -81,7 +81,7 @@ namespace OS2Indberetning.ViewModel
         /// </summary>
         private void Subscribe()
         {
-            MessagingCenter.Subscribe<MainPage>(this, "Check", (sender) =>
+            MessagingCenter.Subscribe<App>(this, "Check", (sender) =>
             {
                 CheckLoginStatus();
             });
@@ -118,7 +118,7 @@ namespace OS2Indberetning.ViewModel
         /// </summary>
         private void Unsubscribe()
         {
-            MessagingCenter.Unsubscribe<MainPage>(this, "Check");
+            MessagingCenter.Unsubscribe<App>(this, "Check");
 
             MessagingCenter.Unsubscribe<MainPage>(this, "Update");
 
