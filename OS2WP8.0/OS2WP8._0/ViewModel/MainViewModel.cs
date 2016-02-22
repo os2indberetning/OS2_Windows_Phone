@@ -34,6 +34,10 @@ namespace OS2Indberetning.ViewModel
         private const string TakstText = "Takst";
         private const string EkstraText = "Ekstra Bemærkning:";
 
+        private Color _primaryHex;
+        private Color _secondaryHex;
+        private string _dato;
+
         private ISecureStorage _storage;
 
         /// <summary>
@@ -41,6 +45,7 @@ namespace OS2Indberetning.ViewModel
         /// </summary>
         public MainViewModel()
         {
+            PrimaryHex = Color.FromHex(Definitions.PrimaryColor);
             if (Definitions.Report == null)
             {
                 Definitions.Report = new DriveReport();
@@ -51,39 +56,42 @@ namespace OS2Indberetning.ViewModel
             Subscribe();
 
             FileHandler.ReadFileContent(Definitions.OrganizationFileName, Definitions.OrganizationFolder).ContinueWith(
-         (result) =>
-         {
-             if (!string.IsNullOrEmpty(result.Result))
+             (result) =>
              {
-                 var obj = JsonConvert.DeserializeObject<Employment>(result.Result);
-                 Definitions.Report.EmploymentId = obj.Id;
-                 Definitions.Organization = obj;
-
-
-             }
-             FileHandler.ReadFileContent(Definitions.TaxeFileName, Definitions.TaxeFolder).ContinueWith(
-                (result2) =>
-                {
-                    if (!string.IsNullOrEmpty(result2.Result))
+                 if (!string.IsNullOrEmpty(result.Result))
+                 {
+                     var obj = JsonConvert.DeserializeObject<Employment>(result.Result);
+                     Definitions.Report.EmploymentId = obj.Id;
+                     Definitions.Organization = obj;
+                 }
+                 FileHandler.ReadFileContent(Definitions.TaxeFileName, Definitions.TaxeFolder).ContinueWith(
+                    (result2) =>
                     {
-                        var obj = JsonConvert.DeserializeObject<Rate>(result2.Result);
-                        Definitions.Report.Rate = obj;
-                        Definitions.Report.RateId = obj.Id;
-                        Definitions.Taxe = obj;
-                    }
-                });
+                        if (!string.IsNullOrEmpty(result2.Result))
+                        {
+                            var obj = JsonConvert.DeserializeObject<Rate>(result2.Result);
+                            Definitions.Report.RateId = obj.Id;
+                            Definitions.Rate = obj;
+                        }
+                    });
 
-             InitializeCollection();
-         }, TaskScheduler.FromCurrentSynchronizationContext());
-        }
+                     InitializeCollection();
+                 }, TaskScheduler.FromCurrentSynchronizationContext());
+            }
 
         /// <summary>
         /// Method that handles subscribing to the needed messages
         /// </summary>
         private void Subscribe()
         {
+            MessagingCenter.Subscribe<App>(this, "Check", (sender) =>
+            {
+                CheckLoginStatus();
+            });
+
             MessagingCenter.Subscribe<MainPage>(this, "Update", (sender) =>
             {
+                PrimaryHex = Color.FromHex(Definitions.PrimaryColor);
                 InitializeCollection();
             });
 
@@ -105,12 +113,7 @@ namespace OS2Indberetning.ViewModel
                 Navigation.PushAsync<StoredReportsViewModel>();
             });
 
-            MessagingCenter.Subscribe<MainPage>(this, "ShowCross", (sender) =>
-            {
-                Navigation.PushAsync<CrossPathViewModel>();
-            });
-
-            MessagingCenter.Subscribe<MainPage>(this, "Refresh", (sender) => { HandleRefreshMessage(); });
+            MessagingCenter.Subscribe<MainPage>(this, "Logout", (sender) => { HandleLogoutMessage(); });
         }
 
         /// <summary>
@@ -119,6 +122,8 @@ namespace OS2Indberetning.ViewModel
         /// </summary>
         private void Unsubscribe()
         {
+            MessagingCenter.Unsubscribe<App>(this, "Check");
+
             MessagingCenter.Unsubscribe<MainPage>(this, "Update");
 
             MessagingCenter.Unsubscribe<MainPage>(this, "Start");
@@ -127,9 +132,7 @@ namespace OS2Indberetning.ViewModel
 
             MessagingCenter.Unsubscribe<MainPage>(this, "ViewStored");
 
-            MessagingCenter.Unsubscribe<MainPage>(this, "ShowCross");
-
-            MessagingCenter.Unsubscribe<MainPage>(this, "Refresh");
+            MessagingCenter.Unsubscribe<MainPage>(this, "Logout");
         }
 
         /// <summary>
@@ -149,11 +152,20 @@ namespace OS2Indberetning.ViewModel
             {
                 remarkText = Definitions.Report.ManualEntryRemark;
             }
+            string purpose;
+            if (string.IsNullOrEmpty(Definitions.Purpose))
+            {
+                purpose = "Vælg Formål";
+            }
+            else
+            {
+                purpose = Definitions.Purpose;
+            }
 
             _driveReport.Add(new DriveReportCellModel
             {
                 Name = PurposeText,
-                Description = Definitions.Purpose,
+                Description = purpose,
             });
             _driveReport.Add(new DriveReportCellModel
             {
@@ -163,7 +175,7 @@ namespace OS2Indberetning.ViewModel
             _driveReport.Add(new DriveReportCellModel
             {
                 Name = TakstText,
-                Description = Definitions.Taxe.Description,
+                Description = Definitions.Rate.Description,
             });
             _driveReport.Add(new DriveReportCellModel
             {
@@ -201,49 +213,101 @@ namespace OS2Indberetning.ViewModel
         }
 
         /// <summary>
-        /// Method that handles the Refresh message
+        /// Method that handles the Logout message
         /// </summary>
-        private void HandleRefreshMessage()
+        private void HandleLogoutMessage()
         {
-            var byteArray = _storage.Retrieve(Definitions.TokenKey);
-            var mstring = Encoding.UTF8.GetString(byteArray, 0, byteArray.Length);
-            var userToken = JsonConvert.DeserializeObject<Token>(mstring);
-            // Get Token from storage and deserialize
-            if (_storage.Retrieve(Definitions.MunKey) == null)
+            // Delete stored token
+            _storage.Delete(Definitions.AuthKey);
+            // delete stored user
+            _storage.Delete(Definitions.UserDataKey);
+
+            // Remove all stored reports on logout
+            ReportListHandler.DeleteEntireList();
+
+            // Clear purpose list
+            FileHandler.WriteFileContent(Definitions.PurposeFileName, Definitions.PurposeFolderName, String.Empty);
+
+            // Push login view
+            Navigation.PushAsync<LoginViewModel>();
+        }
+
+        private void CheckLoginStatus()
+        {
+            try
             {
-                // HMM
-                return;
-            }
-            if (_storage.Retrieve(Definitions.UserDataKey) == null)
-            {
-                // HMmm
-                return;
-            }
-            var munByte = _storage.Retrieve(Definitions.MunKey);
-            var munString = Encoding.UTF8.GetString(munByte, 0, munByte.Length);
-            var mun = JsonConvert.DeserializeObject<Municipality>(munString);
-            APICaller.RefreshModel(userToken, mun).ContinueWith((result) =>
-            {
-                if (result.Result.Error.ErrorCode == "404")
+                // Get Municipality from storage and deserialize
+                if (_storage.Retrieve(Definitions.AuthKey) == null)
                 {
-                    App.ShowMessage(result.Result.Error.ErrorMessage + "\nKunne Ikke opdatere.");
+                    Definitions.Report = new DriveReport();
+                    Navigation.PushAsync<LoginViewModel>();
+               
                     return;
                 }
-                else if (result.Result.User == null)
+                var byteArray = _storage.Retrieve(Definitions.AuthKey);
+                var mstring = Encoding.UTF8.GetString(byteArray, 0, byteArray.Length);
+                var userToken = JsonConvert.DeserializeObject<Authorization>(mstring);
+                // Get Token from storage and deserialize
+                if (_storage.Retrieve(Definitions.MunKey) == null || _storage.Retrieve(Definitions.UserDataKey) == null)
                 {
-                    App.ShowMessage("Fejl: " + result.Result.Error.ErrorMessage);
+                    Definitions.Report = new DriveReport();
+                    Navigation.PushAsync<LoginViewModel>();
                     return;
                 }
 
-                Definitions.User = result.Result.User;
-                Definitions.MunIcon = new UriImageSource { Uri = new Uri(mun.ImgUrl) };
-                Definitions.TextColor = mun.TextColor;
-                Definitions.PrimaryColor = mun.PrimaryColor;
-                Definitions.SecondaryColor = mun.SecondaryColor;
-                Definitions.MunUrl = mun.APIUrl;
-                _storage.Store(Definitions.UserDataKey, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(result.Result)));
+                var munByte = _storage.Retrieve(Definitions.MunKey);
+                var munString = Encoding.UTF8.GetString(munByte, 0, munByte.Length);
+                var mun = JsonConvert.DeserializeObject<Municipality>(munString);
 
-            }, TaskScheduler.FromCurrentSynchronizationContext());
+                var userByte = _storage.Retrieve(Definitions.UserDataKey);
+                var userString = Encoding.UTF8.GetString(userByte, 0, userByte.Length);
+                var user = JsonConvert.DeserializeObject<UserInfoModel>(userString);
+
+                APICaller.RefreshModel(userToken, mun).ContinueWith((result) =>
+                {
+                    if (result.Result.Error.ErrorCode == "404")
+                    {
+                        App.ShowMessage(result.Result.Error.Message + "\n" +
+                                        "Data kunne ikke hentes. Gemte data benyttes.");
+
+                        Definitions.User = user;
+                        Definitions.MunIcon = new UriImageSource { Uri = new Uri(mun.ImgUrl) };
+                        Definitions.TextColor = mun.TextColor;
+                        Definitions.PrimaryColor = mun.PrimaryColor;
+                        Definitions.SecondaryColor = mun.SecondaryColor;
+                        Definitions.MunUrl = mun.APIUrl;
+                        return;
+                    }
+                    else if (result.Result.User == null)
+                    {
+                        App.ShowMessage("Fejl: " + result.Result.Error.Message);
+                        Definitions.Report = new DriveReport();
+                        Navigation.PushAsync<LoginViewModel>();
+                        
+                        return;
+                    }
+
+                    Definitions.User = result.Result.User;
+                    Definitions.MunIcon = new UriImageSource { Uri = new Uri(mun.ImgUrl) };
+                    Definitions.TextColor = mun.TextColor;
+                    Definitions.PrimaryColor = mun.PrimaryColor;
+                    Definitions.SecondaryColor = mun.SecondaryColor;
+                    Definitions.MunUrl = mun.APIUrl;
+                    _storage.Store(Definitions.UserDataKey, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(result.Result.User)));
+
+                    Definitions.Report = new DriveReport();
+                    
+                    InitializeCollection();
+                }, TaskScheduler.FromCurrentSynchronizationContext());
+
+            }
+            catch (Exception e)
+            {
+                Definitions.Report = new DriveReport();
+                
+                Navigation.PushAsync<LoginViewModel>();
+                return;
+            }
         }
 
         #endregion
@@ -273,6 +337,51 @@ namespace OS2Indberetning.ViewModel
                 _homeCheck = value;
                 Definitions.Report.StartsAtHome = value;
                 OnPropertyChanged(HomeCheckProperty);
+            }
+        }
+
+        public const string PrimaryHexProperty = "PrimaryHex";
+        public Color PrimaryHex
+        {
+            get
+            {
+                return _primaryHex;
+            }
+            set
+            {
+                _primaryHex = value;
+                OnPropertyChanged(PrimaryHexProperty);
+            }
+        }
+
+        public const string SecondaryHexProperty = "SecondaryHex";
+        public Color SecondaryHex
+        {
+            get
+            {
+                return _secondaryHex;
+            }
+            set
+            {
+                _secondaryHex = value;
+                OnPropertyChanged(SecondaryHexProperty);
+            }
+        }
+
+        public const string DatoProperty = "Dato";
+        public string Dato
+        {
+            get
+            {
+                return _dato;
+            }
+            set
+            {
+                _dato = value;
+                Definitions.DateToView = DateTime.Now.ToString("d/M/yyyy");
+                Definitions.DateToApi = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
+                
+                OnPropertyChanged(DatoProperty);
             }
         }
 

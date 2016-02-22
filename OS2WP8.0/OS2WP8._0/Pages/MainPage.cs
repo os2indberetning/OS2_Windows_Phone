@@ -33,6 +33,7 @@ namespace OS2Indberetning
         public ListView List;
         private PopupLayout _popUpLayout;
         private CheckboxButton _checkboxButton;
+        private StackLayout _header;
 
         /// <summary>
         /// Constructor that handles initialization of the page
@@ -40,7 +41,7 @@ namespace OS2Indberetning
         public MainPage()
         {
             InitializeTheme();
-            //this.Content = this.SetContent();
+            
         }
 
         /// <summary>
@@ -80,38 +81,38 @@ namespace OS2Indberetning
                 YAlign = TextAlignment.Center,
             };
             var vertButton = new VertsButton(SendViewStoredMessage, Definitions.storedReportsCount.ToString());
-            var refreshButton = new RefreshButton(SendRefreshMessage);
+            var exitButton = new LogoutButton(SendLogoutMessage);
 
             vertButton.WidthRequest = 100;
             vertButton.HeightRequest = 60;
-            refreshButton.WidthRequest = 100;
-            refreshButton.HeightRequest = 60;
+            exitButton.WidthRequest = 100;
+            exitButton.HeightRequest = 60;
 
-            var headerstack = new StackLayout
+            _header = new StackLayout
             {
                 Orientation = StackOrientation.Horizontal,
-                BackgroundColor = Color.FromHex(Definitions.PrimaryColor),
                 HeightRequest = Definitions.HeaderHeight,
-                //HorizontalOptions = LayoutOptions.FillAndExpand,
-                //Padding = 5,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                Padding = 5,
                 Children =
                 {
-                    refreshButton,
+                    exitButton,
                     header,
                     vertButton,
                 }
             };
-            Definitions.Date = DateTime.Now.ToString("d/M/yyyy");
+            _header.SetBinding(StackLayout.BackgroundColorProperty, MainViewModel.PrimaryHexProperty);
+            Definitions.DateToView = DateTime.Now.ToString("d/M/yyyy");
+            Definitions.DateToApi = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
             var date = new Label
             {
-                Text = Definitions.Date,
+                Text = Definitions.DateToView,
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
                 BackgroundColor = Color.FromHex(Definitions.BackgroundColor),
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
                 FontSize = Definitions.LoginLabelText,
                 HeightRequest = 40,
             };
-            Definitions.Date = DateTime.Now.ToString("d/M/yyyy");
 
             List = new ListView
             {
@@ -148,7 +149,7 @@ namespace OS2Indberetning
                 Spacing = 2,
                 Children =
                 {
-                    headerstack,
+                    _header,
                     date,
                     List,
                     CheckStack(),
@@ -315,7 +316,7 @@ namespace OS2Indberetning
                 _popUpLayout.ShowPopup(CreatePopup("Vælg venligst en organisatorisk placering"));
                 return;
             }
-            if (Definitions.Taxe.Id == 0)
+            if (Definitions.Rate.Id == 0)
             {
                 _popUpLayout.ShowPopup(CreatePopup("Vælg venligst en takst"));
                 return;
@@ -352,9 +353,9 @@ namespace OS2Indberetning
         /// <summary>
         /// Method that handles sending an Refresh message
         /// </summary>
-        private void SendRefreshMessage()
+        private void SendLogoutMessage()
         {
-            MessagingCenter.Send<MainPage>(this, "Refresh");
+            MessagingCenter.Send<MainPage>(this, "Logout");
         }
 
         #endregion
@@ -385,14 +386,14 @@ namespace OS2Indberetning
             {
                 List.SelectedItem = null;
             }
-            
-            if (!Definitions.HasAppeared)
-            {
-                Definitions.HasAppeared = true;
-                MessagingCenter.Send<MainPage>(this, "ShowCross");
-            }
             MessagingCenter.Send<MainPage>(this, "Update");
-            this.Content = SetContent();
+
+            if (this.Content == null || Definitions.RefreshMainView)
+            {
+                Definitions.RefreshMainView = false;
+                this.Content = SetContent();
+            }
+                
         }
 
         #endregion

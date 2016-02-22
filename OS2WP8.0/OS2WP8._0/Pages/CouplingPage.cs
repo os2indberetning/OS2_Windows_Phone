@@ -22,16 +22,12 @@ namespace OS2Indberetning.Pages
         private Municipality _municipality;
 
         private int hackSpaces;
-        private string _placeholder = "";
+        private string _usernamePlaceholder = "  Brugernavn";
+        private string _pwPlaceholder = "  Password";
+
         public CouplingPage()
         {
-            // HACK to center placeholder text. best method i could find
-            hackSpaces = (int)Math.Round(Definitions.ScreenWidth/27);
-            for (int i = 0; i < hackSpaces; i++)
-            {
-                _placeholder = _placeholder + " ";
-            }
-            _placeholder = _placeholder + "Tast Parringskode";
+
         }
 
         /// <summary>
@@ -58,7 +54,7 @@ namespace OS2Indberetning.Pages
 
             var header = new Label
             {
-                Text = "Parring",
+                Text = "Login",
                 TextColor = Color.FromHex(Definitions.TextColor),
                 FontSize = Definitions.HeaderFontSize,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
@@ -75,52 +71,69 @@ namespace OS2Indberetning.Pages
                     header,
                 }
             };
-
-            var entry = new Entry
+            var usernameLabel = new Label
             {
-                Placeholder = _placeholder,
+                Text = _usernamePlaceholder,
+                TextColor = Color.FromHex(Definitions.DefaultTextColor),
+            };
+            var username = new Entry
+            {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
-                Keyboard = Keyboard.Numeric,
             };
-            entry.SetBinding(Entry.TextProperty, CouplingViewModel.TokenProperty);
+            username.SetBinding(Entry.TextProperty, CouplingViewModel.UsernameProperty);
 
-            entry.Completed += (sender, args) =>
+            var pwLabel = new Label
+            {
+                Text = _pwPlaceholder,
+                TextColor = Color.FromHex(Definitions.DefaultTextColor),
+            };
+            var pw = new Entry
+            {
+                
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                TextColor = Color.FromHex(Definitions.DefaultTextColor),
+                IsPassword = true,
+            };
+            pw.SetBinding(Entry.TextProperty, CouplingViewModel.PasswordProperty);
+
+            pw.Completed += (sender, args) =>
             {
                 SendCoupleMessage();
             };
 
-            var informationText = new Label
-            {
-                Text = "For at bruge appen skal du parre din telefon med din bruger på OS2Indberetning.\n" +
-                       "\n" +
-                       "For at parre telefonen skal du bruge et token\n" +
-                       "\n" +
-                       "Et token er et unikt nummer der forbinder din bruger på OS2Indberetning med din telefon.\n" +
-                       "\n" +
-                       "Du laver et token ved at gå ind under \"Personlige Indstillinger\" på hjemmesiden og trykke \"Mine Tokens\".\n" +
-                       "\n" +
-                       "Herefter kan du se dit token, som du bare skal indtaste i feltet ovenfor, og derefter trykke på \"Par Telefon\"",
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                TextColor = Color.FromHex(Definitions.DefaultTextColor),
-                FontSize = Definitions.InformationFontSize,
-            };
+            //var informationText = new Label
+            //{
+            //    Text = "For at bruge appen skal du parre din telefon med din bruger på OS2Indberetning.\n" +
+            //           "\n" +
+            //           "For at parre telefonen skal du bruge et token\n" +
+            //           "\n" +
+            //           "Et token er et unikt nummer der forbinder din bruger på OS2Indberetning med din telefon.\n" +
+            //           "\n" +
+            //           "Du laver et token ved at gå ind under \"Personlige Indstillinger\" på hjemmesiden og trykke \"Mine Tokens\".\n" +
+            //           "\n" +
+            //           "Herefter kan du se dit token, som du bare skal indtaste i feltet ovenfor, og derefter trykke på \"Par Telefon\"",
+            //    HorizontalOptions = LayoutOptions.FillAndExpand,
+            //    TextColor = Color.FromHex(Definitions.DefaultTextColor),
+            //    FontSize = Definitions.InformationFontSize,
+            //};
 
-            var textFrame = new StackLayout
-            {
-                Padding = Definitions.Padding,
-                VerticalOptions = LayoutOptions.StartAndExpand,
-                Children =
-                {
-                    informationText
-                }
-            };
+            //var textFrame = new StackLayout
+            //{
+            //    Padding = Definitions.Padding,
+            //    VerticalOptions = LayoutOptions.StartAndExpand,
+            //    Children =
+            //    {
+            //        informationText
+            //    }
+            //};
 
             var coupleButton = new ButtomButton("Par Telefon", SendCoupleMessage);
             var buttomStack = new StackLayout
             {
-                VerticalOptions = LayoutOptions.End,
+                VerticalOptions = LayoutOptions.Start,
                 Padding = Definitions.Padding,
+                Spacing = 2,
                 HeightRequest = Definitions.ButtonHeight,
 
                 Children = { coupleButton }
@@ -131,8 +144,10 @@ namespace OS2Indberetning.Pages
                 Children =
                 {
                     headerstack,
-                    entry,
-                    textFrame,
+                    usernameLabel,
+                    username,
+                    pwLabel,
+                    pw,
                     buttomStack,
                 },
                 BackgroundColor = Color.FromHex(Definitions.BackgroundColor),

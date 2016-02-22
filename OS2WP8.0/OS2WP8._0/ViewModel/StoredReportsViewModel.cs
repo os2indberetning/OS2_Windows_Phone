@@ -11,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using System.Linq;
 using Newtonsoft.Json;
 using OS2Indberetning.BuisnessLogic;
 using Xamarin.Forms;
@@ -35,7 +36,7 @@ namespace OS2Indberetning.ViewModel
 
         private ObservableCollection<StoredReportCellModel> _storedList;
 
-        private readonly Token _token;
+        private readonly Authorization _authorization;
 
         /// <summary>
         /// Constructor that handles initialization of the viewmodel
@@ -45,9 +46,9 @@ namespace OS2Indberetning.ViewModel
             _storedList = new ObservableCollection<StoredReportCellModel>();
 
             var storage = DependencyService.Get<ISecureStorage>();
-            var tokenByte = storage.Retrieve(Definitions.TokenKey);
+            var tokenByte = storage.Retrieve(Definitions.AuthKey);
 
-            _token = JsonConvert.DeserializeObject<Token>(Encoding.UTF8.GetString(tokenByte, 0, tokenByte.Length));
+            _authorization = JsonConvert.DeserializeObject<Authorization>(Encoding.UTF8.GetString(tokenByte, 0, tokenByte.Length));
 
             ReportListHandler.GetReportList().ContinueWith((result) => { InitializeCollection(result.Result); });
             Subscribe();
@@ -94,7 +95,7 @@ namespace OS2Indberetning.ViewModel
             if (model.Error != null)
             {
                 page.ClosePopup();
-                var popup = page.CreateMessagePopup("Kunne ikke upload på nuværende tidspunkt. Prøv igen senere\nFejl: " + model.Error.ErrorMessage);
+                var popup = page.CreateMessagePopup("Kunne ikke upload på nuværende tidspunkt. Prøv igen senere\nFejl: " + model.Error.Message);
                 page.PopUpLayout.ShowPopup(popup);
                 return;
             }
@@ -103,6 +104,7 @@ namespace OS2Indberetning.ViewModel
                 var item = (StoredReportCellModel) page.List.SelectedItem;
                 ReportListHandler.RemoveReportFromList(item.report).ContinueWith((result) =>
                 {
+                    Definitions.RefreshMainView = true;
                     page.ClosePopup();
                     InitializeCollection(result.Result);
                     var popup = page.CreateMessagePopup("Kørsels rapport blev uploadet");
@@ -120,6 +122,7 @@ namespace OS2Indberetning.ViewModel
         {
             ReportListHandler.RemoveReportFromList(item.report).ContinueWith((result) =>
             {
+                Definitions.RefreshMainView = true;
                 page.ClosePopup();
                 InitializeCollection(result.Result);
                 var popup = page.CreateMessagePopup("Kørsels rapport blev slettet");
@@ -143,7 +146,7 @@ namespace OS2Indberetning.ViewModel
                     Date = _datePre + item.Date,
                     Distance = _distancePre + item.Route.TotalDistance.ToString() + " km",
                     Purpose = _purposePre + item.Purpose,
-                    Taxe = _taxePre + item.Rate.Description,
+                    Taxe = _taxePre + Definitions.User.Rates.FirstOrDefault(x => x.Id == item.RateId).Description,
                     report = item,
                 });
             }
@@ -170,7 +173,7 @@ namespace OS2Indberetning.ViewModel
         {
             var item = (StoredReportCellModel)sender.List.SelectedItem;
           
-            APICaller.SubmitDrive(item.report, _token, Definitions.MunUrl).ContinueWith((result) =>
+            APICaller.SubmitDrive(item.report, _authorization, Definitions.MunUrl).ContinueWith((result) =>
             {
                 HandleUploadResult(result.Result, sender);
             }, TaskScheduler.FromCurrentSynchronizationContext());

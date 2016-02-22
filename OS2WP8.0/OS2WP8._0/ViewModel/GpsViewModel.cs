@@ -78,7 +78,7 @@ namespace OS2Indberetning.ViewModel
             _noSignalCountDown = Definitions.NoGpsSignalTimer;
             Timer(); // start timer
             /*TestGpsSignalTimer();*/ // timer that checks for gps signal when on pause
-            TestForAvailibility();
+            //TestForAvailibility();
         }
 
         /// <summary>
@@ -518,15 +518,17 @@ namespace OS2Indberetning.ViewModel
             }
 
             Definitions.Report.EmploymentId = Definitions.Organization.Id;
-            Definitions.Report.Date = Definitions.Date;
+            Definitions.Report.Date = Definitions.DateToApi;
 
             Definitions.Report.ProfileId = Definitions.User.Profile.Id;
-            Definitions.Report.Profile = Definitions.User.Profile;
+            
             Definitions.Report.Route = Definitions.Route;
             Definitions.Report.Route.TotalDistance = TraveledDistance;
 
-            Definitions.Report.Rate = Definitions.Taxe;
-            Definitions.Report.RateId = Definitions.Taxe.Id;
+            Definitions.Report.StartsAtHome = Definitions.StartAtHome;
+            Definitions.Report.EndsAtHome = Definitions.EndsAtHome;
+            
+            Definitions.Report.RateId = Definitions.Rate.Id;
 
             if(Definitions.Report.Route.GPSCoordinates.Count == 1)
                 Definitions.Report.Route.GPSCoordinates.Clear();
@@ -545,10 +547,6 @@ namespace OS2Indberetning.ViewModel
                 var seconds = (DateTime.Now - _errorDateTime).TotalSeconds;
                 _noSignalCountDown = (double)Definitions.NoGpsSignalTimer - seconds;
             }
-            //else
-            //{
-            //    TestForAvailibility();
-            //}
         }
 
 

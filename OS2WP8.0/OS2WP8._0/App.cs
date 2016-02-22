@@ -37,14 +37,14 @@ namespace OS2Indberetning
                 return;
             }
 
+            // Sets the count of stored reports in the definitions file.
+            ReportListHandler.GetCount();
+
             // Sets the height and width scale so it fits with xamarin 
             SetScreenHeightAndWidth();
 
             //Register pages before initializing the first page
             RegisterPages();
-
-            // Sets the count of stored reports in the definitions file.
-            ReportListHandler.GetCount();
            
             ViewFactory.EnableCache = false;
 
@@ -53,9 +53,9 @@ namespace OS2Indberetning
         }
 
         /// <summary>
-        /// Get the main page
+        /// Get the main page and sets the global navigation to its navigation
         /// </summary>
-        /// <returns></returns>
+        /// <returns>returns the main contentpage</returns>
         private Page GetMainPage()
         {
             var test = new NavigationPage((ContentPage) ViewFactory.CreatePage<MainViewModel, MainPage>());
@@ -71,7 +71,6 @@ namespace OS2Indberetning
 
         private void RegisterPages()
         {
-            ViewFactory.Register<CrossPathPage, CrossPathViewModel>();
             ViewFactory.Register<CouplingPage, CouplingViewModel>();
             ViewFactory.Register<LoginPage, LoginViewModel>();
             ViewFactory.Register<MainPage, MainViewModel>();
@@ -123,11 +122,7 @@ namespace OS2Indberetning
 
         protected override void OnStart()
         {
-            // Handle when your app starts
-            //var container = new SimpleContainer();
-            
-
-            //Resolver.SetResolver(container.GetResolver());
+            MessagingCenter.Send<App>(this, "Check");
         }
 
         protected override void OnSleep()
@@ -137,6 +132,7 @@ namespace OS2Indberetning
 
         protected override void OnResume()
         {
+            MessagingCenter.Send<App>(this, "Check");
             if (Definitions.GpsIsActive)
             {
                 MessagingCenter.Send(this, "Appeared");

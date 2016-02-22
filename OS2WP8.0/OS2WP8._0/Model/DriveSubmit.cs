@@ -13,6 +13,6 @@ namespace OS2Indberetning.Model
     public class DriveSubmit
     {
         public DriveReport DriveReport { get; set; }
-        public Token Token { get; set; }
+        public Authorization Authorization { get; set; }
     }
 }

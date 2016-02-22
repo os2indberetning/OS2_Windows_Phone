@@ -104,6 +104,28 @@ namespace OS2Indberetning.BuisnessLogic
         }
 
         /// <summary>
+        /// Removes all reports from the stored list
+        /// </summary>
+        /// <returns>true on success, false on failure</returns>
+        public static async Task<bool> DeleteEntireList()
+        {
+            try
+            {
+                var list = new List<DriveReport>();
+
+                var toBeWritten = JsonConvert.SerializeObject(list);
+
+                await FileHandler.WriteFileContent(Definitions.ReportsFileName, Definitions.ReportsFolderName, toBeWritten);
+                Definitions.storedReportsCount = list.Count;
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Gets the amount of stored reports
         /// </summary>
         /// <returns>integer representing the amount of stored reports</returns>

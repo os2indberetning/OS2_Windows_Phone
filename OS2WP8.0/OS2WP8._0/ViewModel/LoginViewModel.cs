@@ -11,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Newtonsoft.Json;
@@ -39,6 +40,11 @@ namespace OS2Indberetning.ViewModel
         /// </summary>
         public LoginViewModel()
         {
+            Definitions.PrimaryColor = Definitions.DefaultPrimaryColor;
+            Definitions.SecondaryColor = Definitions.DefaultSecondaryColor;
+            Definitions.BackgroundColor = Definitions.DefaultBackgroundColor;
+            Definitions.TextColor = Definitions.DefaultTextColor;
+
             MunList = new ObservableCollection<MunCellModel>();
             CallApi();
             Subscribe();
@@ -97,6 +103,9 @@ namespace OS2Indberetning.ViewModel
         {
             APICaller.GetMunicipalityList().ContinueWith((result) =>
             {
+                if (result.Status == TaskStatus.Faulted || result.Status == TaskStatus.Canceled)
+                    return;
+
                 _objectList = result.Result;
                 InitList(result.Result);
             }, TaskScheduler.FromCurrentSynchronizationContext());
@@ -159,19 +168,5 @@ namespace OS2Indberetning.ViewModel
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
-
-        public override void OnViewAppearing()
-        {
-            Debug.WriteLine("test");
-            base.OnViewAppearing();
-            Subscribe();
-        }
-
-        public override void OnViewDisappearing()
-        {
-            Debug.WriteLine("test");
-            base.OnViewDisappearing();
-            Unsubscribe();
-        }
     }
 }

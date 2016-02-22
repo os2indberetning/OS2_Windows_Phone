@@ -14,7 +14,6 @@ namespace OS2Indberetning.Model
         public Profile()
         {
             Employments = new List<Employment>();
-            Tokens = new List<Token>();
         }
         public int Id { get; set; }
         public string FirstName { get; set; }
@@ -22,6 +21,6 @@ namespace OS2Indberetning.Model
         public string HomeLatitude { get; set; }
         public string HomeLongitude { get; set; }
         public List<Employment> Employments { get; set; }
-        public List<Token> Tokens { get; set; } 
+        public Authorization Authorization { get; set; } 
     }
 }

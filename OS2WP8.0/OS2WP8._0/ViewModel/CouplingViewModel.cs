@@ -7,6 +7,7 @@
  */
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -27,7 +28,8 @@ namespace OS2Indberetning.ViewModel
 
         private Municipality _model;
         private ISecureStorage _storage;
-        private string _token;
+        private string _username;
+        private string _pw;
 
         /// <summary>
         /// Constructor that handles initialization of the viewmodel
@@ -90,15 +92,15 @@ namespace OS2Indberetning.ViewModel
                 return false;
             }
             Definitions.User = user;
-            var specificToken = user.Profile.Tokens.Find(x => x.TokenString == _token);
-            if (specificToken == null)
-            {
-                App.ShowLoading(false, true);
-                return false;
-            }
-            _storage.Store(Definitions.TokenKey, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(specificToken)));
+            //if (specificToken == null)
+            //{
+            //    App.ShowLoading(false, true);
+            //    return false;
+            //}
+            _storage.Store(Definitions.AuthKey, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(user.Profile.Authorization)));
             _storage.Store(Definitions.MunKey, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(_model)));
             _storage.Store(Definitions.UserDataKey, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(user)));
+            App.ShowLoading(false, true);
             return true;
         }
 
@@ -108,24 +110,23 @@ namespace OS2Indberetning.ViewModel
         /// </summary>
         private void HandleCoupleMessage()
         {
-            string message;
             App.ShowLoading(true);
-            APICaller.Couple(_model.APIUrl, _token).ContinueWith((result) =>
+            APICaller.Couple(_model.APIUrl, _username, _pw).ContinueWith((result) =>
             {
-                if(result.Result.User == null)
+                if (result.Result.User == null)
                 {
-                    App.ShowMessage("Parring fejlede\n" + "Fejl besked: " + result.Result.Error.ErrorMessage);
+                    App.ShowMessage("Login fejlede\n" + "Fejl besked: " + result.Result.Error.Message);
                     return;
                 }
 
                 var success = Couple(result.Result.User);
-                App.ShowLoading(false, true);
                 if (!success)
                 {
-                    App.ShowMessage("Parring fejlede\n" + "Fejl besked: Coupling Error");
+                    App.ShowMessage("Login fejlede\n" + "Fejl besked: Coupling Error");
                     return;
                 }
-                
+
+                Definitions.RefreshMainView = true;
                 Dispose();
                 App.Navigation.PopToRootAsync();
             }, TaskScheduler.FromCurrentSynchronizationContext());
@@ -133,17 +134,31 @@ namespace OS2Indberetning.ViewModel
         #endregion
 
         #region Properties
-        public const string TokenProperty = "Token";
-        public string Token
+        public const string UsernameProperty = "Username";
+        public string Username
         {
             get
             {
-                return _token;
+                return _username;
             }
             set
             {
-                _token = value;
-                OnPropertyChanged(TokenProperty);
+                _username = value;
+                OnPropertyChanged(UsernameProperty);
+            }
+        }
+
+        public const string PasswordProperty = "Pw";
+        public string Pw
+        {
+            get
+            {
+                return _pw;
+            }
+            set
+            {
+                _pw = value;
+                OnPropertyChanged(PasswordProperty);
             }
         }
 

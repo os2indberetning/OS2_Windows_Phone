@@ -5,6 +5,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
  */
+
+using System;
 using OS2Indberetning.Model;
 using Xamarin.Forms;
 
@@ -23,8 +25,9 @@ namespace OS2Indberetning
         public static string Purpose = "Vælg Formål";
         public static string Remark = "Indtast Bemærkning";
         public static Employment Organization = new Employment { EmploymentPosition = "Vælg"};
-        public static Rate Taxe = new Rate{Description = "Vælg"};
-        public static string Date;
+        public static Rate Rate = new Rate{Description = "Vælg"};
+        public static string DateToView;
+        public static string DateToApi;
         public static bool StartAtHome = false;
         public static bool EndsAtHome = false;
         public static Route Route = new Route();
@@ -76,7 +79,7 @@ namespace OS2Indberetning
         #endregion
 
         #region Storage keys
-        public static string TokenKey = "login_key";
+        public static string AuthKey = "login_key";
         public static string UserDataKey = "userKey";
         public static string MunKey = "userToken";
         #endregion
@@ -104,8 +107,13 @@ namespace OS2Indberetning
         public static string PrimaryColor = "#d3d3d3";
         public static string SecondaryColor = "#d3d3d3";
         public static string TextColor = "#000000";
-        public static string DefaultTextColor = "#000000";
         public static string BackgroundColor = "#ffffff";
+
+        // Default - Used when logging out
+        public static string DefaultPrimaryColor = "#d3d3d3";
+        public static string DefaultSecondaryColor = "#d3d3d3";
+        public static string DefaultTextColor = "#000000";
+        public static string DefaultBackgroundColor = "#ffffff";
         #endregion
 
         #region Municipality icon and url
@@ -130,6 +138,7 @@ namespace OS2Indberetning
 
         public static bool HasAppeared = false;
         public static int storedReportsCount;
+        public static bool RefreshMainView = false;
 
         #endregion
     }

@@ -35,7 +35,7 @@ namespace OS2Indberetning.ViewModel
         private bool _uploadingVisibility;
 
         private string _errorText;
-        private readonly Token _token;
+        private readonly Authorization _authorization;
 
         /// <summary>
         /// Constructor that handles initialization of the viewmodel
@@ -44,9 +44,9 @@ namespace OS2Indberetning.ViewModel
         {
             UploaderText = "Uploader kørselsdata";
             _storage = DependencyService.Get<ISecureStorage>();
-            var tokenByte = _storage.Retrieve(Definitions.TokenKey);
-
-            _token = JsonConvert.DeserializeObject<Token>(Encoding.UTF8.GetString(tokenByte, 0, tokenByte.Length));
+            var tokenByte = _storage.Retrieve(Definitions.AuthKey);
+            Definitions.Purpose = null;
+            _authorization = JsonConvert.DeserializeObject<Authorization>(Encoding.UTF8.GetString(tokenByte, 0, tokenByte.Length));
 
             Subscribe();
         }
@@ -57,6 +57,7 @@ namespace OS2Indberetning.ViewModel
         public void Dispose()
         {
             _timerContinue = false;
+            Definitions.Report = new DriveReport();
             Unsubscribe();
             _storage = null;
         }
@@ -91,7 +92,7 @@ namespace OS2Indberetning.ViewModel
                 if (model.Error != null)
                 {
                     ErrorText =
-                        "Der skete en fejl ved afsendelsen af din rapport!" + "\nFejl: " + model.Error.ErrorMessage +
+                        "Der skete en fejl ved afsendelsen af din rapport!" + "\nFejl: " + model.Error.Message +
                         "\nPrøv igen eller tryk på 'Gem' og send rapporten fra hovedmenuen på et andet tidspunkt.";
                     UploadingVisibility = false;
                     _timerContinue = false;
@@ -135,7 +136,7 @@ namespace OS2Indberetning.ViewModel
             ErrorVisibility = false;
             _timerContinue = true;
             RotateSpinner();
-            APICaller.SubmitDrive(Definitions.Report, _token, Definitions.MunUrl).ContinueWith((result) =>
+            APICaller.SubmitDrive(Definitions.Report, _authorization, Definitions.MunUrl).ContinueWith((result) =>
             {
                 HandleUploadResult(result.Result, sender);
             }, TaskScheduler.FromCurrentSynchronizationContext());
@@ -152,6 +153,7 @@ namespace OS2Indberetning.ViewModel
                 {
                     if (result.Result == true)
                     {
+                        Definitions.RefreshMainView = true;
                         Dispose();
                         App.Navigation.PopToRootAsync();
                     }

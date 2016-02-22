@@ -47,8 +47,8 @@ namespace OS2Indberetning.ViewModel
 
             InitializeCollection();
 
-            Username = Definitions.Report.Profile.FirstName + " " + Definitions.Report.Profile.LastName;
-            Date = "Dato: " + Definitions.Report.Date;
+            Username = Definitions.User.Profile.FirstName + " " + Definitions.User.Profile.LastName;
+            Date = "Dato: " + Definitions.DateToView;
             StartHomeCheck = Definitions.Report.StartsAtHome;
             EndHomeCheck = Definitions.Report.EndsAtHome;
             Subscribe();
@@ -98,7 +98,7 @@ namespace OS2Indberetning.ViewModel
         {
             if (String.IsNullOrEmpty(Definitions.Report.ManualEntryRemark))
             {
-                Definitions.Report.ManualEntryRemark = "Ingen kommentar angivet";
+                Definitions.Report.ManualEntryRemark = "Ingen kommentar indtastet";
             }
             _driveReport.Clear();
             DriveReportList.Clear();
@@ -111,12 +111,12 @@ namespace OS2Indberetning.ViewModel
             _driveReport.Add(new DriveReportCellModel
             {
                 Name = OrganisatoriskText,
-                Description = Definitions.Report.Profile.Employments.FirstOrDefault(x => x.Id == Definitions.Report.EmploymentId).EmploymentPosition,
+                Description = Definitions.User.Profile.Employments.FirstOrDefault(x => x.Id == Definitions.Report.EmploymentId).EmploymentPosition,
             });
             _driveReport.Add(new DriveReportCellModel
             {
                 Name = TakstText,
-                Description = Definitions.Report.Rate.Description,
+                Description = Definitions.Rate.Description,
             });
             _driveReport.Add(new DriveReportCellModel
             {

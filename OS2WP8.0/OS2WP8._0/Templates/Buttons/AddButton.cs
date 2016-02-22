@@ -27,7 +27,7 @@ namespace OS2Indberetning.Templates
                 HorizontalOptions = LayoutOptions.End,
                 VerticalOptions = LayoutOptions.Center,
                 Orientation = StackOrientation.Horizontal,
-                Padding = 5,
+                Padding = new Thickness(20, 5, -20, 5),
                 WidthRequest = Definitions.HeaderHeight,
             };
 

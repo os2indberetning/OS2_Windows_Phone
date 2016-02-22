@@ -73,7 +73,7 @@ namespace OS2Indberetning.ViewModel
 
             foreach (var rate in Definitions.User.Rates)
             {
-                if (rate.Description == Definitions.Report.Rate.Description)
+                if (rate.Description == Definitions.Rate.Description)
                 {
                     _taxes.Add(new TaxString { Name = rate.Description, Selected = true });
                     continue;
@@ -97,10 +97,9 @@ namespace OS2Indberetning.ViewModel
             {
                 if (item.Name == arg)
                 {
-                    Definitions.Taxe = Definitions.User.Rates.FirstOrDefault(x => x.Description == arg);
-                    Definitions.Report.Rate = Definitions.User.Rates.FirstOrDefault(x => x.Description == arg);
+                    Definitions.Rate = Definitions.User.Rates.FirstOrDefault(x => x.Description == arg);
                     Definitions.Report.RateId = Definitions.User.Rates.FirstOrDefault(x => x.Description == arg).Id;
-                    var json = JsonConvert.SerializeObject(Definitions.Taxe);
+                    var json = JsonConvert.SerializeObject(Definitions.Rate);
                     FileHandler.WriteFileContent(Definitions.TaxeFileName, Definitions.TaxeFolder, json);
                     continue;
                 }

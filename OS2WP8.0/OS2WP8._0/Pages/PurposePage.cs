@@ -20,22 +20,13 @@ namespace OS2Indberetning.Pages
         public PurposeString Selected;
 
         private int _hackSpaces;
-        private string _placeholder = "";
+        private string _placeholder = "Tast nyt formål";
 
         /// <summary>
         /// Constructor that handles initialization of the page
         /// </summary>
         public PurposePage()
         {
-
-            // HACK to center placeholder text. best method i could find
-            _hackSpaces = (int)Math.Round(Definitions.ScreenWidth / 46);
-            for (int i = 0; i < _hackSpaces; i++)
-            {
-                _placeholder = _placeholder + " ";
-            }
-            _placeholder = _placeholder + "Tast nyt formål";
-
             SetContent();
         }
 
