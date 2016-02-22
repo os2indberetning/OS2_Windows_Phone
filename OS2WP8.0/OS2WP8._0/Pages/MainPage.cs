@@ -33,6 +33,7 @@ namespace OS2Indberetning
         public ListView List;
         private PopupLayout _popUpLayout;
         private CheckboxButton _checkboxButton;
+        private StackLayout _header;
 
         /// <summary>
         /// Constructor that handles initialization of the page
@@ -40,7 +41,7 @@ namespace OS2Indberetning
         public MainPage()
         {
             InitializeTheme();
-            this.Content = this.SetContent();
+            
         }
 
         /// <summary>
@@ -87,13 +88,12 @@ namespace OS2Indberetning
             exitButton.WidthRequest = 100;
             exitButton.HeightRequest = 60;
 
-            var headerstack = new StackLayout
+            _header = new StackLayout
             {
                 Orientation = StackOrientation.Horizontal,
-                BackgroundColor = Color.FromHex(Definitions.PrimaryColor),
                 HeightRequest = Definitions.HeaderHeight,
-                //HorizontalOptions = LayoutOptions.FillAndExpand,
-                //Padding = 5,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                Padding = 5,
                 Children =
                 {
                     exitButton,
@@ -101,6 +101,7 @@ namespace OS2Indberetning
                     vertButton,
                 }
             };
+            _header.SetBinding(StackLayout.BackgroundColorProperty, MainViewModel.PrimaryHexProperty);
             Definitions.DateToView = DateTime.Now.ToString("d/M/yyyy");
             Definitions.DateToApi = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
             var date = new Label
@@ -148,7 +149,7 @@ namespace OS2Indberetning
                 Spacing = 2,
                 Children =
                 {
-                    headerstack,
+                    _header,
                     date,
                     List,
                     CheckStack(),
@@ -387,7 +388,12 @@ namespace OS2Indberetning
             }
             MessagingCenter.Send<MainPage>(this, "Update");
 
-            this.Content = SetContent();
+            if (this.Content == null || Definitions.RefreshMainView)
+            {
+                Definitions.RefreshMainView = false;
+                this.Content = SetContent();
+            }
+                
         }
 
         #endregion

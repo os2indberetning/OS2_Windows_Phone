@@ -153,6 +153,7 @@ namespace OS2Indberetning.ViewModel
                 {
                     if (result.Result == true)
                     {
+                        Definitions.RefreshMainView = true;
                         Dispose();
                         App.Navigation.PopToRootAsync();
                     }

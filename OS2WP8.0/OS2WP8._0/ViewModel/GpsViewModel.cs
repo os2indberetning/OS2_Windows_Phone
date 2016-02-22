@@ -78,7 +78,7 @@ namespace OS2Indberetning.ViewModel
             _noSignalCountDown = Definitions.NoGpsSignalTimer;
             Timer(); // start timer
             /*TestGpsSignalTimer();*/ // timer that checks for gps signal when on pause
-            TestForAvailibility();
+            //TestForAvailibility();
         }
 
         /// <summary>

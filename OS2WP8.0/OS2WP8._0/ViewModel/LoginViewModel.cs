@@ -11,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Newtonsoft.Json;
@@ -102,6 +103,9 @@ namespace OS2Indberetning.ViewModel
         {
             APICaller.GetMunicipalityList().ContinueWith((result) =>
             {
+                if (result.Status == TaskStatus.Faulted || result.Status == TaskStatus.Canceled)
+                    return;
+
                 _objectList = result.Result;
                 InitList(result.Result);
             }, TaskScheduler.FromCurrentSynchronizationContext());

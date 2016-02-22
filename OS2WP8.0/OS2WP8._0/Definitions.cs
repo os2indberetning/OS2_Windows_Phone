@@ -138,6 +138,7 @@ namespace OS2Indberetning
 
         public static bool HasAppeared = false;
         public static int storedReportsCount;
+        public static bool RefreshMainView = false;
 
         #endregion
     }

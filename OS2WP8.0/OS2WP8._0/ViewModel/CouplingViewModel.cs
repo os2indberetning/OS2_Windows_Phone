@@ -115,17 +115,18 @@ namespace OS2Indberetning.ViewModel
             {
                 if (result.Result.User == null)
                 {
-                    App.ShowMessage("Parring fejlede\n" + "Fejl besked: " + result.Result.Error.Message);
+                    App.ShowMessage("Login fejlede\n" + "Fejl besked: " + result.Result.Error.Message);
                     return;
                 }
 
                 var success = Couple(result.Result.User);
                 if (!success)
                 {
-                    App.ShowMessage("Parring fejlede\n" + "Fejl besked: Coupling Error");
+                    App.ShowMessage("Login fejlede\n" + "Fejl besked: Coupling Error");
                     return;
                 }
-                
+
+                Definitions.RefreshMainView = true;
                 Dispose();
                 App.Navigation.PopToRootAsync();
             }, TaskScheduler.FromCurrentSynchronizationContext());

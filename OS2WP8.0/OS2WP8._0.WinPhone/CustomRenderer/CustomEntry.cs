@@ -45,7 +45,7 @@ namespace CustomRenderer.WinPhone81
                     // Centered text doesnt work for password fields.. so removing it on all fields
                     //each.TextAlignment = TextAlignment.Center;
                     each.BorderBrush = new SolidColorBrush(Colors.Black);
-                    each.BorderThickness = new Thickness(1);
+                    each.BorderThickness = new Thickness(0, 0, 0, 1);
                     each.HorizontalContentAlignment = HorizontalAlignment.Center;
                     
                 }

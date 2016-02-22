@@ -34,6 +34,10 @@ namespace OS2Indberetning.ViewModel
         private const string TakstText = "Takst";
         private const string EkstraText = "Ekstra Bemærkning:";
 
+        private Color _primaryHex;
+        private Color _secondaryHex;
+        private string _dato;
+
         private ISecureStorage _storage;
 
         /// <summary>
@@ -41,6 +45,7 @@ namespace OS2Indberetning.ViewModel
         /// </summary>
         public MainViewModel()
         {
+            PrimaryHex = Color.FromHex(Definitions.PrimaryColor);
             if (Definitions.Report == null)
             {
                 Definitions.Report = new DriveReport();
@@ -58,8 +63,6 @@ namespace OS2Indberetning.ViewModel
                      var obj = JsonConvert.DeserializeObject<Employment>(result.Result);
                      Definitions.Report.EmploymentId = obj.Id;
                      Definitions.Organization = obj;
-
-
                  }
                  FileHandler.ReadFileContent(Definitions.TaxeFileName, Definitions.TaxeFolder).ContinueWith(
                     (result2) =>
@@ -88,6 +91,7 @@ namespace OS2Indberetning.ViewModel
 
             MessagingCenter.Subscribe<MainPage>(this, "Update", (sender) =>
             {
+                PrimaryHex = Color.FromHex(Definitions.PrimaryColor);
                 InitializeCollection();
             });
 
@@ -209,12 +213,22 @@ namespace OS2Indberetning.ViewModel
         }
 
         /// <summary>
-        /// Method that handles the Refresh message
+        /// Method that handles the Logout message
         /// </summary>
         private void HandleLogoutMessage()
         {
+            // Delete stored token
             _storage.Delete(Definitions.AuthKey);
+            // delete stored user
+            _storage.Delete(Definitions.UserDataKey);
 
+            // Remove all stored reports on logout
+            ReportListHandler.DeleteEntireList();
+
+            // Clear purpose list
+            FileHandler.WriteFileContent(Definitions.PurposeFileName, Definitions.PurposeFolderName, String.Empty);
+
+            // Push login view
             Navigation.PushAsync<LoginViewModel>();
         }
 
@@ -323,6 +337,51 @@ namespace OS2Indberetning.ViewModel
                 _homeCheck = value;
                 Definitions.Report.StartsAtHome = value;
                 OnPropertyChanged(HomeCheckProperty);
+            }
+        }
+
+        public const string PrimaryHexProperty = "PrimaryHex";
+        public Color PrimaryHex
+        {
+            get
+            {
+                return _primaryHex;
+            }
+            set
+            {
+                _primaryHex = value;
+                OnPropertyChanged(PrimaryHexProperty);
+            }
+        }
+
+        public const string SecondaryHexProperty = "SecondaryHex";
+        public Color SecondaryHex
+        {
+            get
+            {
+                return _secondaryHex;
+            }
+            set
+            {
+                _secondaryHex = value;
+                OnPropertyChanged(SecondaryHexProperty);
+            }
+        }
+
+        public const string DatoProperty = "Dato";
+        public string Dato
+        {
+            get
+            {
+                return _dato;
+            }
+            set
+            {
+                _dato = value;
+                Definitions.DateToView = DateTime.Now.ToString("d/M/yyyy");
+                Definitions.DateToApi = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
+                
+                OnPropertyChanged(DatoProperty);
             }
         }
 

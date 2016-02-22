@@ -104,6 +104,7 @@ namespace OS2Indberetning.ViewModel
                 var item = (StoredReportCellModel) page.List.SelectedItem;
                 ReportListHandler.RemoveReportFromList(item.report).ContinueWith((result) =>
                 {
+                    Definitions.RefreshMainView = true;
                     page.ClosePopup();
                     InitializeCollection(result.Result);
                     var popup = page.CreateMessagePopup("Kørsels rapport blev uploadet");
@@ -121,6 +122,7 @@ namespace OS2Indberetning.ViewModel
         {
             ReportListHandler.RemoveReportFromList(item.report).ContinueWith((result) =>
             {
+                Definitions.RefreshMainView = true;
                 page.ClosePopup();
                 InitializeCollection(result.Result);
                 var popup = page.CreateMessagePopup("Kørsels rapport blev slettet");
