@@ -187,6 +187,12 @@ namespace OS2Indberetning.Pages
             SendBackMessage();
             return true;
         }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            MessagingCenter.Send<CouplingPage>(this, "Dispose");
+        }
     }
 
 

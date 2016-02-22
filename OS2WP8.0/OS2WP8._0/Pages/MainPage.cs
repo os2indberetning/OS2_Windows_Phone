@@ -393,7 +393,6 @@ namespace OS2Indberetning
                 Definitions.RefreshMainView = false;
                 this.Content = SetContent();
             }
-                
         }
 
         #endregion

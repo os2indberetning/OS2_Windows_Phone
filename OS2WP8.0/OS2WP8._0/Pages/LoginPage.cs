@@ -122,6 +122,12 @@ namespace OS2Indberetning.Pages
                 _list.SelectedItem = null;
             }
         }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            MessagingCenter.Send<LoginPage>(this, "Dispose");
+        }
         #endregion
     }
 }

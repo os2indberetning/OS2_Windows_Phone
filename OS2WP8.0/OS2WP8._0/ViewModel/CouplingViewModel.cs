@@ -58,6 +58,10 @@ namespace OS2Indberetning.ViewModel
                 Dispose();
                 App.Navigation.PopAsync();
             });
+            MessagingCenter.Subscribe<CouplingPage>(this, "Dispose", (sender) =>
+            {
+                Dispose();
+            });
         }
 
         /// <summary>
@@ -68,6 +72,7 @@ namespace OS2Indberetning.ViewModel
         {
             MessagingCenter.Unsubscribe<CouplingPage>(this, "Couple");
             MessagingCenter.Unsubscribe<CouplingPage>(this, "Back");
+            MessagingCenter.Unsubscribe<CouplingPage>(this, "Dispose");
         }
 
         /// <summary>

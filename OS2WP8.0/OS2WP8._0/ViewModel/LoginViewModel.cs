@@ -66,7 +66,16 @@ namespace OS2Indberetning.ViewModel
             MessagingCenter.Subscribe<LoginPage>(this, "Refresh", (sender) =>
             {
                 HandleRefreshMessage();
-            });   
+            });
+
+            MessagingCenter.Subscribe<LoginPage>(this, "Dispose", (sender) =>
+            {
+                Dispose();
+            });
+            MessagingCenter.Subscribe<CouplingPage>(this, "Dispose", (sender) =>
+            {
+                Dispose();
+            });
         }
 
         /// <summary>
@@ -75,6 +84,8 @@ namespace OS2Indberetning.ViewModel
         private void Unsubscribe()
         {
             MessagingCenter.Unsubscribe<LoginPage>(this, "Refresh");
+            MessagingCenter.Unsubscribe<LoginPage>(this, "Dispose");
+            MessagingCenter.Unsubscribe<CouplingPage>(this, "Dispose");
         }
 
         /// <summary>

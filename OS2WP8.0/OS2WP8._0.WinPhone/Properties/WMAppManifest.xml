@@ -7,7 +7,7 @@
     <Language code="en-US" />
     <Language code="en-GB" />
   </Languages>
-  <App xmlns="" ProductID="{728eed5d-cdfe-494e-bb64-1fed81d67754}" Title="eIndberetningBeta" RuntimeType="Silverlight" Version="1.1.0.0" Genre="apps.normal" Author="IT Minds ApS" Description="" Publisher="IT Minds ApS" PublisherID="{703cf37f-b088-4b27-a7d2-cb1634ee8853}">
+  <App xmlns="" ProductID="{728eed5d-cdfe-494e-bb64-1fed81d67754}" Title="eIndberetningBeta" RuntimeType="Silverlight" Version="1.1.0.1" Genre="apps.normal" Author="IT Minds ApS" Description="" Publisher="IT Minds ApS" PublisherID="{703cf37f-b088-4b27-a7d2-cb1634ee8853}">
     <IconPath IsRelative="true" IsResource="false">Resources\app_icon@3x.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_NETWORKING" />
