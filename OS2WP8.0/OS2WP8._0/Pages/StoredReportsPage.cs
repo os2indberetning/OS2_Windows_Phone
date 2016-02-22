@@ -5,6 +5,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. 
  */
+
+using System;
 using OS2Indberetning.Model;
 using OS2Indberetning.Templates;
 using OS2Indberetning.ViewModel;
@@ -92,7 +94,10 @@ namespace OS2Indberetning
             {
                 if (e.SelectedItem == null) return;
                 var selectedItem = (StoredReportCellModel)e.SelectedItem;
-                PopUpLayout.ShowPopup(CreatePopup("Send rapport fra d. " + selectedItem.report.Date + " ?"));
+                var d = Convert.ToDateTime(selectedItem.report.Date);
+                var t = d.ToString("d/M/yyyy");
+                    
+                PopUpLayout.ShowPopup(CreatePopup("Send rapport fra d. "+ t + " ?"));
             };
             
             var layout = new StackLayout

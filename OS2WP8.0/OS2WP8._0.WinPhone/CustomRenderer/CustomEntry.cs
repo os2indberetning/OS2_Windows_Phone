@@ -39,11 +39,6 @@ namespace CustomRenderer.WinPhone81
                 var borders = Control.Children.OfType<PhoneTextBox>();
                 foreach (var each in borders)
                 {
-                    //each.HintStyle = hintStyle;
-                    //each.ApplyTemplate();
-
-                    // Centered text doesnt work for password fields.. so removing it on all fields
-                    //each.TextAlignment = TextAlignment.Center;
                     each.BorderBrush = new SolidColorBrush(Colors.Black);
                     each.BorderThickness = new Thickness(0, 0, 0, 1);
                     each.HorizontalContentAlignment = HorizontalAlignment.Center;
@@ -54,11 +49,8 @@ namespace CustomRenderer.WinPhone81
                 var borders2 = Control.Children.OfType<PasswordBox>();
                 foreach (var each in borders2)
                 {
-                    //each.HintStyle = hintStyle;
-                    //each.ApplyTemplate();
-
                     each.BorderBrush = new SolidColorBrush(Colors.Black);
-                    each.BorderThickness = new Thickness(1);
+                    each.BorderThickness = new Thickness(0, 0, 0, 1);
                     each.HorizontalContentAlignment = HorizontalAlignment.Center;
 
                 }

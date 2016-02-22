@@ -54,12 +54,15 @@ namespace OS2Indberetning.Pages
 
             var header = new Label
             {
-                Text = "Login",
+                Text = "OS2Indberetning",
                 TextColor = Color.FromHex(Definitions.TextColor),
-                FontSize = Definitions.HeaderFontSize,
+                FontSize = Definitions.HeaderFontSize - 8,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
                 YAlign = TextAlignment.Center,
             };
+
+            var backButton = new BackButton(SendBackMessage);
+            var filler = new Filler();
 
             var headerstack = new StackLayout
             {
@@ -68,7 +71,9 @@ namespace OS2Indberetning.Pages
                 HeightRequest = Definitions.HeaderHeight,
                 Children =
                 {
+                    backButton,
                     header,
+                    filler
                 }
             };
             var usernameLabel = new Label
@@ -128,7 +133,7 @@ namespace OS2Indberetning.Pages
             //    }
             //};
 
-            var coupleButton = new ButtomButton("Par Telefon", SendCoupleMessage);
+            var coupleButton = new ButtomButton("Log Ind", SendCoupleMessage);
             var buttomStack = new StackLayout
             {
                 VerticalOptions = LayoutOptions.Start,

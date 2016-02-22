@@ -102,6 +102,7 @@ namespace OS2Indberetning
                 }
             };
             _header.SetBinding(StackLayout.BackgroundColorProperty, MainViewModel.PrimaryHexProperty);
+
             Definitions.DateToView = DateTime.Now.ToString("d/M/yyyy");
             Definitions.DateToApi = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
             var date = new Label
@@ -123,9 +124,7 @@ namespace OS2Indberetning
                 HorizontalOptions = LayoutOptions.FillAndExpand
             };
             List.SetBinding(ListView.ItemsSourceProperty, MainViewModel.DriveProperty);
-
-
-
+            
             List.ItemSelected += async (sender, e) =>
             {
                 if (e.SelectedItem == null) return;
@@ -390,6 +389,7 @@ namespace OS2Indberetning
 
             if (this.Content == null || Definitions.RefreshMainView)
             {
+                this.Content = null;
                 Definitions.RefreshMainView = false;
                 this.Content = SetContent();
             }

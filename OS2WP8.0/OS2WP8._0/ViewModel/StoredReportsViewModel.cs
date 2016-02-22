@@ -141,9 +141,10 @@ namespace OS2Indberetning.ViewModel
 
             foreach (var item in list)
             {
+                var d = Convert.ToDateTime(item.Date);
                 _storedList.Add(new StoredReportCellModel
                 {
-                    Date = _datePre + item.Date,
+                    Date = _datePre + d.ToString("d/M/yyyy"),
                     Distance = _distancePre + item.Route.TotalDistance.ToString() + " km",
                     Purpose = _purposePre + item.Purpose,
                     Taxe = _taxePre + Definitions.User.Rates.FirstOrDefault(x => x.Id == item.RateId).Description,
