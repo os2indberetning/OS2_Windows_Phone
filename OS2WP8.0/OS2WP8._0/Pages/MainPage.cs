@@ -81,7 +81,7 @@ namespace OS2Indberetning
                 YAlign = TextAlignment.Center,
             };
             var vertButton = new VertsButton(SendViewStoredMessage, Definitions.storedReportsCount.ToString());
-            var exitButton = new LogoutButton(SendLogoutMessage);
+            var exitButton = new LogoutButton(ShowLogoutPopup);
 
             vertButton.WidthRequest = 100;
             vertButton.HeightRequest = 60;
@@ -259,6 +259,111 @@ namespace OS2Indberetning
         }
 
         /// <summary>
+        /// Method that creates a stacklayout of a popup with a yes/no before logging out
+        /// </summary>
+        /// <returns>Stacklayout of popup</returns>
+        private StackLayout LogoutPopup()
+        {
+            var display = Resolver.Resolve<IDevice>().Display;
+            var header = new Label
+            {
+                Text = "Log Ud",
+                TextColor = Color.FromHex(Definitions.TextColor),
+                FontSize = Definitions.HeaderFontSize,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                YAlign = TextAlignment.Center,
+                XAlign = TextAlignment.Center,
+            };
+            var headerstack = new StackLayout
+            {
+                Orientation = StackOrientation.Horizontal,
+                BackgroundColor = Color.FromHex(Definitions.PrimaryColor),
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HeightRequest = Definitions.HeaderHeight,
+                Children =
+                {
+                    header,
+                }
+            };
+            var text = new Label
+            {
+                Text = "Er du sikker?",
+                TextColor = Color.FromHex(Definitions.DefaultTextColor),
+                FontSize = Definitions.PopupTextSize,
+                HorizontalOptions = LayoutOptions.CenterAndExpand,
+                VerticalOptions = LayoutOptions.CenterAndExpand,
+                YAlign = TextAlignment.Center,
+            };
+
+
+            var noButton = new ButtomButton("Nej", ClosePopup);
+            var noStack = new StackLayout
+            {
+                VerticalOptions = LayoutOptions.End,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HeightRequest = Definitions.ButtonHeight,
+                WidthRequest = _yesNoButtonWidth,
+                Children = { noButton }
+            };
+            var yesButton = new ButtomButton("Ja", SendLogoutMessage);
+            var yesStack = new StackLayout
+            {
+                VerticalOptions = LayoutOptions.End,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HeightRequest = Definitions.ButtonHeight,
+                WidthRequest = _yesNoButtonWidth,
+                Children = { yesButton }
+            };
+
+            var ButtonStack = new StackLayout
+            {
+                BackgroundColor = Color.White, // for Android and WP
+                Orientation = StackOrientation.Horizontal,
+                VerticalOptions = LayoutOptions.End,
+                Padding = new Thickness(Definitions.Padding, 0, Definitions.Padding, Definitions.Padding),
+                Spacing = Definitions.Padding,
+                HorizontalOptions = LayoutOptions.CenterAndExpand,
+                Children =
+                {
+                    noStack,
+                    yesStack
+                }
+            };
+
+            var PopUp = new StackLayout
+            {
+                WidthRequest = _popupWidth,
+                HeightRequest = _popupHeight,
+                BackgroundColor = Color.White,
+                Orientation = StackOrientation.Vertical,
+                VerticalOptions = LayoutOptions.Center,
+                HorizontalOptions = LayoutOptions.Center,
+                Children =
+                {
+                    headerstack,
+                    text,
+                    ButtonStack
+                }
+            };
+            var topPadding = display.Height / 2 - 150;
+            var PopUpBackground = new StackLayout
+            {
+                Padding = new Thickness(0, topPadding, 0, 0),
+                WidthRequest = display.Width,
+                HeightRequest = display.Height,
+                BackgroundColor = Color.FromRgba(0, 0, 0, 0.85),
+                Orientation = StackOrientation.Vertical,
+                VerticalOptions = LayoutOptions.Center,
+                Children =
+                {
+                    PopUp
+                }
+            };
+
+            return PopUpBackground;
+        }
+
+        /// <summary>
         /// Method that handles closing the popup
         /// </summary>
         private void ClosePopup()
@@ -321,6 +426,17 @@ namespace OS2Indberetning
                 return;
             }
             MessagingCenter.Send<MainPage>(this, "Start");
+        }
+
+        /// <summary>
+        /// Method that handles displaying of an alert popup for logout
+        /// </summary>
+        private void ShowLogoutPopup()
+        {
+            if(_popUpLayout.IsPopupActive)
+                _popUpLayout.DismissPopup();
+
+            _popUpLayout.ShowPopup(LogoutPopup());
         }
 
         #region Message Handlers

@@ -142,6 +142,18 @@ namespace OS2Indberetning.ViewModel
         {
             _driveReport.Clear();
             DriveReportList.Clear();
+            string organisation = "Vælg Stilling";
+            if (Definitions.Organization != null)
+            {
+                if (!string.IsNullOrEmpty(Definitions.Organization.EmploymentPosition))
+                    organisation = Definitions.Organization.EmploymentPosition;
+            }
+            string rate = "Vælg Takst";
+            if (Definitions.Rate != null)
+            {
+                if (!string.IsNullOrEmpty(Definitions.Rate.Description))
+                    rate = Definitions.Rate.Description;
+            }
 
             string remarkText;
             if (string.IsNullOrEmpty(Definitions.Report.ManualEntryRemark))
@@ -170,12 +182,12 @@ namespace OS2Indberetning.ViewModel
             _driveReport.Add(new DriveReportCellModel
             {
                 Name = OrganisatoriskText,
-                Description = Definitions.Organization.EmploymentPosition,
+                Description = organisation
             });
             _driveReport.Add(new DriveReportCellModel
             {
                 Name = TakstText,
-                Description = Definitions.Rate.Description,
+                Description = rate,
             });
             _driveReport.Add(new DriveReportCellModel
             {
@@ -227,6 +239,12 @@ namespace OS2Indberetning.ViewModel
 
             // Clear purpose list
             FileHandler.WriteFileContent(Definitions.PurposeFileName, Definitions.PurposeFolderName, String.Empty);
+
+            // Clear definitions
+            Definitions.Report = new DriveReport();
+            Definitions.Organization = new Employment();
+            Definitions.Rate = new Rate();
+            Definitions.Purpose = null;
 
             // Push login view
             Navigation.PushAsync<LoginViewModel>();

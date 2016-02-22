@@ -91,7 +91,7 @@ namespace OS2Indberetning.ViewModel
                 var temp = JsonConvert.DeserializeObject<ObservableCollection<PurposeString>>(result.Result);
                 foreach (PurposeString item in temp)
                 {
-                    if (item.Name == Definitions.Report.Purpose)
+                    if (item.Name == Definitions.Purpose)
                     {
                         item.Selected = true;
                         continue;
