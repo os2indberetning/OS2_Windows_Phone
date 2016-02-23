@@ -435,6 +435,8 @@ namespace OS2Indberetning.ViewModel
         /// </summary>
         private void HandleBackMessage()
         {
+            Definitions.Report.Route = null;
+            Definitions.Purpose = null;
             Dispose();
             App.Navigation.PopToRootAsync();
         }

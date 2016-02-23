@@ -17,7 +17,7 @@ namespace OS2Indberetning.Templates
         private string _text;
         private string _text1;
         private string _text2;
-        private bool _toggle;
+        private bool _toggle = true;
         private bool _active;
 
         private double _opacity;
@@ -49,7 +49,7 @@ namespace OS2Indberetning.Templates
             _textLabel = new Label
             {
                 FontSize = Definitions.ButtonFontSize,
-                Text = _text,
+                Text = _text1,
                 TextColor = Color.FromHex(Definitions.TextColor),
                 VerticalOptions = LayoutOptions.CenterAndExpand,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,

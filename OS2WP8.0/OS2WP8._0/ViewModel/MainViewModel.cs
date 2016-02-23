@@ -73,9 +73,10 @@ namespace OS2Indberetning.ViewModel
                             Definitions.Report.RateId = obj.Id;
                             Definitions.Rate = obj;
                         }
+                    }, TaskScheduler.FromCurrentSynchronizationContext()).ContinueWith( (result3) =>
+                    {
+                        InitializeCollection();
                     });
-
-                     InitializeCollection();
                  }, TaskScheduler.FromCurrentSynchronizationContext());
             }
 

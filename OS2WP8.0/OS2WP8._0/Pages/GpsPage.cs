@@ -42,6 +42,7 @@ namespace OS2Indberetning
         {
             this.Content = this.SetContent();
             SendHereMessage();
+            SendToggleMessage();
         }
 
         /// <summary>

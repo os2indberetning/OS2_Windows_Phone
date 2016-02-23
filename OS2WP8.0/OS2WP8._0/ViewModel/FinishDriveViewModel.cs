@@ -197,6 +197,7 @@ namespace OS2Indberetning.ViewModel
         private void HandleDeleteMessage(object sender)
         {
             Definitions.Report.Route = null;
+            Definitions.Purpose = null;
             Dispose();
             App.Navigation.PopToRootAsync();
         }

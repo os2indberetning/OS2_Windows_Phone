@@ -24,8 +24,8 @@ namespace OS2Indberetning
         #region Drive choices
         public static string Purpose = "Vælg Formål";
         public static string Remark = "Indtast Bemærkning";
-        public static Employment Organization = new Employment { EmploymentPosition = "Vælg"};
-        public static Rate Rate = new Rate{Description = "Vælg"};
+        public static Employment Organization;
+        public static Rate Rate;
         public static string DateToView;
         public static string DateToApi;
         public static bool StartAtHome = false;
