@@ -69,11 +69,15 @@ namespace OS2Indberetning.ViewModel
         {
             foreach (var employment in Definitions.User.Profile.Employments)
             {
-                if (employment.Id == Definitions.Organization.Id)
+                if (Definitions.Organization != null)
                 {
-                    _organizations.Add(new OrganizationString { Name = employment.EmploymentPosition, Selected = true });
-                    continue;
+                    if (employment.Id == Definitions.Organization.Id)
+                    {
+                        _organizations.Add(new OrganizationString { Name = employment.EmploymentPosition, Selected = true });
+                        continue;
+                    }
                 }
+
                 _organizations.Add(new OrganizationString { Name = employment.EmploymentPosition, Selected = false });
             }
         }

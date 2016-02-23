@@ -73,15 +73,17 @@ namespace OS2Indberetning.ViewModel
 
             foreach (var rate in Definitions.User.Rates)
             {
-                if (rate.Description == Definitions.Rate.Description)
+                if (Definitions.Rate != null)
                 {
-                    _taxes.Add(new TaxString { Name = rate.Description, Selected = true });
-                    continue;
+                    if (rate.Description == Definitions.Rate.Description)
+                    {
+                        _taxes.Add(new TaxString { Name = rate.Description, Selected = true });
+                        continue;
+                    }
                 }
-                else
-                {
-                    _taxes.Add(new TaxString { Name = rate.Description, Selected = false });
-                }
+
+                _taxes.Add(new TaxString { Name = rate.Description, Selected = false });
+                
             }
             TaxList = _taxes;
         }

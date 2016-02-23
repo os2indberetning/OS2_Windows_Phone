@@ -287,12 +287,23 @@ namespace OS2Indberetning
             };
             var text = new Label
             {
-                Text = "Er du sikker?",
+                Text = "Ved at logge ud slettes eventuelle gemte kørsler og formål",
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
                 FontSize = Definitions.PopupTextSize,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
                 VerticalOptions = LayoutOptions.CenterAndExpand,
                 YAlign = TextAlignment.Center,
+                XAlign = TextAlignment.Center
+            };
+            var text2 = new Label
+            {
+                Text = "Vil du logge ud alligevel?",
+                TextColor = Color.FromHex(Definitions.DefaultTextColor),
+                FontSize = Definitions.PopupTextSize,
+                HorizontalOptions = LayoutOptions.CenterAndExpand,
+                VerticalOptions = LayoutOptions.CenterAndExpand,
+                YAlign = TextAlignment.Center,
+                XAlign = TextAlignment.Center
             };
 
 
@@ -320,7 +331,7 @@ namespace OS2Indberetning
                 BackgroundColor = Color.White, // for Android and WP
                 Orientation = StackOrientation.Horizontal,
                 VerticalOptions = LayoutOptions.End,
-                Padding = new Thickness(Definitions.Padding, 0, Definitions.Padding, Definitions.Padding),
+                Padding = new Thickness(Definitions.Padding, 5, Definitions.Padding, Definitions.Padding),
                 Spacing = Definitions.Padding,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
                 Children =
@@ -338,10 +349,12 @@ namespace OS2Indberetning
                 Orientation = StackOrientation.Vertical,
                 VerticalOptions = LayoutOptions.Center,
                 HorizontalOptions = LayoutOptions.Center,
+                Spacing = 4,
                 Children =
                 {
                     headerstack,
                     text,
+                    text2,
                     ButtonStack
                 }
             };

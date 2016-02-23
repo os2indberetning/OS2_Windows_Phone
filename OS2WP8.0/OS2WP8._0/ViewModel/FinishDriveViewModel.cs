@@ -98,7 +98,7 @@ namespace OS2Indberetning.ViewModel
         {
             if (String.IsNullOrEmpty(Definitions.Report.ManualEntryRemark))
             {
-                Definitions.Report.ManualEntryRemark = "Ingen kommentar indtastet";
+                Definitions.Report.ManualEntryRemark = "Ingen kommentar angivet";
             }
             _driveReport.Clear();
             DriveReportList.Clear();
@@ -126,7 +126,7 @@ namespace OS2Indberetning.ViewModel
             _driveReport.Add(new DriveReportCellModel
             {
                 Name = KilometerText,
-                Description = Definitions.Report.Route.TotalDistance.ToString(),
+                Description = Convert.ToString(Math.Round(Definitions.Report.Route.TotalDistance, 1)),
             });
 
             DriveReportList = _driveReport;
