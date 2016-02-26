@@ -70,7 +70,7 @@ namespace OS2Indberetning.ViewModel
         public GpsViewModel()
         {
             Definitions.GpsIsActive = true;
-            TraveledDistance = 0.0;
+            TraveledDistance = 0;
             PositionStatus = DateTime.Now.ToString("HH:mm:ss");
             SetAccuracy();
             Subscribe();
@@ -422,7 +422,7 @@ namespace OS2Indberetning.ViewModel
             set
             {
                 _distance = _distance + value;
-                Driven = Convert.ToString(Math.Round(_distance, 1));
+                Driven = Math.Round(_distance, 1).ToString("0.0", CultureInfo.InvariantCulture);
             }
         }
 
