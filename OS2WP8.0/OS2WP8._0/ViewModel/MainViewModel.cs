@@ -239,7 +239,7 @@ namespace OS2Indberetning.ViewModel
             ReportListHandler.DeleteEntireList();
 
             // Clear purpose list
-            FileHandler.WriteFileContent(Definitions.PurposeFileName, Definitions.PurposeFolderName, String.Empty);
+            //FileHandler.WriteFileContent(Definitions.PurposeFileName, Definitions.PurposeFolderName, String.Empty); // Removed from 1.1.0.5
 
             // Clear definitions
             Definitions.Report = new DriveReport();

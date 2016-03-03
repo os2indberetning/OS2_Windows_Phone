@@ -9,6 +9,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using OS2Indberetning.BuisnessLogic;
 using OS2Indberetning.Pages;
@@ -97,7 +98,11 @@ namespace OS2Indberetning.ViewModel
                         Definitions.User.Profile.Employments.FirstOrDefault(x => x.EmploymentPosition == arg);
                     Definitions.Report.EmploymentId = Definitions.Organization.Id;
                     var json = JsonConvert.SerializeObject(Definitions.Organization);
-                    FileHandler.WriteFileContent(Definitions.OrganizationFileName, Definitions.OrganizationFolder, json);
+                    FileHandler.WriteFileContent(Definitions.OrganizationFileName, Definitions.OrganizationFolder, json).ContinueWith(
+                        result =>
+                        {
+                            HandleBackMessage(); // Solves the problem where the list gets disposed before the view has exited the screen
+                        }, TaskScheduler.FromCurrentSynchronizationContext());
                     continue;
                 }
                 item.Selected = false;

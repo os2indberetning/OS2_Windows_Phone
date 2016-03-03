@@ -9,6 +9,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using OS2Indberetning.BuisnessLogic;
 using OS2Indberetning.Pages;
@@ -108,6 +109,7 @@ namespace OS2Indberetning.ViewModel
                 item.Selected = false;
             }
             TaxList = _taxes;
+            HandleBackMessage();
         }
 
         /// <summary>
