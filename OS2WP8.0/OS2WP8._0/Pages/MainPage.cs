@@ -287,7 +287,7 @@ namespace OS2Indberetning
             };
             var text = new Label
             {
-                Text = "Ved at logge ud slettes eventuelle gemte kørsler og formål",
+                Text = "Ved at logge ud slettes eventuelle gemte kørsler",
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
                 FontSize = Definitions.PopupTextSize,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
