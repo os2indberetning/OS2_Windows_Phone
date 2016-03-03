@@ -519,6 +519,8 @@ namespace OS2Indberetning.ViewModel
                 return;
             }
 
+            Definitions.Report.Purpose = Definitions.Purpose;
+
             Definitions.Report.EmploymentId = Definitions.Organization.Id;
             Definitions.Report.Date = Definitions.DateToApi;
 

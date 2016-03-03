@@ -94,6 +94,9 @@ namespace OS2WP8._0.WinPhone
                 .Register<IDependencyContainer>(container)
                 .Register<IXFormsApp>(app);
 
+            // Get the version number
+            //Definitions.VersionNumber = Package.Current.Id.Version.ToString();
+            
 
             // Resolve the container
             Resolver.SetResolver(container.GetResolver());

@@ -67,6 +67,17 @@ namespace OS2Indberetning.Pages
                 SeparatorVisibility = SeparatorVisibility.Default,
             };
             list.SetBinding(ListView.ItemsSourceProperty, PurposeViewModel.PurposeListProperty, BindingMode.TwoWay);
+            list.GestureRecognizers.Add(new TapGestureRecognizer
+            {
+                NumberOfTapsRequired = 2,
+                Command = new Command((o) =>
+                {
+                    if (list.SelectedItem != null)
+                    {
+                        SendDeleteMessage();
+                    }
+                })
+            });
 
             list.ItemSelected += (sender, args) =>
             {
@@ -118,9 +129,19 @@ namespace OS2Indberetning.Pages
             };
             addStack.SetBinding(StackLayout.IsVisibleProperty, PurposeViewModel.HideFieldProperty);
 
+            var textlabel = new Label
+            { 
+                Text = "Double tap for at slette formål",
+                TextColor = Color.FromHex(Definitions.DefaultTextColor),
+                Opacity = 0.6,
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.End,
+            };
+
             layout.Children.Add(headerstack);
             layout.Children.Add(addStack);
             layout.Children.Add(list);
+            layout.Children.Add((textlabel));
 
             this.Content = layout;
 
@@ -150,6 +171,14 @@ namespace OS2Indberetning.Pages
         private void SendSelectedMessage()
         {
             MessagingCenter.Send<PurposePage>(this, "Selected");
+        }
+
+        /// <summary>
+        /// Method that handles sending an Delete message
+        /// </summary>
+        private void SendDeleteMessage()
+        {
+            MessagingCenter.Send<PurposePage>(this, "Delete");
         }
 
         #endregion

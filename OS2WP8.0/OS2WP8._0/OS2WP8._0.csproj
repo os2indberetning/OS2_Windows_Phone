@@ -84,6 +84,7 @@
     <Compile Include="Templates\Filler.cs" />
     <Compile Include="Templates\ListTemplates\DriveFinishedCell.cs" />
     <Compile Include="Templates\ListTemplates\DriveReportCell.cs" />
+    <Compile Include="Templates\ListTemplates\PurposeCell.cs" />
     <Compile Include="Templates\ListTemplates\GenericCell.cs" />
     <Compile Include="Templates\ListTemplates\MunCell.cs" />
     <Compile Include="Templates\ListTemplates\StoredReportCell.cs" />

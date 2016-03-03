@@ -14,6 +14,8 @@ namespace OS2Indberetning
 {
     public static class Definitions
     {
+        public static string VersionNumber;
+
         #region User choices and drivereport
 
         public static UserInfoModel User;

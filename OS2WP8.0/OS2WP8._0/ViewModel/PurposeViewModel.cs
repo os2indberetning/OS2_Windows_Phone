@@ -61,6 +61,8 @@ namespace OS2Indberetning.ViewModel
             MessagingCenter.Subscribe<PurposePage>(this, "Back", (sender) => { HandleBackMessage(); });
 
             MessagingCenter.Subscribe<PurposePage>(this, "Selected", HandleSelectedMessage);
+
+            MessagingCenter.Subscribe<PurposePage>(this, "Delete", (sender) => { HandleDeleteMessage(sender.Selected); });
         }
 
         /// <summary>
@@ -73,6 +75,8 @@ namespace OS2Indberetning.ViewModel
             MessagingCenter.Unsubscribe<PurposePage>(this, "Back");
 
             MessagingCenter.Unsubscribe<PurposePage>(this, "Selected");
+
+            MessagingCenter.Unsubscribe<PurposePage>(this, "Delete");
         }
 
         /// <summary>
@@ -82,7 +86,7 @@ namespace OS2Indberetning.ViewModel
         {
             FileHandler.ReadFileContent(Definitions.PurposeFileName, Definitions.PurposeFolderName).ContinueWith((result) =>
             {
-                if (String.IsNullOrEmpty(result.Result))
+                if (String.IsNullOrWhiteSpace(result.Result) || result.Result == "[]")
                 {
                     HideField = true;
                     return;
@@ -109,6 +113,14 @@ namespace OS2Indberetning.ViewModel
         /// </summary>
         private void HandleBackMessage()
         {
+            var selected = _purposes.FirstOrDefault(x => x.Selected);
+            if (selected != null)
+            {
+                _purposes.Remove(selected);
+                _purposes.Insert(0, selected);
+            }
+            // Save list
+            FileHandler.WriteFileContent(Definitions.PurposeFileName, Definitions.PurposeFolderName, JsonConvert.SerializeObject(_purposes));
             Dispose();
             Navigation.PopModalAsync();
         }
@@ -119,17 +131,31 @@ namespace OS2Indberetning.ViewModel
         private void HandleSelectedMessage(PurposePage sender)
         {
             var from = (PurposeString)sender.Selected;
+
             foreach (var item in _purposes)
             {
-                if (item.Name == from.Name)
-                {
-                    Definitions.Purpose = item.Name;
-                    Definitions.Report.Purpose = item.Name;
-                    continue;
-                }
                 item.Selected = false;
             }
+            from.Selected = true;
+            Definitions.Purpose = from.Name;
+
             PurposeList = _purposes;
+        }
+
+        /// <summary>
+        /// Method that handles the Delete message
+        /// </summary>
+        private void HandleDeleteMessage(PurposeString str)
+        {
+            _purposes.Remove(str);
+            PurposeList = _purposes;
+            Definitions.Purpose = null;
+            FileHandler.WriteFileContent(Definitions.PurposeFileName, Definitions.PurposeFolderName,
+                JsonConvert.SerializeObject(_purposes)).ContinueWith(
+                    result =>
+                    {
+                        InitializeCollection();
+                    }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         #endregion
@@ -142,7 +168,7 @@ namespace OS2Indberetning.ViewModel
             {
                 return _addPurposeCommand ?? (_addPurposeCommand = new Command(() =>
                 {
-                    if (_purposeAddString != null)
+                    if (!String.IsNullOrWhiteSpace(_purposeAddString))
                     {
                         // Check if item already exists
                         if (_purposes.FirstOrDefault(x => x.Name == _purposeAddString) != null)
@@ -150,12 +176,19 @@ namespace OS2Indberetning.ViewModel
                             PurposeAddString = null;
                             return;
                         }
-                        // Add new item
-                        _purposes.Add(new PurposeString { Name = _purposeAddString, Selected = false });
+                        // Unselect everything
+                        foreach (var item in _purposes)
+                        {
+                            item.Selected = false;
+                        }
+                        // Add new item in front and select it
+                        _purposes.Insert(0, new PurposeString { Name = _purposeAddString, Selected = true });
+                        // Select new
+                        Definitions.Purpose = _purposeAddString;
                         // Reset field
                         PurposeAddString = null;
-                        // Save list
-                        FileHandler.WriteFileContent(Definitions.PurposeFileName, Definitions.PurposeFolderName, JsonConvert.SerializeObject(_purposes));
+                        // Return to main
+                        HandleBackMessage();
                     }
                 }));
             }

@@ -423,7 +423,7 @@ namespace OS2Indberetning
         /// </summary>
         private void StartDrive()
         {
-            if (Definitions.Report.Purpose == null)
+            if (String.IsNullOrWhiteSpace(Definitions.Purpose))
             {
                 _popUpLayout.ShowPopup(CreatePopup("Vælg venligst et formål"));
                 return;

@@ -24,6 +24,7 @@ namespace OS2Indberetning.BuisnessLogic
     public static class APICaller
     {
         private static readonly string AppInfoUrl = "https://ework.favrskov.dk/FavrskovMobilityAPI/api/AppInfo";
+        
         private static HttpClient _httpClient;
         static APICaller()
         {
