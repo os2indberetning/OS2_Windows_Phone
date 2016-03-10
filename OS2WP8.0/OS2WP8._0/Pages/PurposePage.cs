@@ -131,7 +131,7 @@ namespace OS2Indberetning.Pages
 
             var textlabel = new Label
             { 
-                Text = "Double tap for at slette formål",
+                Text = "Dobbelt tryk for at slette formål",
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
                 Opacity = 0.6,
                 HorizontalOptions = LayoutOptions.Center,

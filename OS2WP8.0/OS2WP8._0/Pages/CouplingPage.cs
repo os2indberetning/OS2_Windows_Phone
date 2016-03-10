@@ -120,7 +120,7 @@ namespace OS2Indberetning.Pages
 
             var version = new Label
             {
-                Text = Definitions.VersionNumber,
+                Text = "version " + Definitions.VersionNumber,
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
                 VerticalOptions = LayoutOptions.EndAndExpand,
