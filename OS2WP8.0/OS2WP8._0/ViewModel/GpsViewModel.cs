@@ -422,7 +422,9 @@ namespace OS2Indberetning.ViewModel
             set
             {
                 _distance = _distance + value;
-                Driven = Math.Round(_distance, 1).ToString("0.0", CultureInfo.InvariantCulture);
+                //Driven = Math.Round(_distance, 1).ToString("0.0", CultureInfo.InvariantCulture);
+                // Attempt to fix NaN error
+                Driven = _distance.ToString("0.0", CultureInfo.InvariantCulture);
             }
         }
 
