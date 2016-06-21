@@ -29,13 +29,16 @@ namespace OS2Indberetning.ViewModel
         private string _uploaderText;
         private double _rotate;
         private ISecureStorage _storage;
-        private readonly double _minimumWait = 3;
+        private readonly double _minimumWait = 1.5;
         private bool _timerContinue;
         private bool _errorVisibility;
-        private bool _uploadingVisibility;
+        private bool _uploadingSpinnerVisibility;
+        private bool _uploadingTextVisibility;
 
         private string _errorText;
         private readonly Authorization _authorization;
+
+
 
         /// <summary>
         /// Constructor that handles initialization of the viewmodel
@@ -87,24 +90,26 @@ namespace OS2Indberetning.ViewModel
         /// </summary>
         private void HandleUploadResult(ReturnUserModel model, object sender)
         {
-            Device.StartTimer(TimeSpan.FromSeconds(_minimumWait), () =>
+            UploadingSpinnerVisibility = false;
+            _timerContinue = false;
+            if (model.Error != null)
             {
-                if (model.Error != null)
-                {
-                    ErrorText =
-                        "Der skete en fejl ved afsendelsen af din rapport!" + "\nFejl: " + model.Error.Message +
-                        "\nPrøv igen eller tryk på 'Gem' og send rapporten fra hovedmenuen på et andet tidspunkt.";
-                    UploadingVisibility = false;
-                    _timerContinue = false;
-                    ErrorVisibility = true;
-                }
-                else
+                ErrorText =
+                    "Der skete en fejl ved afsendelsen af din rapport!" + "\nFejl: " + model.Error.Message +
+                    "\nPrøv igen eller tryk på 'Gem' og send rapporten fra hovedmenuen på et andet tidspunkt.";
+                UploadingTextVisibility = false;
+                ErrorVisibility = true;
+            }
+            else
+            {
+                UploaderText = "Din indberetning er modtaget";
+                Device.StartTimer(TimeSpan.FromSeconds(_minimumWait), () =>
                 {
                     Dispose();
                     App.Navigation.PopToRootAsync();
-                }
-                return false; //not continue
-            });
+                    return false;
+                });
+            }
         }
 
         /// <summary>
@@ -132,7 +137,8 @@ namespace OS2Indberetning.ViewModel
             //HandleUploadResult(null, null);
             //return;
 
-            UploadingVisibility = true;
+            UploadingTextVisibility = true;
+            UploadingSpinnerVisibility = true;
             ErrorVisibility = false;
             _timerContinue = true;
             RotateSpinner();
@@ -191,17 +197,31 @@ namespace OS2Indberetning.ViewModel
         }
 
 
-        public const string UploadingVisibilityProperty = "UploadingVisibility";
-        public bool UploadingVisibility
+        public const string UploadingSpinnerVisibilityProperty = "UploadingSpinnerVisibility";
+        public bool UploadingSpinnerVisibility
         {
             get
             {
-                return _uploadingVisibility;
+                return _uploadingSpinnerVisibility;
             }
             set
             {
-                _uploadingVisibility = value;
-                OnPropertyChanged(UploadingVisibilityProperty);
+                _uploadingSpinnerVisibility = value;
+                OnPropertyChanged(UploadingSpinnerVisibilityProperty);
+            }
+        }
+
+        public const string UploadingTextVisibilityProperty = "UploadingTextVisibility";
+        public bool UploadingTextVisibility
+        {
+            get
+            {
+                return _uploadingTextVisibility;
+            }
+            set
+            {
+                _uploadingTextVisibility = value;
+                OnPropertyChanged(UploadingTextVisibilityProperty);
             }
         }
 
