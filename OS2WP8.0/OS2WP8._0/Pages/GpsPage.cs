@@ -255,6 +255,7 @@ namespace OS2Indberetning
                 YAlign = TextAlignment.Center,
             };
 
+            SendFirstFinishedHomeMessage();
             var checkbox = new CheckboxButton(SendFinishedHomeMessage);
 
             var checkStack = new StackLayout
@@ -606,6 +607,14 @@ namespace OS2Indberetning
         private void SendFinishedHomeMessage()
         {
             MessagingCenter.Send<GpsPage>(this, "ToggleFinishedHome");
+        }
+
+        /// <summary>
+        /// Method that handles sending a togglefirstfinishedhome message
+        /// </summary>
+        private void SendFirstFinishedHomeMessage()
+        {
+            MessagingCenter.Send<GpsPage>(this, "ToggleFirstFinishedHome");
         }
 
         #endregion

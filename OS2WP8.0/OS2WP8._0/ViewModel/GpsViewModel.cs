@@ -122,6 +122,11 @@ namespace OS2Indberetning.ViewModel
                 FinishedHome = !FinishedHome;
                 Definitions.EndsAtHome = FinishedHome;
             });
+            MessagingCenter.Subscribe<GpsPage>(this, "ToggleFirstFinishedHome", (sender) =>
+            {
+                FinishedHome = false;
+                Definitions.EndsAtHome = FinishedHome;
+            });
             MessagingCenter.Subscribe<GpsPage>(this, "Here", (sender) =>
             {
                 _parentPage = sender;
@@ -138,6 +143,7 @@ namespace OS2Indberetning.ViewModel
             MessagingCenter.Unsubscribe<GpsPage>(this, "Finish");
             MessagingCenter.Unsubscribe<GpsPage>(this, "Stop");
             MessagingCenter.Unsubscribe<GpsPage>(this, "ToggleFinishedHome");
+            MessagingCenter.Unsubscribe<GpsPage>(this, "ToggleFirstFinishedHome");
             MessagingCenter.Unsubscribe<GpsPage>(this, "Here");
             MessagingCenter.Unsubscribe<App>(this, "Appeared");
         }
