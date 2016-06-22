@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using OS2Indberetning.Model;
 using OS2WP8._0.Model;
+using Newtonsoft.Json.Linq;
 
 namespace OS2Indberetning.BuisnessLogic
 {
@@ -39,7 +40,12 @@ namespace OS2Indberetning.BuisnessLogic
         {
             List<Municipality> list = new List<Municipality>();
             var T = await _httpClient.GetStringAsync(AppInfoUrl);
-            list = JsonConvert.DeserializeObject<List<Municipality>>(T);
+            var isValid = IsValidJson(T);
+            if (isValid)
+            {
+                list = JsonConvert.DeserializeObject<List<Municipality>>(T);
+            }
+      
             return list;
         }
 
@@ -70,8 +76,9 @@ namespace OS2Indberetning.BuisnessLogic
                 HttpResponseMessage response = await _httpClient.SendAsync(request);
                 // Read response
                 string jsonString = await response.Content.ReadAsStringAsync();
+                var isValid = IsValidJson(jsonString);
 
-                if (string.IsNullOrEmpty(jsonString))
+                if (string.IsNullOrEmpty(jsonString) || !isValid)
                 {
                     model.Error = new Error
                     {
@@ -131,7 +138,9 @@ namespace OS2Indberetning.BuisnessLogic
                 
                 // Read response
                 string jsonString = await response.Content.ReadAsStringAsync();
-                if (response.IsSuccessStatusCode)
+                var isValid = IsValidJson(jsonString);
+
+                if (response.IsSuccessStatusCode && isValid)
                 {
                     // Deserialize string to object
                     UserInfoModel user = JsonConvert.DeserializeObject<UserInfoModel>(jsonString);
@@ -139,7 +148,7 @@ namespace OS2Indberetning.BuisnessLogic
                     model.User = user;
                     model.Error = new Error(); // tom
                 }
-                else if (string.IsNullOrEmpty(jsonString))
+                else if (string.IsNullOrEmpty(jsonString) || !isValid)
                 {
                     model.Error = new Error
                     {
@@ -196,14 +205,16 @@ namespace OS2Indberetning.BuisnessLogic
                 request.Content = stringContent;
                 // Send request
                 HttpResponseMessage response = await _httpClient.SendAsync(request);
-               
+
                 // Read response
                 string jsonString = await response.Content.ReadAsStringAsync();
+                var isValid = IsValidJson(jsonString);
+
                 if (response.IsSuccessStatusCode)
                 {
                     model.Error = null;
                 }
-                else if (string.IsNullOrEmpty(jsonString))
+                else if (string.IsNullOrEmpty(jsonString) || !isValid)
                 {
                     model.Error = new Error
                     {
@@ -260,6 +271,33 @@ namespace OS2Indberetning.BuisnessLogic
             return error;
         }
 
+        private static bool IsValidJson(string strInput)
+        {
+            strInput = strInput.Trim();
+            if ((strInput.StartsWith("{") && strInput.EndsWith("}")) || strInput.StartsWith("[") && strInput.EndsWith("]"))
+            {
+                try
+                {
+                    var obj = JToken.Parse(strInput);
+                    return true;
+                }
+                catch (JsonReaderException jex)
+                {
+                    var message = jex.Message;
+                    return false;
+                }
+                catch (Exception ex)
+                {
+                    var message = ex.ToString();
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+        
     }
 }
         
