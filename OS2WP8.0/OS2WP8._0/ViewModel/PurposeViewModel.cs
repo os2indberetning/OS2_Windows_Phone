@@ -16,6 +16,7 @@ using Newtonsoft.Json;
 using OS2Indberetning.BuisnessLogic;
 using OS2Indberetning.Pages;
 using Xamarin.Forms;
+using OS2WP8._0.Model.TemplateModels;
 
 namespace OS2Indberetning.ViewModel
 {
@@ -30,14 +31,14 @@ namespace OS2Indberetning.ViewModel
         private string _purposeAddString = null;
         private bool _hideField = false;
 
-        private ObservableCollection<PurposeString> _purposes;
+        private ObservableCollection<GenericCellModel> _purposes;
 
         /// <summary>
         /// Constructor that handles initialization of the viewmodel
         /// </summary>
         public PurposeViewModel()
         {
-            _purposes = new ObservableCollection<PurposeString>();
+            _purposes = new ObservableCollection<GenericCellModel>();
             InitializeCollection();
             Subscribe();
         }
@@ -92,10 +93,10 @@ namespace OS2Indberetning.ViewModel
                     return;
                 }
 
-                var temp = JsonConvert.DeserializeObject<ObservableCollection<PurposeString>>(result.Result);
-                foreach (PurposeString item in temp)
+                var temp = JsonConvert.DeserializeObject<ObservableCollection<GenericCellModel>>(result.Result);
+                foreach (GenericCellModel item in temp)
                 {
-                    if (item.Name == Definitions.Purpose)
+                    if (item.Title == Definitions.Purpose)
                     {
                         item.Selected = true;
                         continue;
@@ -130,14 +131,14 @@ namespace OS2Indberetning.ViewModel
         /// </summary>
         private void HandleSelectedMessage(PurposePage sender)
         {
-            var from = (PurposeString)sender.Selected;
+            var from = (GenericCellModel)sender.Selected;
 
             foreach (var item in _purposes)
             {
                 item.Selected = false;
             }
             from.Selected = true;
-            Definitions.Purpose = from.Name;
+            Definitions.Purpose = from.Title;
 
             PurposeList = _purposes;
         }
@@ -145,7 +146,7 @@ namespace OS2Indberetning.ViewModel
         /// <summary>
         /// Method that handles the Delete message
         /// </summary>
-        private void HandleDeleteMessage(PurposeString str)
+        private void HandleDeleteMessage(GenericCellModel str)
         {
             _purposes.Remove(str);
             PurposeList = _purposes;
@@ -171,7 +172,7 @@ namespace OS2Indberetning.ViewModel
                     if (!String.IsNullOrWhiteSpace(_purposeAddString))
                     {
                         // Check if item already exists
-                        if (_purposes.FirstOrDefault(x => x.Name == _purposeAddString) != null)
+                        if (_purposes.FirstOrDefault(x => x.Title == _purposeAddString) != null)
                         {
                             PurposeAddString = null;
                             return;
@@ -182,7 +183,7 @@ namespace OS2Indberetning.ViewModel
                             item.Selected = false;
                         }
                         // Add new item in front and select it
-                        _purposes.Insert(0, new PurposeString { Name = _purposeAddString, Selected = true });
+                        _purposes.Insert(0, new GenericCellModel { Title = _purposeAddString, Selected = true });
                         // Select new
                         Definitions.Purpose = _purposeAddString;
                         // Reset field
@@ -207,7 +208,7 @@ namespace OS2Indberetning.ViewModel
         //}
 
         public const string PurposeListProperty = "PurposeList";
-        public ObservableCollection<PurposeString> PurposeList
+        public ObservableCollection<GenericCellModel> PurposeList
         {
             get
             {
@@ -256,31 +257,4 @@ namespace OS2Indberetning.ViewModel
         #endregion
 
     }
-
-    // List template model
-    #region PurposeString
-
-    public class PurposeString : INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
-        public string Name { get; set; }
-        private bool selected;
-        public bool Selected
-        {
-            get { return selected; }
-            set
-            {
-                selected = value;
-                OnPropertyChanged("Selected");
-            } 
-        }
-
-        protected void OnPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-        }
-    }
-
-    #endregion
 }

@@ -59,6 +59,7 @@ namespace OS2Indberetning
 
         public static int LoginLabelText = 25;
         public static int MainListTextSize = 23;
+        public static int MainListDetailTextSize = 18;
         public static int InformationFontSize = 21;
         public static int DriveFinishedTextSize = 20;
 
