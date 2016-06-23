@@ -20,5 +20,6 @@ namespace OS2Indberetning.Model
         public bool StartsAtHome { get; set; }
         public bool EndsAtHome { get; set; }
         public Route Route { get; set; }
+        public bool FourKmRule { get; set; }
     }
 }

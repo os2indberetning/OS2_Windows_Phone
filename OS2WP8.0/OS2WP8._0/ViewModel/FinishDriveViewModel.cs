@@ -27,6 +27,8 @@ namespace OS2Indberetning.ViewModel
 
         private bool _startHomeCheck;
         private bool _endHomeCheck;
+        private bool _fourKmRuleCheck;
+        private bool _showFourKmRule;
         private string _date;
         private string _username;
         private string _newKm;
@@ -51,6 +53,8 @@ namespace OS2Indberetning.ViewModel
             Date = "Dato: " + Definitions.DateToView;
             StartHomeCheck = Definitions.Report.StartsAtHome;
             EndHomeCheck = Definitions.Report.EndsAtHome;
+            FourKmRuleCheck = Definitions.Report.FourKmRule;
+            ShowFourKmRule = false;
             Subscribe();
         }
 
@@ -74,6 +78,7 @@ namespace OS2Indberetning.ViewModel
             MessagingCenter.Subscribe<FinishDrivePage>(this, "Update", (sender) => { HandleUpdateMessage();});
             MessagingCenter.Subscribe<FinishDrivePage>(this, "EndHome",(sender) => { StartHomeCheck = !StartHomeCheck; });
             MessagingCenter.Subscribe<FinishDrivePage>(this, "StartHome", (sender) => { EndHomeCheck = !EndHomeCheck; });
+            MessagingCenter.Subscribe<FinishDrivePage>(this, "FourKmRule", (sender) => { FourKmRuleCheck = !FourKmRuleCheck; });
             MessagingCenter.Subscribe<FinishDrivePage>(this, "NewKm", HandleNewKmMessage);
         }
 
@@ -88,6 +93,7 @@ namespace OS2Indberetning.ViewModel
             MessagingCenter.Unsubscribe<FinishDrivePage>(this, "Update");
             MessagingCenter.Unsubscribe<FinishDrivePage>(this, "EndHome");
             MessagingCenter.Unsubscribe<FinishDrivePage>(this, "StartHome");
+            MessagingCenter.Unsubscribe<FinishDrivePage>(this, "FourKmRule");
             MessagingCenter.Unsubscribe<FinishDrivePage>(this, "NewKm");
         }
 
@@ -253,6 +259,35 @@ namespace OS2Indberetning.ViewModel
                 _endHomeCheck = value;
                 Definitions.Report.EndsAtHome = value;
                 OnPropertyChanged(EndHomeCheckProperty);
+            }
+        }
+
+        public const string ShowFourKmRuleProperty = "ShowFourKmRule";
+        public bool ShowFourKmRule
+        {
+            get
+            {
+                return _showFourKmRule;
+            }
+            set
+            {
+                _showFourKmRule = value;
+                OnPropertyChanged(ShowFourKmRuleProperty);
+            }
+        }
+
+        public const string FourKmRuleCheckProperty = "FourKmRuleCheck";
+        public bool FourKmRuleCheck
+        {
+            get
+            {
+                return _fourKmRuleCheck;
+            }
+            set
+            {
+                _fourKmRuleCheck = value;
+                Definitions.Report.FourKmRule = value;
+                OnPropertyChanged(FourKmRuleCheckProperty);
             }
         }
 

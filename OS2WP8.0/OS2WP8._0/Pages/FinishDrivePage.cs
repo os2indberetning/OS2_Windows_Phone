@@ -46,6 +46,7 @@ namespace OS2Indberetning
         /// <returns>the view to be displayed</returns>
         public View SetContent()
         {
+            // View Title
             var header = new Label
             {
                 Text = "Afslut Kørsel",
@@ -67,6 +68,7 @@ namespace OS2Indberetning
                 }
             };
 
+            // Date View
             var date = new Label
             {
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
@@ -86,6 +88,7 @@ namespace OS2Indberetning
             };
             user.SetBinding(Label.TextProperty, FinishDriveViewModel.UsernameProperty);
 
+            // Content List
             List = new ListView
             {
                 ItemTemplate = new DataTemplate(typeof(DriveFinishedCell)),
@@ -103,6 +106,7 @@ namespace OS2Indberetning
                 SendSelectedMessage();
             };
 
+            // Cancel and send buttons
             var startButton = new ButtomButton("Indsend Kørsel", SendUploadMessage);
             var cancelButton = new ButtomButton("Annuller og Slet", OpenPopup);
             startButton.FontSize = 24;
@@ -122,6 +126,7 @@ namespace OS2Indberetning
                 Children = {cancelButton, startButton}
             };
             
+            // View Container
             var layout = new StackLayout
             {
                 Spacing = 2,
@@ -168,11 +173,22 @@ namespace OS2Indberetning
                 HorizontalOptions = LayoutOptions.StartAndExpand,
                 VerticalOptions = LayoutOptions.Center
             };
+            var fourKmRuleLabel = new Label
+            {
+                Text = "Jeg bruger 4-km reglen",
+                TextColor = Color.FromHex(Definitions.DefaultTextColor),
+                FontAttributes = FontAttributes.Bold,
+                FontFamily = Definitions.FontFamily,
+                FontSize = Definitions.MainListTextSize,
+                HorizontalOptions = LayoutOptions.StartAndExpand,
+                VerticalOptions = LayoutOptions.Center
+            };
 
             var startCheck = new CheckboxButton(SendStartHomeMessage, Definitions.Report.StartsAtHome);
             var endCheck = new CheckboxButton(SendEndHomeMessage, Definitions.Report.EndsAtHome);
+            var fourKmRuleCheck = new CheckboxButton(SendFourKmRuleMessage, Definitions.Report.FourKmRule);
 
-            var topCheck = new StackLayout
+            var startLayout = new StackLayout
             {
                 Padding = new Thickness(20, 0, 20, 0),
                 Orientation = StackOrientation.Horizontal,
@@ -181,7 +197,7 @@ namespace OS2Indberetning
                 VerticalOptions = LayoutOptions.End,
                 Children = { startLabel, startCheck }
             };
-            var buttomCheck = new StackLayout
+            var endLayout = new StackLayout
             {
                 Padding = new Thickness(20, 0, 20, 0),
                 Orientation = StackOrientation.Horizontal,
@@ -190,6 +206,16 @@ namespace OS2Indberetning
                 VerticalOptions = LayoutOptions.End,
                 Children = { endLabel, endCheck }
             };
+            var fourKmRuleLayout = new StackLayout
+            {
+                Padding = new Thickness(20, 0, 20, 0),
+                Orientation = StackOrientation.Horizontal,
+                BackgroundColor = Color.FromHex(Definitions.BackgroundColor),
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.End,
+                Children = { fourKmRuleLabel, fourKmRuleCheck }
+            };
+            fourKmRuleLayout.SetBinding(StackLayout.IsVisibleProperty, FinishDriveViewModel.ShowFourKmRuleProperty);
 
             return new StackLayout
             {
@@ -198,7 +224,7 @@ namespace OS2Indberetning
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.End,
                 Spacing = 5,
-                Children = { topCheck, buttomCheck }
+                Children = { startLayout, endLayout, fourKmRuleLayout }
             };
         }
         #endregion
@@ -478,6 +504,15 @@ namespace OS2Indberetning
         private void SendEndHomeMessage()
         {
             MessagingCenter.Send<FinishDrivePage>(this, "EndHome");
+        }
+
+
+        /// <summary>
+        /// Sends 4-km Rule message throught the MessagingCenter
+        /// </summary>
+        private void SendFourKmRuleMessage()
+        {
+            MessagingCenter.Send<FinishDrivePage>(this, "FourKmRule");
         }
 
         /// <summary>
