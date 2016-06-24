@@ -57,6 +57,7 @@ namespace OS2Indberetning
                 YAlign = TextAlignment.Center,
             };
             text.SetBinding(Label.TextProperty, UploadingViewModel.UploaderTextProperty);
+            text.SetBinding(Label.IsVisibleProperty, UploadingViewModel.UploadingTextVisibilityProperty);
 
             var img = new Image
             {
@@ -66,6 +67,7 @@ namespace OS2Indberetning
             };
             img.SetBinding(Image.RotationProperty, UploadingViewModel.RotateProperty);
             img.SetBinding(Image.SourceProperty, UploadingViewModel.SpinnerProperty);
+            img.SetBinding(Image.IsVisibleProperty, UploadingViewModel.UploadingSpinnerVisibilityProperty);
 
             var loadingStack = new StackLayout
             {
@@ -80,7 +82,6 @@ namespace OS2Indberetning
                     text,
                 }
             };
-            loadingStack.SetBinding(StackLayout.IsVisibleProperty, UploadingViewModel.UploadingVisibilityProperty);
 
             var layout = new StackLayout
             {
