@@ -32,12 +32,13 @@ namespace OS2Indberetning.ViewModel
         private string _date;
         private string _username;
         private string _newKm;
+        private string _homeToBorderDistance;
+        private string _purpose;
+        private string _organization;
+        private string _rate;
+        private string _remark;
         
-        private const string PurposeText = "Formål: ";
-        private const string OrganisatoriskText = "Organisatorisk placering:";
-        private const string TakstText = "Takst";
-        private const string EkstraText = "Ekstra Bemærkning:";
-        private const string KilometerText = "Antal Km:";
+       
 
         /// <summary>
         /// Constructor that handles initialization of the viewmodel
@@ -51,10 +52,7 @@ namespace OS2Indberetning.ViewModel
 
             Username = Definitions.User.Profile.FirstName + " " + Definitions.User.Profile.LastName;
             Date = "Dato: " + Definitions.DateToView;
-            StartHomeCheck = Definitions.Report.StartsAtHome;
-            EndHomeCheck = Definitions.Report.EndsAtHome;
-            FourKmRuleCheck = Definitions.Report.FourKmRule;
-            ShowFourKmRule = false;
+
             Subscribe();
         }
 
@@ -74,12 +72,18 @@ namespace OS2Indberetning.ViewModel
         {
             MessagingCenter.Subscribe<FinishDrivePage>(this, "Upload", (sender) => UploadHandler());
             MessagingCenter.Subscribe<FinishDrivePage>(this, "Delete", HandleDeleteMessage);
-            MessagingCenter.Subscribe<FinishDrivePage>(this, "Selected", HandleSelectedMessage);
             MessagingCenter.Subscribe<FinishDrivePage>(this, "Update", (sender) => { HandleUpdateMessage();});
             MessagingCenter.Subscribe<FinishDrivePage>(this, "EndHome",(sender) => { StartHomeCheck = !StartHomeCheck; });
             MessagingCenter.Subscribe<FinishDrivePage>(this, "StartHome", (sender) => { EndHomeCheck = !EndHomeCheck; });
             MessagingCenter.Subscribe<FinishDrivePage>(this, "FourKmRule", (sender) => { FourKmRuleCheck = !FourKmRuleCheck; });
+            MessagingCenter.Subscribe<FinishDrivePage>(this, "SelectNewKm", HandleSelectEditKmMessage);
             MessagingCenter.Subscribe<FinishDrivePage>(this, "NewKm", HandleNewKmMessage);
+            MessagingCenter.Subscribe<FinishDrivePage>(this, "Purpose", (sender) => { HandlePurposeMessage(); });
+            MessagingCenter.Subscribe<FinishDrivePage>(this, "Organization", (sender) => { HandleOrganizationMessage(); });
+            MessagingCenter.Subscribe<FinishDrivePage>(this, "Rate", (sender) => { HandleRateMessage(); });
+            MessagingCenter.Subscribe<FinishDrivePage>(this, "Remark", (sender) => { HandleRemarkMessage(); });
+            MessagingCenter.Subscribe<FinishDrivePage>(this, "SelectHomeToBorderDistance", HandleSelectHomeToBorderDistanceMessage);
+            MessagingCenter.Subscribe<FinishDrivePage>(this, "HomeToBorderDistance", HandleHomeToBorderDistanceMessage);
         }
 
         /// <summary>
@@ -89,12 +93,18 @@ namespace OS2Indberetning.ViewModel
         {
             MessagingCenter.Unsubscribe<FinishDrivePage>(this, "Upload");
             MessagingCenter.Unsubscribe<FinishDrivePage>(this, "Delete");
-            MessagingCenter.Unsubscribe<FinishDrivePage>(this, "Selected");
             MessagingCenter.Unsubscribe<FinishDrivePage>(this, "Update");
             MessagingCenter.Unsubscribe<FinishDrivePage>(this, "EndHome");
             MessagingCenter.Unsubscribe<FinishDrivePage>(this, "StartHome");
             MessagingCenter.Unsubscribe<FinishDrivePage>(this, "FourKmRule");
             MessagingCenter.Unsubscribe<FinishDrivePage>(this, "NewKm");
+            MessagingCenter.Unsubscribe<FinishDrivePage>(this, "SelectNewKm");
+            MessagingCenter.Unsubscribe<FinishDrivePage>(this, "Purpose");
+            MessagingCenter.Unsubscribe<FinishDrivePage>(this, "Organization");
+            MessagingCenter.Unsubscribe<FinishDrivePage>(this, "Rate");
+            MessagingCenter.Unsubscribe<FinishDrivePage>(this, "Remark");
+            MessagingCenter.Unsubscribe<FinishDrivePage>(this, "SelectHomeToBorderDistance");
+            MessagingCenter.Unsubscribe<FinishDrivePage>(this, "HomeToBorderDistance");
         }
 
         /// <summary>
@@ -106,34 +116,17 @@ namespace OS2Indberetning.ViewModel
             {
                 Definitions.Report.ManualEntryRemark = "Ingen kommentar angivet";
             }
-            _driveReport.Clear();
-            DriveReportList.Clear();
 
-            _driveReport.Add(new DriveReportCellModel
-            {
-                Name = PurposeText,
-                Description = Definitions.Report.Purpose,
-            });
-            _driveReport.Add(new DriveReportCellModel
-            {
-                Name = OrganisatoriskText,
-                Description = Definitions.User.Profile.Employments.FirstOrDefault(x => x.Id == Definitions.Report.EmploymentId).EmploymentPosition,
-            });
-            _driveReport.Add(new DriveReportCellModel
-            {
-                Name = TakstText,
-                Description = Definitions.Rate.Description,
-            });
-            _driveReport.Add(new DriveReportCellModel
-            {
-                Name = EkstraText,
-                Description = Definitions.Report.ManualEntryRemark,
-            });
-            _driveReport.Add(new DriveReportCellModel
-            {
-                Name = KilometerText,
-                Description = Convert.ToString(Math.Round(Definitions.Report.Route.TotalDistance, 1)),
-            });
+            Purpose = Definitions.Report.Purpose;
+            Organization = Definitions.User.Profile.Employments.FirstOrDefault(x => x.Id == Definitions.Report.EmploymentId).EmploymentPosition;
+            Rate = Definitions.User.Rates.FirstOrDefault(x => x.Id == Definitions.Report.RateId).Description;
+            Remark = Definitions.Report.ManualEntryRemark;
+            NewKm = Convert.ToString(Math.Round(Definitions.Report.Route.TotalDistance, 1));
+            HomeToBorderDistance = Convert.ToString(Math.Round(Definitions.Report.HomeToBorderDistance));
+            StartHomeCheck = Definitions.Report.StartsAtHome;
+            EndHomeCheck = Definitions.Report.EndsAtHome;
+            FourKmRuleCheck = Definitions.Report.FourKmRule;
+            ShowFourKmRule = Definitions.User.Profile.Employments.FirstOrDefault(x => x.Id == Definitions.Report.EmploymentId).OrgUnit.FourKmRuleAllowed;
 
             DriveReportList = _driveReport;
         }
@@ -141,31 +134,21 @@ namespace OS2Indberetning.ViewModel
         #region Message Handlers
 
         /// <summary>
-        /// Method that handles a Selected message from the page
+        /// Method that handles a select editKm message from the page
         /// </summary>
-        private void HandleSelectedMessage(FinishDrivePage sender)
+        /// <param name="sender"></param>
+        private void HandleSelectEditKmMessage(FinishDrivePage sender)
         {
-            DriveReportCellModel item = sender.List.SelectedItem as DriveReportCellModel;
+            sender.PopUpLayout.ShowPopup(sender.EditKmPopup());
+        }
 
-            switch (item.Name)
-            {
-                case PurposeText:
-                    Navigation.PushModalAsync<PurposeViewModel>();
-                    break;
-                case OrganisatoriskText:
-                    Navigation.PushModalAsync<OrganizationViewModel>();
-                    break;
-                case TakstText:
-                    Navigation.PushModalAsync<TaxViewModel>();
-                    break;
-                case EkstraText:
-                    Navigation.PushModalAsync<RemarkViewModel>();
-                    break;
-                case KilometerText:
-                    sender.PopUpLayout.ShowPopup(sender.EditKmPopup());
-                    sender.List.SelectedItem = null;
-                    break;
-            }
+        /// <summary>
+        /// Method that handles a select hometoborderdistance message from the page
+        /// </summary>
+        /// <param name="sender"></param>
+        private void HandleSelectHomeToBorderDistanceMessage(FinishDrivePage sender)
+        {
+            sender.PopUpLayout.ShowPopup(sender.HomeToBorderDistancePopup());
         }
 
         /// <summary>
@@ -186,6 +169,62 @@ namespace OS2Indberetning.ViewModel
                 Definitions.Report.Route.TotalDistance = Convert.ToDouble(_newKm);
                 // When the user inputs new KM the route needs to be cleared
                 Definitions.Report.Route.GPSCoordinates.Clear();
+            }
+            catch (Exception e)
+            {
+                // ONLY happens if user somehow writes letters with numeric keyboard?  
+                // Can happen in a simulator
+            }
+            InitializeCollection();
+            sender.PopUpLayout.DismissPopup();
+        }
+
+
+        /// <summary>
+        /// Method that handles a Purpose message from the page
+        /// </summary>
+        /// <param name="sender"></param>
+        private void HandlePurposeMessage()
+        {
+            Navigation.PushAsync<PurposeViewModel>();
+        }
+
+        /// <summary>
+        /// Method that handles a Organization message from the page
+        /// </summary>
+        /// <param name="sender"></param>
+        private void HandleOrganizationMessage()
+        {
+            Navigation.PushAsync<OrganizationViewModel>();
+        }
+
+        /// <summary>
+        /// Method that handles a Rate message from the page
+        /// </summary>
+        /// <param name="sender"></param>
+        private void HandleRateMessage()
+        {
+            Navigation.PushAsync<TaxViewModel>();
+        }
+
+        /// <summary>
+        /// Method that handles a Remark message from the page
+        /// </summary>
+        /// <param name="sender"></param>
+        private void HandleRemarkMessage()
+        {
+            Navigation.PushAsync<RemarkViewModel>();
+        }
+
+        /// <summary>
+        /// Method that handles a HomeToBorderDistance message from the page
+        /// </summary>
+        /// <param name="sender"></param>
+        private void HandleHomeToBorderDistanceMessage(FinishDrivePage sender)
+        {
+            try
+            {
+                Definitions.Report.HomeToBorderDistance = Convert.ToDouble(_homeToBorderDistance);
             }
             catch (Exception e)
             {
@@ -291,6 +330,26 @@ namespace OS2Indberetning.ViewModel
             }
         }
 
+        public const string HomeToBorderDistanceProperty = "HomeToBorderDistance";
+        public string HomeToBorderDistance
+        {
+            get
+            {
+                return _homeToBorderDistance;
+            }
+            set
+            {
+                if (_homeToBorderDistance == value)
+                {
+                    return;
+                }
+
+                _homeToBorderDistance = value;
+                OnPropertyChanged(HomeToBorderDistanceProperty);
+            }
+        }
+
+
         public const string NewKmProperty = "NewKm";
         public string NewKm
         {
@@ -327,6 +386,78 @@ namespace OS2Indberetning.ViewModel
             {
                 _username = value;
                 OnPropertyChanged(UsernameProperty);
+            }
+        }
+
+        public const string PurposeProperty = "Purpose";
+        public string Purpose
+        {
+            get
+            {
+                return _purpose;
+            }
+            set
+            {
+                if(_purpose == value)
+                {
+                    return;
+                }
+                _purpose = value;
+                OnPropertyChanged(PurposeProperty);
+            }
+        }
+
+        public const string OrganizationProperty = "Organization";
+        public string Organization
+        {
+            get
+            {
+                return _organization;
+            }
+            set
+            {
+                if (_organization == value)
+                {
+                    return;
+                }
+                _organization = value;
+                OnPropertyChanged(OrganizationProperty);
+            }
+        }
+
+        public const string RateProperty = "Rate";
+        public string Rate
+        {
+            get
+            {
+                return _rate;
+            }
+            set
+            {
+                if (_rate == value)
+                {
+                    return;
+                }
+                _rate = value;
+                OnPropertyChanged(RateProperty);
+            }
+        }
+
+        public const string RemarkProperty = "Remark";
+        public string Remark
+        {
+            get
+            {
+                return _remark;
+            }
+            set
+            {
+                if (_remark == value)
+                {
+                    return;
+                }
+                _remark = value;
+                OnPropertyChanged(RemarkProperty);
             }
         }
 
