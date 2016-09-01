@@ -7,6 +7,7 @@
  */
 using OS2Indberetning.Templates;
 using OS2Indberetning.ViewModel;
+using OS2WP8._0.Model.TemplateModels;
 using Xamarin.Forms;
 
 namespace OS2Indberetning.Pages
@@ -16,7 +17,7 @@ namespace OS2Indberetning.Pages
     /// </summary>
     public class OrganizationPage : ContentPage
     {
-        public OrganizationString Selected;
+        public GenericCellModel Selected;
 
         /// <summary>
         /// Constructor that handles initialization of the page
@@ -33,6 +34,7 @@ namespace OS2Indberetning.Pages
         {
             var header = new Label
             {
+                // View title
                 Text = "Vælg Organisatorisk Placering",
                 TextColor = Color.FromHex(Definitions.TextColor),
                 FontSize = Definitions.HeaderFontSize - 13,
@@ -40,12 +42,14 @@ namespace OS2Indberetning.Pages
                 YAlign = TextAlignment.Center,
             };
             
+            // Backbutton
             var backButton = new BackButton(SendBackMessage);
             var filler = new Filler();
 
             backButton.WidthRequest = backButton.WidthRequest - 40;
             filler.WidthRequest = backButton.WidthRequest;
 
+            // Navigation Bar
             var headerstack = new StackLayout
             {
                 Orientation = StackOrientation.Horizontal,
@@ -59,6 +63,7 @@ namespace OS2Indberetning.Pages
                 }
             };
 
+            // Item List
             var list = new ListView
             {
                 ItemTemplate = new DataTemplate(typeof(GenericCell)),
@@ -69,7 +74,7 @@ namespace OS2Indberetning.Pages
 
             list.ItemSelected += (sender, args) =>
             {
-                var item = (OrganizationString) args.SelectedItem;
+                var item = (GenericCellModel) args.SelectedItem;
 
                 if (item == null) return;
                 item.Selected = true;
@@ -105,7 +110,7 @@ namespace OS2Indberetning.Pages
         /// </summary>
         private void SendSelectedMessage()
         {
-            MessagingCenter.Send<OrganizationPage, string>(this, "Selected", Selected.Name);
+            MessagingCenter.Send<OrganizationPage, string>(this, "Selected", Selected.Title);
         }
 
         #endregion

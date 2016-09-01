@@ -51,6 +51,7 @@
     <Compile Include="Model\Return Value Models\Error.cs" />
     <Compile Include="Model\Return Value Models\ReturnUserModel.cs" />
     <Compile Include="Model\TemplateModels\DriveReportCellModel.cs" />
+    <Compile Include="Model\TemplateModels\GenericCellModel.cs" />
     <Compile Include="Model\TemplateModels\MunCellModel.cs" />
     <Compile Include="Model\TemplateModels\StoredReportCellModel.cs" />
     <Compile Include="Pages\CouplingPage.cs" />

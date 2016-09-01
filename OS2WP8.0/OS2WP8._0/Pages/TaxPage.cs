@@ -7,6 +7,7 @@
  */
 using OS2Indberetning.Templates;
 using OS2Indberetning.ViewModel;
+using OS2WP8._0.Model.TemplateModels;
 using Xamarin.Forms;
 
 namespace OS2Indberetning.Pages
@@ -16,7 +17,7 @@ namespace OS2Indberetning.Pages
     /// </summary>
     public class TaxPage : ContentPage
     {
-        public TaxString Selected;
+        public GenericCellModel Selected;
 
         /// <summary>
         /// Constructor that handles initialization of the page
@@ -70,7 +71,7 @@ namespace OS2Indberetning.Pages
 
             list.ItemSelected += (sender, args) =>
             {
-                var item = (TaxString) args.SelectedItem;
+                var item = (GenericCellModel) args.SelectedItem;
 
                 if (item == null) return;
                 item.Selected = true;
@@ -105,7 +106,7 @@ namespace OS2Indberetning.Pages
         /// </summary>
         private void SendSelectedMessage()
         {
-            MessagingCenter.Send<TaxPage, string>(this, "Selected", Selected.Name);
+            MessagingCenter.Send<TaxPage, string>(this, "Selected", Selected.Title);
         }
 
         #endregion 
