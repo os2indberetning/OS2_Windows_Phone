@@ -37,8 +37,6 @@ namespace OS2Indberetning.ViewModel
         private string _organization;
         private string _rate;
         private string _remark;
-        
-       
 
         /// <summary>
         /// Constructor that handles initialization of the viewmodel
@@ -186,7 +184,7 @@ namespace OS2Indberetning.ViewModel
         /// <param name="sender"></param>
         private void HandlePurposeMessage()
         {
-            Navigation.PushAsync<PurposeViewModel>();
+            Navigation.PushModalAsync<PurposeViewModel>();
         }
 
         /// <summary>
@@ -195,7 +193,7 @@ namespace OS2Indberetning.ViewModel
         /// <param name="sender"></param>
         private void HandleOrganizationMessage()
         {
-            Navigation.PushAsync<OrganizationViewModel>();
+            Navigation.PushModalAsync<OrganizationViewModel>();
         }
 
         /// <summary>
@@ -204,7 +202,7 @@ namespace OS2Indberetning.ViewModel
         /// <param name="sender"></param>
         private void HandleRateMessage()
         {
-            Navigation.PushAsync<TaxViewModel>();
+            Navigation.PushModalAsync<TaxViewModel>();
         }
 
         /// <summary>
@@ -213,7 +211,7 @@ namespace OS2Indberetning.ViewModel
         /// <param name="sender"></param>
         private void HandleRemarkMessage()
         {
-            Navigation.PushAsync<RemarkViewModel>();
+            Navigation.PushModalAsync<RemarkViewModel>();
         }
 
         /// <summary>

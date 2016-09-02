@@ -21,23 +21,21 @@ namespace OS2Indberetning.Templates
             {
                 FontAttributes = FontAttributes.Bold,
                 FontFamily = Definitions.FontFamily,
-                FontSize = Definitions.DriveFinishedTextSize,
+                FontSize = Definitions.MainListTextSize,
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
                 YAlign = TextAlignment.Center,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
             };
-            //NameLabel.SetBinding(Label.TextProperty, "Name");
 
             DescriptionLabel = new Label()
             {
                 FontFamily = Definitions.FontFamily,
-                FontSize = Definitions.DriveFinishedTextSize,
+                FontSize = Definitions.MainListDetailTextSize,
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
                 YAlign = TextAlignment.Center,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 WidthRequest = Resolver.Resolve<IDevice>().Display.Width - 50,
             };
-            //description.SetBinding(Label.TextProperty, "Description");
 
             var vetDetailsLayout = new StackLayout
             {

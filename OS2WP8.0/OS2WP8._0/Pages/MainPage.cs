@@ -396,7 +396,7 @@ namespace OS2Indberetning
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
                 FontAttributes = FontAttributes.Bold,
                 FontFamily = Definitions.FontFamily,
-                FontSize = Definitions.MainListTextSize + 3,
+                FontSize = Definitions.MainListTextSize,
                 HorizontalOptions = LayoutOptions.StartAndExpand,
                 VerticalOptions = LayoutOptions.Center
             };
