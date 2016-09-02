@@ -309,6 +309,10 @@ namespace OS2Indberetning.ViewModel
             set
             {
                 _showFourKmRule = value;
+                if (!_showFourKmRule)
+                {
+                    FourKmRuleCheck = false;
+                }
                 OnPropertyChanged(ShowFourKmRuleProperty);
             }
         }

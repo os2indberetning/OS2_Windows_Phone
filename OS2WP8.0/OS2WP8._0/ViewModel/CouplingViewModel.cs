@@ -81,6 +81,10 @@ namespace OS2Indberetning.ViewModel
         public void InitVm(Municipality m)
         {
             _model = m;
+
+            // URL for testserver
+            _model.APIUrl = "http://os2indberetningmobil/api";
+
             _storage = DependencyService.Get<ISecureStorage>();
         }
 
@@ -115,6 +119,8 @@ namespace OS2Indberetning.ViewModel
         /// </summary>
         private void HandleCoupleMessage()
         {
+
+
             App.ShowLoading(true);
             APICaller.Couple(_model.APIUrl, _username, _pw).ContinueWith((result) =>
             {

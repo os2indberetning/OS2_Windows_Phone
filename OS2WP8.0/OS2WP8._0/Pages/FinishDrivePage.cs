@@ -124,7 +124,8 @@ namespace OS2Indberetning
             var homeToBorderDistance = new DriveFinishedCommonCell(SendSelectHomeToBorderDistanceMessage);
             homeToBorderDistance.Title = HomeToBorderDistanceText;
             homeToBorderDistance.SetBinding(DriveFinishedCommonCell.DetailsProperty, FinishDriveViewModel.HomeToBorderDistanceProperty);
-         
+            homeToBorderDistance.SetBinding(DriveFinishedCommonCell.IsVisibleProperty, FinishDriveViewModel.FourKmRuleCheckProperty);
+            
 
             // Cancel and send buttons
             var startButton = new ButtomButton("Indsend Kørsel", SendUploadMessage);
@@ -283,6 +284,8 @@ namespace OS2Indberetning
             };
 
             var fourKmRuleCheck = new CheckboxButton(SendFourKmRuleMessage, Definitions.Report.FourKmRule);
+            fourKmRuleCheck.SetBinding(CheckboxButton.SelectedProperty, FinishDriveViewModel.FourKmRuleCheckProperty);
+
             
             var fourKmRuleLayout = new StackLayout
             {
