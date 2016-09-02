@@ -23,8 +23,6 @@ namespace OS2Indberetning.ViewModel
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private ObservableCollection<DriveReportCellModel> _driveReport;
-
         private bool _startHomeCheck;
         private bool _endHomeCheck;
         private bool _fourKmRuleCheck;
@@ -38,12 +36,20 @@ namespace OS2Indberetning.ViewModel
         private string _rate;
         private string _remark;
 
+        private string _homeToBorderDistanceKey = Definitions.HomeToBorderDistanceKey + Definitions.User.Profile.Authorization.GuId;
+
         /// <summary>
         /// Constructor that handles initialization of the viewmodel
         /// </summary>
         public FinishDriveViewModel()
         {
-            _driveReport = new ObservableCollection<DriveReportCellModel>();
+            bool containKey = Application.Current.Properties.ContainsKey(_homeToBorderDistanceKey);
+            double d = 0;
+            if (containKey)
+            {
+                d = (double)Application.Current.Properties[_homeToBorderDistanceKey];
+            }
+            Definitions.Report.HomeToBorderDistance = d;
             NewKm = Definitions.Report.Route.TotalDistance.ToString();
 
             InitializeCollection();
@@ -60,7 +66,6 @@ namespace OS2Indberetning.ViewModel
         public void Dispose()
         {
             Unsubscribe();
-            _driveReport = null;
         }
 
         /// <summary>
@@ -120,13 +125,12 @@ namespace OS2Indberetning.ViewModel
             Rate = Definitions.User.Rates.FirstOrDefault(x => x.Id == Definitions.Report.RateId).Description;
             Remark = Definitions.Report.ManualEntryRemark;
             NewKm = Convert.ToString(Math.Round(Definitions.Report.Route.TotalDistance, 1));
-            HomeToBorderDistance = Convert.ToString(Math.Round(Definitions.Report.HomeToBorderDistance));
+            HomeToBorderDistance = Convert.ToString(Definitions.Report.HomeToBorderDistance);
             StartHomeCheck = Definitions.Report.StartsAtHome;
             EndHomeCheck = Definitions.Report.EndsAtHome;
             FourKmRuleCheck = Definitions.Report.FourKmRule;
             ShowFourKmRule = Definitions.User.Profile.Employments.FirstOrDefault(x => x.Id == Definitions.Report.EmploymentId).OrgUnit.FourKmRuleAllowed;
 
-            DriveReportList = _driveReport;
         }
 
         #region Message Handlers
@@ -258,17 +262,7 @@ namespace OS2Indberetning.ViewModel
         #endregion
 
         #region properties
-        public const string DriveProperty = "DriveReportList";
-        public ObservableCollection<DriveReportCellModel> DriveReportList
-        {
-            get { return _driveReport; }
-            set
-            {
-                _driveReport = value;
-                OnPropertyChanged(DriveProperty);
-            }
-        }
-
+  
         public const string StartHomeCheckProperty = "StartHomeCheck";
         public bool StartHomeCheck
         {
@@ -337,6 +331,16 @@ namespace OS2Indberetning.ViewModel
         {
             get
             {
+                
+                if (Application.Current.Properties.ContainsKey(_homeToBorderDistanceKey))
+                {
+                    string distance = Convert.ToString((double)Application.Current.Properties[_homeToBorderDistanceKey]);
+                    if (distance != null)
+                    {
+                        return distance;
+                    }
+                }
+                
                 return _homeToBorderDistance;
             }
             set
@@ -345,8 +349,9 @@ namespace OS2Indberetning.ViewModel
                 {
                     return;
                 }
-
+                
                 _homeToBorderDistance = value;
+                Application.Current.Properties[_homeToBorderDistanceKey] = Convert.ToDouble(_homeToBorderDistance);
                 OnPropertyChanged(HomeToBorderDistanceProperty);
             }
         }

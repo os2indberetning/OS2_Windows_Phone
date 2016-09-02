@@ -84,6 +84,8 @@ namespace OS2Indberetning
         public static string AuthKey = "login_key";
         public static string UserDataKey = "userKey";
         public static string MunKey = "userToken";
+        public static string HomeToBorderDistanceKey = "HomeToBorderDistanceKey-";
+
         #endregion
 
         #region GpsPage
