@@ -331,13 +331,15 @@ namespace OS2Indberetning.ViewModel
         {
             get
             {
-                
                 if (Application.Current.Properties.ContainsKey(_homeToBorderDistanceKey))
                 {
                     string distance = Convert.ToString((double)Application.Current.Properties[_homeToBorderDistanceKey]);
                     if (distance != null)
                     {
-                        return distance;
+                        if (distance != "0")
+                        {
+                            return distance;
+                        }
                     }
                 }
                 
@@ -351,7 +353,8 @@ namespace OS2Indberetning.ViewModel
                 }
                 
                 _homeToBorderDistance = value;
-                Application.Current.Properties[_homeToBorderDistanceKey] = Convert.ToDouble(_homeToBorderDistance);
+               
+                Application.Current.Properties[_homeToBorderDistanceKey] = String.IsNullOrEmpty(_homeToBorderDistance) ? 0 : Convert.ToDouble(_homeToBorderDistance);
                 OnPropertyChanged(HomeToBorderDistanceProperty);
             }
         }
