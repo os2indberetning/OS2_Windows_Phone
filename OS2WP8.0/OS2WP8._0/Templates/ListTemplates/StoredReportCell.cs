@@ -16,7 +16,7 @@ namespace OS2Indberetning.Templates
             var dateLabel = new Label
             {
                 FontFamily = Definitions.FontFamily,
-                FontSize = Definitions.DriveFinishedTextSize,
+                FontSize = Definitions.MainListDetailTextSize,
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
                 YAlign = TextAlignment.Center,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -26,7 +26,7 @@ namespace OS2Indberetning.Templates
             var distanceLabel = new Label
             {
                 FontFamily = Definitions.FontFamily,
-                FontSize = Definitions.DriveFinishedTextSize,
+                FontSize = Definitions.MainListDetailTextSize,
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
                 YAlign = TextAlignment.Center,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -36,7 +36,7 @@ namespace OS2Indberetning.Templates
             var purposeLabel = new Label()
             {
                 FontFamily = Definitions.FontFamily,
-                FontSize = Definitions.DriveFinishedTextSize,
+                FontSize = Definitions.MainListDetailTextSize,
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
                 YAlign = TextAlignment.Center,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -46,7 +46,7 @@ namespace OS2Indberetning.Templates
             var taxeLabel = new Label()
             {
                 FontFamily = Definitions.FontFamily,
-                FontSize = Definitions.DriveFinishedTextSize,
+                FontSize = Definitions.MainListDetailTextSize,
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
                 YAlign = TextAlignment.Center,
                 HorizontalOptions = LayoutOptions.FillAndExpand,

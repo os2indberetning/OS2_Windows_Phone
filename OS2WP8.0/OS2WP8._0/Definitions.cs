@@ -58,10 +58,9 @@ namespace OS2Indberetning
         public static string FontFamily = "HelveticaNeue-Medium";
 
         public static int LoginLabelText = 25;
-        public static int MainListTextSize = 23;
-        public static int MainListDetailTextSize = 18;
+        public static int MainListTextSize = 26;
+        public static int MainListDetailTextSize = 23;
         public static int InformationFontSize = 21;
-        public static int DriveFinishedTextSize = 20;
 
         #endregion
 
@@ -85,6 +84,8 @@ namespace OS2Indberetning
         public static string AuthKey = "login_key";
         public static string UserDataKey = "userKey";
         public static string MunKey = "userToken";
+        public static string HomeToBorderDistanceKey = "HomeToBorderDistanceKey-";
+
         #endregion
 
         #region GpsPage

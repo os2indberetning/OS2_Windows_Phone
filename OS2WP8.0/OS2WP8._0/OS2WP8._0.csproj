@@ -41,6 +41,7 @@
     <Compile Include="Model\Domain Models\Employment.cs" />
     <Compile Include="Model\Domain Models\GPSCoordinate.cs" />
     <Compile Include="Model\Domain Models\Municipality.cs" />
+    <Compile Include="Model\Domain Models\OrgUnit.cs" />
     <Compile Include="Model\Domain Models\Profile.cs" />
     <Compile Include="Model\Domain Models\Rate.cs" />
     <Compile Include="Model\Domain Models\Route.cs" />
@@ -83,7 +84,7 @@
     <Compile Include="Templates\Buttons\VertsButton.cs" />
     <Compile Include="Templates\CheckboxButton.cs" />
     <Compile Include="Templates\Filler.cs" />
-    <Compile Include="Templates\ListTemplates\DriveFinishedCell.cs" />
+    <Compile Include="Templates\DriveFinishedCommonCell.cs" />
     <Compile Include="Templates\ListTemplates\DriveReportCell.cs" />
     <Compile Include="Templates\ListTemplates\GenericCell.cs" />
     <Compile Include="Templates\ListTemplates\MunCell.cs" />
