@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using OS2Indberetning.BuisnessLogic;
 using OS2Indberetning.Pages;
 using Xamarin.Forms;
+using OS2WP8._0.Model.TemplateModels;
 
 namespace OS2Indberetning.ViewModel
 {
@@ -24,14 +25,14 @@ namespace OS2Indberetning.ViewModel
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private ObservableCollection<OrganizationString> _organizations;
+        private ObservableCollection<GenericCellModel> _organizations;
 
         /// <summary>
         /// Constructor that handles initialization of the viewmodel
         /// </summary>
         public OrganizationViewModel()
         {
-            _organizations = new ObservableCollection<OrganizationString>();
+            _organizations = new ObservableCollection<GenericCellModel>();
             InitializeCollection();
             Subscribe();
         }
@@ -74,12 +75,12 @@ namespace OS2Indberetning.ViewModel
                 {
                     if (employment.Id == Definitions.Organization.Id)
                     {
-                        _organizations.Add(new OrganizationString { Name = employment.EmploymentPosition, Selected = true });
+                        _organizations.Add(new GenericCellModel { Title = employment.EmploymentPosition, SubTitle = employment.ManNr ,  Selected = true });
                         continue;
                     }
                 }
 
-                _organizations.Add(new OrganizationString { Name = employment.EmploymentPosition, Selected = false });
+                _organizations.Add(new GenericCellModel { Title = employment.EmploymentPosition, SubTitle = employment.ManNr, Selected = false });
             }
         }
 
@@ -92,7 +93,7 @@ namespace OS2Indberetning.ViewModel
         {
             foreach (var item in _organizations)
             {
-                if (item.Name == arg)
+                if (item.Title == arg)
                 {
                     Definitions.Organization =
                         Definitions.User.Profile.Employments.FirstOrDefault(x => x.EmploymentPosition == arg);
@@ -122,7 +123,7 @@ namespace OS2Indberetning.ViewModel
 
         #region Properties
         public const string OrganizationListProperty = "OrganizationList";
-        public ObservableCollection<OrganizationString> OrganizationList
+        public ObservableCollection<GenericCellModel> OrganizationList
         {
             get
             {
@@ -143,29 +144,4 @@ namespace OS2Indberetning.ViewModel
 
         #endregion
     }
-    
-    // List template model
-    #region OrganizationString
-    public class OrganizationString : INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
-        public string Name { get; set; }
-        private bool selected;
-        public bool Selected
-        {
-            get { return selected; }
-            set
-            {
-                selected = value;
-                OnPropertyChanged("Selected");
-            } 
-        }
-    
-        protected void OnPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-        }
-    }
-    #endregion
 }

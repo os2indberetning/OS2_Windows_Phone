@@ -13,7 +13,7 @@ namespace OS2Indberetning.Templates
     {
         public GenericCell()
         {
-            var nameLabel = new Label()
+            var titleLabel = new Label()
             {
                 FontAttributes = FontAttributes.None,
                 FontFamily = Definitions.FontFamily,
@@ -22,7 +22,33 @@ namespace OS2Indberetning.Templates
                 YAlign = TextAlignment.Center,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
             };
-            nameLabel.SetBinding(Label.TextProperty, "Name");
+            titleLabel.SetBinding(Label.TextProperty, "Title");
+
+            var subTitleLabel = new Label()
+            {
+                FontAttributes = FontAttributes.None,
+                FontFamily = Definitions.FontFamily,
+                FontSize = Definitions.MainListDetailTextSize,
+                TextColor = Color.FromHex(Definitions.DefaultTextColor),
+                YAlign = TextAlignment.Center,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.FillAndExpand,
+            };
+            subTitleLabel.SetBinding(Label.TextProperty, "SubTitle");
+            subTitleLabel.SetBinding(Label.IsVisibleProperty, "ShowSubTitle");
+
+            var textLayout = new StackLayout
+            {
+                Padding = new Thickness(10, 0, 0, 0),
+                Spacing = 5,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                Children =
+                {
+                    titleLabel,
+                    subTitleLabel
+                }
+            };
 
             var image = new Image
             {
@@ -48,7 +74,7 @@ namespace OS2Indberetning.Templates
                 Orientation = StackOrientation.Horizontal,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 
-                Children = {nameLabel, image, }
+                Children = { textLayout, image, }
             };
 
             var wrapper = new StackLayout

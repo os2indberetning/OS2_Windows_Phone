@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using OS2Indberetning.BuisnessLogic;
 using OS2Indberetning.Pages;
 using Xamarin.Forms;
+using OS2WP8._0.Model.TemplateModels;
 
 namespace OS2Indberetning.ViewModel
 {
@@ -24,14 +25,14 @@ namespace OS2Indberetning.ViewModel
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private ObservableCollection<TaxString> _taxes;
+        private ObservableCollection<GenericCellModel> _taxes;
 
         /// <summary>
         /// Constructor that handles initialization of the viewmodel
         /// </summary>
         public TaxViewModel()
         {
-            _taxes = new ObservableCollection<TaxString>();
+            _taxes = new ObservableCollection<GenericCellModel>();
             TaxList = _taxes;
             InitializeCollection();
             Subscribe();
@@ -78,12 +79,12 @@ namespace OS2Indberetning.ViewModel
                 {
                     if (rate.Description == Definitions.Rate.Description)
                     {
-                        _taxes.Add(new TaxString { Name = rate.Description, Selected = true });
+                        _taxes.Add(new GenericCellModel { Title = rate.Description, Selected = true });
                         continue;
                     }
                 }
 
-                _taxes.Add(new TaxString { Name = rate.Description, Selected = false });
+                _taxes.Add(new GenericCellModel { Title = rate.Description, Selected = false });
                 
             }
             TaxList = _taxes;
@@ -98,7 +99,7 @@ namespace OS2Indberetning.ViewModel
         {
             foreach (var item in _taxes)
             {
-                if (item.Name == arg)
+                if (item.Title == arg)
                 {
                     Definitions.Rate = Definitions.User.Rates.FirstOrDefault(x => x.Description == arg);
                     Definitions.Report.RateId = Definitions.User.Rates.FirstOrDefault(x => x.Description == arg).Id;
@@ -124,7 +125,7 @@ namespace OS2Indberetning.ViewModel
 
         #region Properties
         public const string TaxListProperty = "TaxList";
-        public ObservableCollection<TaxString> TaxList
+        public ObservableCollection<GenericCellModel> TaxList
         {
             get
             {
@@ -145,29 +146,4 @@ namespace OS2Indberetning.ViewModel
         #endregion
 
     }
-
-    // List template model
-    #region TaxString
-    public class TaxString : INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
-        public string Name { get; set; }
-        private bool selected;
-        public bool Selected
-        {
-            get { return selected; }
-            set
-            {
-                selected = value;
-                OnPropertyChanged("Selected");
-            } 
-        }
-    
-        protected void OnPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-        }
-    }
-    #endregion
 }

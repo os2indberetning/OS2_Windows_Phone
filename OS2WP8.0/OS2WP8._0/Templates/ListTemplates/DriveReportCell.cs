@@ -19,7 +19,7 @@ namespace OS2Indberetning.Templates
             {
                 FontAttributes = FontAttributes.Bold,
                 FontFamily = Definitions.FontFamily,
-                FontSize = Definitions.MainListTextSize + 3,
+                FontSize = Definitions.MainListTextSize,
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
                 YAlign = TextAlignment.Center,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -29,7 +29,7 @@ namespace OS2Indberetning.Templates
             var description = new Label()
             {
                 FontFamily = Definitions.FontFamily,
-                FontSize = Definitions.MainListTextSize,
+                FontSize = Definitions.MainListDetailTextSize,
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
                 YAlign = TextAlignment.Center,
                 HorizontalOptions = LayoutOptions.FillAndExpand,

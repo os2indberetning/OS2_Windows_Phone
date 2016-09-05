@@ -78,6 +78,25 @@ namespace OS2Indberetning.Templates
             this.Content = _layout;
         }
 
+        public static readonly BindableProperty SelectedProperty =
+        BindableProperty.Create<CheckboxButton, bool>(w => w.Selected, false);
+
+
+        public bool Selected
+        {
+            get { return (bool)GetValue(SelectedProperty); }
+            set { SetValue(SelectedProperty, value); }
+        }
+
+        protected override void OnPropertyChanged(string propertyName)
+        {
+            base.OnPropertyChanged(propertyName);
+
+            if (propertyName == SelectedProperty.PropertyName)
+            {
+                Source = Selected ? _img_checked : _img_unchecked;
+            }
+        }
 
 
         /// <summary>

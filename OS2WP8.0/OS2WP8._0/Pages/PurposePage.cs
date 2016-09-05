@@ -9,6 +9,7 @@ using System;
 using OS2Indberetning.Templates;
 using OS2Indberetning.ViewModel;
 using Xamarin.Forms;
+using OS2WP8._0.Model.TemplateModels;
 
 namespace OS2Indberetning.Pages
 {
@@ -17,7 +18,7 @@ namespace OS2Indberetning.Pages
     /// </summary>
     public class PurposePage : ContentPage
     {
-        public PurposeString Selected;
+        public GenericCellModel Selected;
 
         private int _hackSpaces;
         private string _placeholder = "Tast nyt formål";
@@ -81,7 +82,7 @@ namespace OS2Indberetning.Pages
 
             list.ItemSelected += (sender, args) =>
             {
-                var item = (PurposeString) args.SelectedItem;
+                var item = (GenericCellModel) args.SelectedItem;
 
                 if (item == null) return;
                 item.Selected = true;
