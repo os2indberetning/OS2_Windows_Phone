@@ -120,12 +120,13 @@ namespace OS2Indberetning
             totalKm.Title = NewKmText;
             totalKm.SetBinding(DriveFinishedCommonCell.DetailsProperty, FinishDriveViewModel.NewKmProperty);
 
-            // Home to Border Distance View
+            // Home to Border Distance View 
+            /*
             var homeToBorderDistance = new DriveFinishedCommonCell(SendSelectHomeToBorderDistanceMessage);
             homeToBorderDistance.Title = HomeToBorderDistanceText;
             homeToBorderDistance.SetBinding(DriveFinishedCommonCell.DetailsProperty, FinishDriveViewModel.HomeToBorderDistanceProperty);
             homeToBorderDistance.SetBinding(DriveFinishedCommonCell.IsVisibleProperty, FinishDriveViewModel.FourKmRuleCheckProperty);
-            
+            */
 
             // Cancel and send buttons
             var startButton = new ButtomButton("Indsend Kørsel", SendUploadMessage);
@@ -173,8 +174,8 @@ namespace OS2Indberetning
                         totalKm,
                         StartCheck(),
                         EndCheck(),
-                        FourKmRuleCheck(),
-                        homeToBorderDistance,
+                        //FourKmRuleCheck(),
+                        //homeToBorderDistance,
                         buttomStack
                     },
                 BackgroundColor = Color.FromHex(Definitions.BackgroundColor),
