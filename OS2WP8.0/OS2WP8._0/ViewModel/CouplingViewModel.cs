@@ -83,7 +83,7 @@ namespace OS2Indberetning.ViewModel
             _model = m;
 
             // URL for testserver
-            //_model.APIUrl = "http://os2indberetningmobil/api";
+           //_model.APIUrl = "http://os2indberetningmobil/api";
 
             _storage = DependencyService.Get<ISecureStorage>();
         }
