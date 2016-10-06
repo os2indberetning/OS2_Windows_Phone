@@ -8,7 +8,7 @@
     <Language code="en-GB" />
   </Languages>
   <App xmlns="" ProductID="{728eed5d-cdfe-494e-bb64-1fed81d67754}" Title="OS2Indberetning-test" RuntimeType="Silverlight" Version="1.1.0.11" Genre="apps.normal" Author="Miracle A/S" Description="" Publisher="Miracle A/S" PublisherID="{4BA7226B-A181-46BE-9642-3DFF8B286048}">
-    <IconPath IsRelative="true" IsResource="false">Resources\app_icon@3x.png</IconPath>
+    <IconPath IsRelative="true" IsResource="false">Resources\appicon.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_NETWORKING" />
       <Capability Name="ID_CAP_SENSORS" />
@@ -24,9 +24,9 @@
     <Tokens>
       <PrimaryToken TokenID="PhoneApp1Token" TaskName="_default">
         <TemplateFlip>
-          <SmallImageURI IsRelative="true" IsResource="false">Resources\app_icon@3x.png</SmallImageURI>
+          <SmallImageURI IsRelative="true" IsResource="false">Resources\smallapptile.png</SmallImageURI>
           <Count>0</Count>
-          <BackgroundImageURI IsRelative="true" IsResource="false">Resources\app_icon@3x.png</BackgroundImageURI>
+          <BackgroundImageURI IsRelative="true" IsResource="false">Resources\bckimage.png</BackgroundImageURI>
           <Title>eIndberetning</Title>
           <BackContent>
           </BackContent>
@@ -34,10 +34,13 @@
           </BackBackgroundImageURI>
           <BackTitle>
           </BackTitle>
+          <LargeBackgroundImageURI IsRelative="true" IsResource="false">Resources\largeapptile.png</LargeBackgroundImageURI>
+          <LargeBackContent />
+          <LargeBackBackgroundImageURI IsRelative="true" IsResource="false">
+          </LargeBackBackgroundImageURI>
           <DeviceLockImageURI>
           </DeviceLockImageURI>
-          <HasLarge>
-          </HasLarge>
+          <HasLarge>True</HasLarge>
         </TemplateFlip>
       </PrimaryToken>
     </Tokens>
