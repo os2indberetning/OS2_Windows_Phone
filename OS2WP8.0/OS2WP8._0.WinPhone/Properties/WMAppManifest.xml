@@ -7,7 +7,7 @@
     <Language code="en-US" />
     <Language code="en-GB" />
   </Languages>
-  <App xmlns="" ProductID="{728eed5d-cdfe-494e-bb64-1fed81d67754}" Title="OS2Indberetning-test" RuntimeType="Silverlight" Version="1.1.0.11" Genre="apps.normal" Author="Miracle A/S" Description="" Publisher="Miracle A/S" PublisherID="{4BA7226B-A181-46BE-9642-3DFF8B286048}">
+  <App xmlns="" ProductID="{728eed5d-cdfe-494e-bb64-1fed81d67754}" Title="OS2Indberetning-test" RuntimeType="Silverlight" Version="1.1.0.12" Genre="apps.normal" Author="Miracle A/S" Description="" Publisher="Miracle A/S" PublisherID="{4BA7226B-A181-46BE-9642-3DFF8B286048}">
     <IconPath IsRelative="true" IsResource="false">Resources\appicon.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_NETWORKING" />
