@@ -36,7 +36,7 @@ namespace OS2Indberetning
         private const string RateText = "Takst";
         private const string RemarkText = "Ekstra Bemærkning:";
         private const string NewKmText = "Antal Km:";
-        private const string HomeToBorderDistanceText = "Antal Km for 4-km reglen";
+        private const string HomeToBorderDistanceText = "Antal km fra kommunegrænse til bopæl";
 
         /// <summary>
         /// Constructor that handles initialization of the page
@@ -121,12 +121,10 @@ namespace OS2Indberetning
             totalKm.SetBinding(DriveFinishedCommonCell.DetailsProperty, FinishDriveViewModel.NewKmProperty);
 
             // Home to Border Distance View 
-            /*
             var homeToBorderDistance = new DriveFinishedCommonCell(SendSelectHomeToBorderDistanceMessage);
             homeToBorderDistance.Title = HomeToBorderDistanceText;
             homeToBorderDistance.SetBinding(DriveFinishedCommonCell.DetailsProperty, FinishDriveViewModel.HomeToBorderDistanceProperty);
             homeToBorderDistance.SetBinding(DriveFinishedCommonCell.IsVisibleProperty, FinishDriveViewModel.FourKmRuleCheckProperty);
-            */
 
             // Cancel and send buttons
             var startButton = new ButtomButton("Indsend Kørsel", SendUploadMessage);
@@ -174,8 +172,8 @@ namespace OS2Indberetning
                         totalKm,
                         StartCheck(),
                         EndCheck(),
-                        //FourKmRuleCheck(),
-                        //homeToBorderDistance,
+                        FourKmRuleCheck(),
+                        homeToBorderDistance,
                         buttomStack
                     },
                 BackgroundColor = Color.FromHex(Definitions.BackgroundColor),
@@ -542,10 +540,9 @@ namespace OS2Indberetning
 
             var headerstack = new StackLayout
             {
-                Orientation = StackOrientation.Horizontal,
+                Orientation = StackOrientation.Vertical,
                 BackgroundColor = Color.FromHex(Definitions.PrimaryColor),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                HeightRequest = Definitions.HeaderHeight,
                 Children =
                 {
                     header,
@@ -553,7 +550,7 @@ namespace OS2Indberetning
             };
             var text = new Label
             {
-                Text = "Rediger i antal kørte km: ",
+                Text = "Rediger i antal km: ",
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
                 FontSize = Definitions.PopupTextSize,
                 HorizontalOptions = LayoutOptions.Center,

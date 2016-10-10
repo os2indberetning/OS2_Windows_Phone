@@ -78,7 +78,7 @@ namespace OS2Indberetning.ViewModel
             MessagingCenter.Subscribe<FinishDrivePage>(this, "Update", (sender) => { HandleUpdateMessage();});
             MessagingCenter.Subscribe<FinishDrivePage>(this, "EndHome",(sender) => { StartHomeCheck = !StartHomeCheck; });
             MessagingCenter.Subscribe<FinishDrivePage>(this, "StartHome", (sender) => { EndHomeCheck = !EndHomeCheck; });
-            //MessagingCenter.Subscribe<FinishDrivePage>(this, "FourKmRule", (sender) => { FourKmRuleCheck = !FourKmRuleCheck; });
+            MessagingCenter.Subscribe<FinishDrivePage>(this, "FourKmRule", (sender) => { FourKmRuleCheck = !FourKmRuleCheck; });
             MessagingCenter.Subscribe<FinishDrivePage>(this, "SelectNewKm", HandleSelectEditKmMessage);
             MessagingCenter.Subscribe<FinishDrivePage>(this, "NewKm", HandleNewKmMessage);
             MessagingCenter.Subscribe<FinishDrivePage>(this, "Purpose", (sender) => { HandlePurposeMessage(); });
@@ -99,7 +99,7 @@ namespace OS2Indberetning.ViewModel
             MessagingCenter.Unsubscribe<FinishDrivePage>(this, "Update");
             MessagingCenter.Unsubscribe<FinishDrivePage>(this, "EndHome");
             MessagingCenter.Unsubscribe<FinishDrivePage>(this, "StartHome");
-            //MessagingCenter.Unsubscribe<FinishDrivePage>(this, "FourKmRule");
+            MessagingCenter.Unsubscribe<FinishDrivePage>(this, "FourKmRule");
             MessagingCenter.Unsubscribe<FinishDrivePage>(this, "NewKm");
             MessagingCenter.Unsubscribe<FinishDrivePage>(this, "SelectNewKm");
             MessagingCenter.Unsubscribe<FinishDrivePage>(this, "Purpose");
@@ -128,7 +128,7 @@ namespace OS2Indberetning.ViewModel
             HomeToBorderDistance = Convert.ToString(Definitions.Report.HomeToBorderDistance);
             StartHomeCheck = Definitions.Report.StartsAtHome;
             EndHomeCheck = Definitions.Report.EndsAtHome;
-            FourKmRuleCheck = false;// Definitions.Report.FourKmRule; temporary turned off for release 1.1.0.10
+            FourKmRuleCheck = Definitions.Report.FourKmRule;
             ShowFourKmRule = Definitions.User.Profile.Employments.FirstOrDefault(x => x.Id == Definitions.Report.EmploymentId).OrgUnit.FourKmRuleAllowed;
 
         }
