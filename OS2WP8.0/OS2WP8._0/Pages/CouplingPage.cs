@@ -54,7 +54,7 @@ namespace OS2Indberetning.Pages
 
             var header = new Label
             {
-                Text = "OS2Indberetning",
+                Text = "Log ind",
                 TextColor = Color.FromHex(Definitions.TextColor),
                 FontSize = Definitions.HeaderFontSize - 8,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
@@ -114,8 +114,10 @@ namespace OS2Indberetning.Pages
                        "Her finder du også dit brugernavn, som er dine initialer.\n",
                        
                 HorizontalOptions = LayoutOptions.Center,
+                YAlign = TextAlignment.Center,
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
                 FontSize = Definitions.InformationFontSize,
+                
             };
 
             var version = new Label
@@ -124,7 +126,7 @@ namespace OS2Indberetning.Pages
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
                 VerticalOptions = LayoutOptions.EndAndExpand,
-                YAlign = TextAlignment.Center,
+                YAlign = TextAlignment.End,
             };
 
             var textFrame = new StackLayout
@@ -137,7 +139,7 @@ namespace OS2Indberetning.Pages
                 }
             };
 
-            var coupleButton = new ButtomButton("Log Ind", SendCoupleMessage);
+            var coupleButton = new ButtomButton("Log ind", SendCoupleMessage);
            
             var buttomStack = new StackLayout
             {
