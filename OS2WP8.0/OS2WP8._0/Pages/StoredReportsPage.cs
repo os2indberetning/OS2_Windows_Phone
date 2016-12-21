@@ -46,9 +46,9 @@ namespace OS2Indberetning
         {
             var header = new Label
             {
-                Text = "Gemte Rapporter",
+                Text = "Gemte Rapporteringer",
                 TextColor = Color.FromHex(Definitions.TextColor),
-                FontSize = Definitions.HeaderFontSize - 4,
+                FontSize = Definitions.HeaderFontSize,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
                 YAlign = TextAlignment.Center,
             };
@@ -129,7 +129,7 @@ namespace OS2Indberetning
             var display = Resolver.Resolve<IDevice>().Display;
             var header = new Label
             {
-                Text = "Send Rapport",
+                Text = "Send rapport",
                 TextColor = Color.FromHex(Definitions.TextColor),
                 FontSize = Definitions.HeaderFontSize,
                 HorizontalOptions = LayoutOptions.FillAndExpand,

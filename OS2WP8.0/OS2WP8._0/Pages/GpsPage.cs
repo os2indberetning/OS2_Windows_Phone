@@ -24,9 +24,9 @@ namespace OS2Indberetning
         // Layout that implements the option to use Popups
         private PopupLayout _popUpLayout;
 
-        private readonly string _driveAgain = "Genoptag Kørsel";
+        private readonly string _driveAgain = "Genoptag kørsel";
         private readonly string _startDrive = "Start";
-        private readonly string _pauseDrive = "Pause";
+        private readonly string _pauseDrive = "Pause kørsel";
 
         // pausebutton saved locally to make it possible to change the text on the fly
         private ToggleButton _pauseButton;
@@ -119,7 +119,7 @@ namespace OS2Indberetning
             };
 
             _pauseButton = new ToggleButton(_startDrive, _pauseDrive, _driveAgain, SendToggleMessage);
-            var finishButton = new ButtomButton("Afslut Kørsel", OpenPopup);
+            var finishButton = new ButtomButton("Afslut kørsel", OpenPopup);
             _pauseButton.Height = Definitions.GpsButtonHeight;
             finishButton.Height = Definitions.GpsButtonHeight;
 
@@ -219,7 +219,7 @@ namespace OS2Indberetning
             var display = Resolver.Resolve<IDevice>().Display;
             var header = new Label
             {
-                Text = "Afslut Kørsel?",
+                Text = "Afslut kørsel?",
                 TextColor = Color.FromHex(Definitions.TextColor),
                 FontSize = Definitions.HeaderFontSize,
                 HorizontalOptions = LayoutOptions.FillAndExpand,

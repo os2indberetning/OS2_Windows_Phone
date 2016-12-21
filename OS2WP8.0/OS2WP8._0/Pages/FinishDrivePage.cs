@@ -31,12 +31,12 @@ namespace OS2Indberetning
         private readonly double _popupWidth = Definitions.ScreenWidth - 2 * Definitions.Padding;
         private readonly double _yesNoButtonWidth = (Definitions.ScreenHeight - Definitions.Padding) / 2;
 
-        private const string PurposeText = "Formål: ";
-        private const string OrganizationText = "Organisatorisk placering:";
+        private const string PurposeText = "Formål med tjenestekørsel ";
+        private const string OrganizationText = "Stilling og ansættelsessted";
         private const string RateText = "Takst";
-        private const string RemarkText = "Ekstra Bemærkning:";
-        private const string NewKmText = "Antal Km:";
-        private const string HomeToBorderDistanceText = "Antal km fra kommunegrænse til bopæl";
+        private const string RemarkText = "Kommentarer";
+        private const string NewKmText = "Antal kørte km";
+        private const string HomeToBorderDistanceText = "Afstand bopæl - kommunegrænse (4 km reglen)";
 
         /// <summary>
         /// Constructor that handles initialization of the page
@@ -56,7 +56,7 @@ namespace OS2Indberetning
             // View Title
             var header = new Label
             {
-                Text = "Afslut Kørsel",
+                Text = "Afslut kørsel",
                 TextColor = Color.FromHex(Definitions.TextColor),
                 FontSize = Definitions.HeaderFontSize,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
@@ -127,8 +127,8 @@ namespace OS2Indberetning
             homeToBorderDistance.SetBinding(DriveFinishedCommonCell.IsVisibleProperty, FinishDriveViewModel.FourKmRuleCheckProperty);
 
             // Cancel and send buttons
-            var startButton = new ButtomButton("Indsend Kørsel", SendUploadMessage);
-            var cancelButton = new ButtomButton("Annuller og Slet", OpenPopup);
+            var startButton = new ButtomButton("Indsend kørsel", SendUploadMessage);
+            var cancelButton = new ButtomButton("Annuller og slet", OpenPopup);
             startButton.FontSize = 24;
             cancelButton.FontSize = 24;
             var width = Resolver.Resolve<IDevice>().Display.Width;
@@ -240,7 +240,7 @@ namespace OS2Indberetning
         {
             var endLabel = new Label
             {
-                Text = "Sluttede du hjemme?",
+                Text = "Slutter du hjemme?",
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
                 FontAttributes = FontAttributes.Bold,
                 FontFamily = Definitions.FontFamily,
@@ -273,7 +273,7 @@ namespace OS2Indberetning
         {
             var fourKmRuleLabel = new Label
             {
-                Text = "Jeg bruger 4-km reglen",
+                Text = "Jeg bruger 4 km-reglen",
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
                 FontAttributes = FontAttributes.Bold,
                 FontFamily = Definitions.FontFamily,
@@ -311,7 +311,7 @@ namespace OS2Indberetning
             var display = Resolver.Resolve<IDevice>().Display;
             var header = new Label
             {
-                Text = "Bekræft Sletning",
+                Text = "Bekræft sletning",
                 TextColor = Color.FromHex(Definitions.TextColor),
                 FontSize = Definitions.HeaderFontSize,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -347,7 +347,7 @@ namespace OS2Indberetning
                 WidthRequest = _yesNoButtonWidth,
                 Children = { noButton }
             };
-            var yesButton = new ButtomButton("OK", SendDeleteMessage);
+            var yesButton = new ButtomButton("Slet", SendDeleteMessage);
             var yesStack = new StackLayout
             {
                 VerticalOptions = LayoutOptions.End,
@@ -529,7 +529,7 @@ namespace OS2Indberetning
             var display = Resolver.Resolve<IDevice>().Display;
             var header = new Label
             {
-                Text = HomeToBorderDistanceText,
+                Text = "Antal km",
                 TextColor = Color.FromHex(Definitions.TextColor),
                 FontSize = Definitions.HeaderFontSize,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -550,7 +550,7 @@ namespace OS2Indberetning
             };
             var text = new Label
             {
-                Text = "Rediger i antal km: ",
+                Text = "Angiv antal km mellem din bopæl og kommunegrænsen (hele km, meter). OS2Indberetning fordobler automatisk afstanden, hvis du både er startet og stoppet hjemme.",
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
                 FontSize = Definitions.PopupTextSize,
                 HorizontalOptions = LayoutOptions.Center,

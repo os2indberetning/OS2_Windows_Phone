@@ -29,10 +29,10 @@ namespace OS2Indberetning.ViewModel
         private ObservableCollection<DriveReportCellModel> _driveReport;
         private bool _homeCheck = false;
 
-        private const string PurposeText = "Formål: ";
-        private const string OrganisatoriskText = "Organisatorisk placering:";
+        private const string PurposeText = "Formål med tjenestekørsel";
+        private const string OrganisatoriskText = "Stilling og ansættelsessted";
         private const string TakstText = "Takst";
-        private const string EkstraText = "Ekstra Bemærkning:";
+        private const string EkstraText = "Kommentarer";
 
         private Color _primaryHex;
         private Color _secondaryHex;
@@ -143,13 +143,13 @@ namespace OS2Indberetning.ViewModel
         {
             _driveReport.Clear();
             DriveReportList.Clear();
-            string organisation = "Vælg Stilling";
+            string organisation = "Vælg stilling og ansættelsessted";
             if (Definitions.Organization != null)
             {
                 if (!string.IsNullOrEmpty(Definitions.Organization.EmploymentPosition))
                     organisation = Definitions.Organization.EmploymentPosition;
             }
-            string rate = "Vælg Takst";
+            string rate = "Vælg takst";
             if (Definitions.Rate != null)
             {
                 if (!string.IsNullOrEmpty(Definitions.Rate.Description))
@@ -159,7 +159,7 @@ namespace OS2Indberetning.ViewModel
             string remarkText;
             if (string.IsNullOrEmpty(Definitions.Report.ManualEntryRemark))
             {
-                remarkText = "Indtast Bemærkning";
+                remarkText = "Indtast eventuelle uddybende kommentarer";
             }
             else
             {
@@ -168,7 +168,7 @@ namespace OS2Indberetning.ViewModel
             string purpose;
             if (string.IsNullOrEmpty(Definitions.Purpose))
             {
-                purpose = "Vælg Formål";
+                purpose = "Opret eller vælg formål";
             }
             else
             {

@@ -55,7 +55,7 @@ namespace OS2Indberetning.ViewModel
             InitializeCollection();
 
             Username = Definitions.User.Profile.FirstName + " " + Definitions.User.Profile.LastName;
-            Date = "Dato: " + Definitions.DateToView;
+            Date = Definitions.DateToView;
 
             Subscribe();
         }
@@ -117,7 +117,7 @@ namespace OS2Indberetning.ViewModel
         {
             if (String.IsNullOrEmpty(Definitions.Report.ManualEntryRemark))
             {
-                Definitions.Report.ManualEntryRemark = "Ingen kommentar angivet";
+                Definitions.Report.ManualEntryRemark = "Indtast eventuelle uddybende kommentarer";
             }
 
             Purpose = Definitions.Report.Purpose;

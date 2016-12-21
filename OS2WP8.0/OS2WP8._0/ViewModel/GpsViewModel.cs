@@ -398,7 +398,7 @@ namespace OS2Indberetning.ViewModel
                     _lastAccuracy = dist.ToString();
                 }
                 
-                Accuracy = "GPS Nøjagtighed: " + _lastAccuracy + " m";
+                Accuracy = "GPS nøjagtighed: " + _lastAccuracy + " m";
             }
 
         }
