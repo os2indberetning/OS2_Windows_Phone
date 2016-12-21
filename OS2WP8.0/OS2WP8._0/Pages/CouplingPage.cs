@@ -56,7 +56,7 @@ namespace OS2Indberetning.Pages
             {
                 Text = "Log ind",
                 TextColor = Color.FromHex(Definitions.TextColor),
-                FontSize = Definitions.HeaderFontSize - 8,
+                FontSize = Definitions.HeaderFontSize,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
                 YAlign = TextAlignment.Center,
             };

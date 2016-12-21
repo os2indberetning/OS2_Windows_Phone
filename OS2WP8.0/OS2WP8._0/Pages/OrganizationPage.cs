@@ -35,9 +35,9 @@ namespace OS2Indberetning.Pages
             var header = new Label
             {
                 // View title
-                Text = "Vælg Organisatorisk Placering",
+                Text = "Vælg stilling og ansættelsessted",
                 TextColor = Color.FromHex(Definitions.TextColor),
-                FontSize = Definitions.HeaderFontSize - 13,
+                FontSize = Definitions.HeaderFontSize,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
                 YAlign = TextAlignment.Center,
             };

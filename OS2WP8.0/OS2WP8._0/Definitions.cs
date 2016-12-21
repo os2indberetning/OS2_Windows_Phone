@@ -98,7 +98,7 @@ namespace OS2Indberetning
         #endregion
 
         #region Header
-        public static int HeaderFontSize = 40;
+        public static int HeaderFontSize = 25;
         public static int HeaderHeight = 80;
         #endregion
 

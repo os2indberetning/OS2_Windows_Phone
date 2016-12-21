@@ -52,7 +52,7 @@ namespace OS2Indberetning
             var text = new Label
             {
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
-                FontSize = Definitions.HeaderFontSize - 12,
+                FontSize = Definitions.HeaderFontSize,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
                 YAlign = TextAlignment.Center,
             };
