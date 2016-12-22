@@ -41,7 +41,6 @@ namespace OS2Indberetning
         public MainPage()
         {
             InitializeTheme();
-            
         }
 
         /// <summary>
@@ -76,7 +75,7 @@ namespace OS2Indberetning
             {
                 Text = "Ny kørsel",
                 TextColor = Color.FromHex(Definitions.TextColor),
-                FontSize = Definitions.HeaderFontSize,
+                FontSize = Definitions.HeaderFontSize,                
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
                 YAlign = TextAlignment.Center,
             };
@@ -416,12 +415,12 @@ namespace OS2Indberetning
                 _popUpLayout.ShowPopup(CreatePopup("Vælg venligst et formål"));
                 return;
             }
-            if (Definitions.Organization.Id == 0)
+            if (Definitions.Organization == null)
             {
-                _popUpLayout.ShowPopup(CreatePopup("Vælg venligst en organisatorisk placering"));
+                _popUpLayout.ShowPopup(CreatePopup("Vælg venligst en stilling og ansættelsessted"));
                 return;
             }
-            if (Definitions.Rate.Id == 0)
+            if (Definitions.Rate == null)
             {
                 _popUpLayout.ShowPopup(CreatePopup("Vælg venligst en takst"));
                 return;
@@ -503,7 +502,7 @@ namespace OS2Indberetning
                 List.SelectedItem = null;
             }
             MessagingCenter.Send<MainPage>(this, "Update");
-
+            
             if (this.Content == null || Definitions.RefreshMainView)
             {
                 this.Content = null;
