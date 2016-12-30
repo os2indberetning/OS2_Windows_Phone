@@ -15,7 +15,7 @@ namespace OS2Indberetning.Templates
 {
     public class DriveFinishedCommonCell : ContentView
     {
-        public DriveFinishedCommonCell(Action callback = null)
+        public DriveFinishedCommonCell(Action callback = null, bool clickable = true)
         {
             NameLabel = new Label
             {
@@ -53,7 +53,7 @@ namespace OS2Indberetning.Templates
             TapImage = new Image()
             {
                 Source = "Resources/right.png",
-                IsVisible = true,
+                IsVisible = clickable,
                 Opacity = 0.4,
                 HorizontalOptions = LayoutOptions.End,
             };

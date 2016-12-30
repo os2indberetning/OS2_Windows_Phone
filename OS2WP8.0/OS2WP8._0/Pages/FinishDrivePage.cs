@@ -116,7 +116,7 @@ namespace OS2Indberetning
             remark.SetBinding(DriveFinishedCommonCell.DetailsProperty, FinishDriveViewModel.RemarkProperty);
 
             // Total Km View
-            var totalKm = new DriveFinishedCommonCell(SendSelectNewKmMessage);
+            var totalKm = new DriveFinishedCommonCell(SendSelectNewKmMessage, clickable: false);
             totalKm.Title = NewKmText;
             totalKm.SetBinding(DriveFinishedCommonCell.DetailsProperty, FinishDriveViewModel.NewKmProperty);
 
