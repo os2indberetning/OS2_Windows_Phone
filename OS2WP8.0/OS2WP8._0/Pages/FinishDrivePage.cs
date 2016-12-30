@@ -31,12 +31,12 @@ namespace OS2Indberetning
         private readonly double _popupWidth = Definitions.ScreenWidth - 2 * Definitions.Padding;
         private readonly double _yesNoButtonWidth = (Definitions.ScreenHeight - Definitions.Padding) / 2;
 
-        private const string PurposeText = "Formål: ";
-        private const string OrganizationText = "Organisatorisk placering:";
+        private const string PurposeText = "Formål med tjenestekørsel ";
+        private const string OrganizationText = "Stilling og ansættelsessted";
         private const string RateText = "Takst";
-        private const string RemarkText = "Ekstra Bemærkning:";
-        private const string NewKmText = "Antal Km:";
-        private const string HomeToBorderDistanceText = "Antal Km for 4-km reglen";
+        private const string RemarkText = "Kommentarer";
+        private const string NewKmText = "Antal kørte km";
+        private const string HomeToBorderDistanceText = "Afstand bopæl - kommunegrænse (4 km reglen)";
 
         /// <summary>
         /// Constructor that handles initialization of the page
@@ -56,7 +56,7 @@ namespace OS2Indberetning
             // View Title
             var header = new Label
             {
-                Text = "Afslut Kørsel",
+                Text = "Afslut kørsel",
                 TextColor = Color.FromHex(Definitions.TextColor),
                 FontSize = Definitions.HeaderFontSize,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
@@ -116,21 +116,19 @@ namespace OS2Indberetning
             remark.SetBinding(DriveFinishedCommonCell.DetailsProperty, FinishDriveViewModel.RemarkProperty);
 
             // Total Km View
-            var totalKm = new DriveFinishedCommonCell(SendSelectNewKmMessage);
+            var totalKm = new DriveFinishedCommonCell(SendSelectNewKmMessage, clickable: false);
             totalKm.Title = NewKmText;
             totalKm.SetBinding(DriveFinishedCommonCell.DetailsProperty, FinishDriveViewModel.NewKmProperty);
 
             // Home to Border Distance View 
-            /*
             var homeToBorderDistance = new DriveFinishedCommonCell(SendSelectHomeToBorderDistanceMessage);
             homeToBorderDistance.Title = HomeToBorderDistanceText;
             homeToBorderDistance.SetBinding(DriveFinishedCommonCell.DetailsProperty, FinishDriveViewModel.HomeToBorderDistanceProperty);
             homeToBorderDistance.SetBinding(DriveFinishedCommonCell.IsVisibleProperty, FinishDriveViewModel.FourKmRuleCheckProperty);
-            */
 
             // Cancel and send buttons
-            var startButton = new ButtomButton("Indsend Kørsel", SendUploadMessage);
-            var cancelButton = new ButtomButton("Annuller og Slet", OpenPopup);
+            var startButton = new ButtomButton("Indsend kørsel", SendUploadMessage);
+            var cancelButton = new ButtomButton("Annuller og slet", OpenPopup);
             startButton.FontSize = 24;
             cancelButton.FontSize = 24;
             var width = Resolver.Resolve<IDevice>().Display.Width;
@@ -174,8 +172,8 @@ namespace OS2Indberetning
                         totalKm,
                         StartCheck(),
                         EndCheck(),
-                        //FourKmRuleCheck(),
-                        //homeToBorderDistance,
+                        FourKmRuleCheck(),
+                        homeToBorderDistance,
                         buttomStack
                     },
                 BackgroundColor = Color.FromHex(Definitions.BackgroundColor),
@@ -242,7 +240,7 @@ namespace OS2Indberetning
         {
             var endLabel = new Label
             {
-                Text = "Sluttede du hjemme?",
+                Text = "Slutter du hjemme?",
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
                 FontAttributes = FontAttributes.Bold,
                 FontFamily = Definitions.FontFamily,
@@ -275,7 +273,7 @@ namespace OS2Indberetning
         {
             var fourKmRuleLabel = new Label
             {
-                Text = "Jeg bruger 4-km reglen",
+                Text = "Jeg bruger 4 km-reglen",
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
                 FontAttributes = FontAttributes.Bold,
                 FontFamily = Definitions.FontFamily,
@@ -313,7 +311,7 @@ namespace OS2Indberetning
             var display = Resolver.Resolve<IDevice>().Display;
             var header = new Label
             {
-                Text = "Bekræft Sletning",
+                Text = "Bekræft sletning",
                 TextColor = Color.FromHex(Definitions.TextColor),
                 FontSize = Definitions.HeaderFontSize,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -349,7 +347,7 @@ namespace OS2Indberetning
                 WidthRequest = _yesNoButtonWidth,
                 Children = { noButton }
             };
-            var yesButton = new ButtomButton("OK", SendDeleteMessage);
+            var yesButton = new ButtomButton("Slet", SendDeleteMessage);
             var yesStack = new StackLayout
             {
                 VerticalOptions = LayoutOptions.End,
@@ -409,120 +407,6 @@ namespace OS2Indberetning
         }
 
         /// <summary>
-        /// Creates a view for the edit km popup
-        /// </summary>
-        /// <returns>Stacklayout of the popup content</returns>
-        public StackLayout EditKmPopup()
-        {
-            var display = Resolver.Resolve<IDevice>().Display;
-            var header = new Label
-            {
-                Text = "Antal Km",
-                TextColor = Color.FromHex(Definitions.TextColor),
-                FontSize = Definitions.HeaderFontSize,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                YAlign = TextAlignment.Center,
-                XAlign = TextAlignment.Center,
-            };
-            var headerstack = new StackLayout
-            {
-                Orientation = StackOrientation.Horizontal,
-                BackgroundColor = Color.FromHex(Definitions.PrimaryColor),
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                HeightRequest = Definitions.HeaderHeight,
-                Children =
-                {
-                    header,
-                }
-            };
-            var text = new Label
-            {
-                Text = "Rediger i antal kørte km: ",
-                TextColor = Color.FromHex(Definitions.DefaultTextColor),
-                FontSize = Definitions.PopupTextSize,
-                HorizontalOptions = LayoutOptions.Center,
-                YAlign = TextAlignment.Center,
-            };
-
-            var entry = new Entry
-            {
-                TextColor = Color.FromHex(Definitions.DefaultTextColor),
-                Keyboard = Keyboard.Numeric,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-            };
-            entry.SetBinding(Entry.TextProperty, FinishDriveViewModel.NewKmProperty);
-            entry.Focus();
-            
-            var noButton = new ButtomButton("Fortryd", () => PopUpLayout.DismissPopup());
-            var noStack = new StackLayout
-            {
-                VerticalOptions = LayoutOptions.End,
-                HorizontalOptions = LayoutOptions.Start,
-                HeightRequest = Definitions.ButtonHeight,
-                WidthRequest = _yesNoButtonWidth,
-                Children = { noButton }
-            };
-            var yesButton = new ButtomButton("Gem", SendNewKmMessage);
-            var yesStack = new StackLayout
-            {
-                VerticalOptions = LayoutOptions.End,
-                HorizontalOptions = LayoutOptions.End,
-                HeightRequest = Definitions.ButtonHeight,
-                WidthRequest = _yesNoButtonWidth,
-                Children = { yesButton }
-            };
-
-            var ButtonStack = new StackLayout
-            {
-                BackgroundColor = Color.White, // for Android and WP
-                Orientation = StackOrientation.Horizontal,
-                VerticalOptions = LayoutOptions.End,
-                Padding = new Thickness(Definitions.Padding, 0, Definitions.Padding, Definitions.Padding),
-                Spacing = Definitions.Padding,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                Children =
-                {
-                    noStack,
-                    yesStack
-                }
-            };
-
-            var PopUp = new StackLayout
-            {
-                WidthRequest = _popupWidth,
-
-                BackgroundColor = Color.White,
-                Orientation = StackOrientation.Vertical,
-                VerticalOptions = LayoutOptions.Center,
-                HorizontalOptions = LayoutOptions.Center,
-                Spacing = Definitions.Padding,
-                Children =
-                {
-                    headerstack,
-                    text,
-                    entry,
-                    ButtonStack
-                }
-            };
-            var topPadding = display.Height / 2 - 150;
-            var PopUpBackground = new StackLayout
-            {
-                Padding = new Thickness(0, topPadding, 0, 0),
-                WidthRequest = display.Width,
-                HeightRequest = display.Height,
-                BackgroundColor = Color.FromRgba(0, 0, 0, 0.85),
-                Orientation = StackOrientation.Vertical,
-                VerticalOptions = LayoutOptions.Center,
-                Children =
-                {
-                    PopUp
-                }
-            };
-
-            return PopUpBackground;
-        }
-
-        /// <summary>
         /// Creates a view for the HomeToBorderDistance popup
         /// </summary>
         /// <returns>Stacklayout of the popup content</returns>
@@ -531,7 +415,7 @@ namespace OS2Indberetning
             var display = Resolver.Resolve<IDevice>().Display;
             var header = new Label
             {
-                Text = HomeToBorderDistanceText,
+                Text = "Antal km",
                 TextColor = Color.FromHex(Definitions.TextColor),
                 FontSize = Definitions.HeaderFontSize,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -542,10 +426,9 @@ namespace OS2Indberetning
 
             var headerstack = new StackLayout
             {
-                Orientation = StackOrientation.Horizontal,
+                Orientation = StackOrientation.Vertical,
                 BackgroundColor = Color.FromHex(Definitions.PrimaryColor),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                HeightRequest = Definitions.HeaderHeight,
                 Children =
                 {
                     header,
@@ -553,7 +436,7 @@ namespace OS2Indberetning
             };
             var text = new Label
             {
-                Text = "Rediger i antal kørte km: ",
+                Text = "Angiv antal km mellem din bopæl og kommunegrænsen (hele km, meter). OS2Indberetning fordobler automatisk afstanden, hvis du både er startet og stoppet hjemme.",
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
                 FontSize = Definitions.PopupTextSize,
                 HorizontalOptions = LayoutOptions.Center,

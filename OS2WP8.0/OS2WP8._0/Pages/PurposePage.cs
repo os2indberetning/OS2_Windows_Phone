@@ -38,7 +38,7 @@ namespace OS2Indberetning.Pages
         {
             var header = new Label
             {
-                Text = "Vælg Formål",
+                Text = "Opret eller vælg formål",
                 TextColor = Color.FromHex(Definitions.TextColor),
                 FontSize = Definitions.HeaderFontSize,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,

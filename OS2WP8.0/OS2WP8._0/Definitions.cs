@@ -24,8 +24,7 @@ namespace OS2Indberetning
         #endregion
         
         #region Drive choices
-        public static string Purpose = "Vælg Formål";
-        public static string Remark = "Indtast Bemærkning";
+        public static string Purpose;
         public static Employment Organization;
         public static Rate Rate;
         public static string DateToView;
@@ -98,7 +97,7 @@ namespace OS2Indberetning
         #endregion
 
         #region Header
-        public static int HeaderFontSize = 40;
+        public static int HeaderFontSize = 25;
         public static int HeaderHeight = 80;
         #endregion
 

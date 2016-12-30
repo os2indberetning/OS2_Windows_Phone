@@ -58,7 +58,7 @@ namespace OS2Indberetning.Pages
             {
                 Text = "OS2Indberetning",
                 TextColor = Color.FromHex(Definitions.TextColor),
-                FontSize = Definitions.HeaderFontSize - 3,
+                FontSize = Definitions.HeaderFontSize,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
                 YAlign = TextAlignment.Center,
             };

@@ -41,7 +41,6 @@ namespace OS2Indberetning
         public MainPage()
         {
             InitializeTheme();
-            
         }
 
         /// <summary>
@@ -74,9 +73,9 @@ namespace OS2Indberetning
         {
             var header = new Label
             {
-                Text = "Ny Kørsel",
+                Text = "Ny kørsel",
                 TextColor = Color.FromHex(Definitions.TextColor),
-                FontSize = Definitions.HeaderFontSize,
+                FontSize = Definitions.HeaderFontSize,                
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
                 YAlign = TextAlignment.Center,
             };
@@ -132,7 +131,7 @@ namespace OS2Indberetning
                 SendSelectedMessage();
             };
 
-            var startButton = new ButtomButton("Start Kørsel", StartDrive);
+            var startButton = new ButtomButton("Start kørsel", StartDrive);
             
             var buttomStack = new StackLayout
             {
@@ -267,7 +266,7 @@ namespace OS2Indberetning
             var display = Resolver.Resolve<IDevice>().Display;
             var header = new Label
             {
-                Text = "Log Ud",
+                Text = "Du er ved at logge ud",
                 TextColor = Color.FromHex(Definitions.TextColor),
                 FontSize = Definitions.HeaderFontSize,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -287,7 +286,7 @@ namespace OS2Indberetning
             };
             var text = new Label
             {
-                Text = "Ved at logge ud slettes eventuelle gemte kørsler",
+                Text = "Eventuelle indtastninger og gemte rapporter vil blive slettet, er du sikker?",
                 TextColor = Color.FromHex(Definitions.DefaultTextColor),
                 FontSize = Definitions.PopupTextSize,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
@@ -295,17 +294,6 @@ namespace OS2Indberetning
                 YAlign = TextAlignment.Center,
                 XAlign = TextAlignment.Center
             };
-            var text2 = new Label
-            {
-                Text = "Vil du logge ud alligevel?",
-                TextColor = Color.FromHex(Definitions.DefaultTextColor),
-                FontSize = Definitions.PopupTextSize,
-                HorizontalOptions = LayoutOptions.CenterAndExpand,
-                VerticalOptions = LayoutOptions.CenterAndExpand,
-                YAlign = TextAlignment.Center,
-                XAlign = TextAlignment.Center
-            };
-
 
             var noButton = new ButtomButton("Nej", ClosePopup);
             var noStack = new StackLayout
@@ -354,7 +342,6 @@ namespace OS2Indberetning
                 {
                     headerstack,
                     text,
-                    text2,
                     ButtonStack
                 }
             };
@@ -428,12 +415,12 @@ namespace OS2Indberetning
                 _popUpLayout.ShowPopup(CreatePopup("Vælg venligst et formål"));
                 return;
             }
-            if (Definitions.Organization.Id == 0)
+            if (Definitions.Organization == null)
             {
-                _popUpLayout.ShowPopup(CreatePopup("Vælg venligst en organisatorisk placering"));
+                _popUpLayout.ShowPopup(CreatePopup("Vælg venligst en stilling og ansættelsessted"));
                 return;
             }
-            if (Definitions.Rate.Id == 0)
+            if (Definitions.Rate == null)
             {
                 _popUpLayout.ShowPopup(CreatePopup("Vælg venligst en takst"));
                 return;
@@ -515,7 +502,7 @@ namespace OS2Indberetning
                 List.SelectedItem = null;
             }
             MessagingCenter.Send<MainPage>(this, "Update");
-
+            
             if (this.Content == null || Definitions.RefreshMainView)
             {
                 this.Content = null;

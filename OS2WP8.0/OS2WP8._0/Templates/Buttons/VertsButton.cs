@@ -47,6 +47,7 @@ namespace OS2Indberetning.Templates
                 HeightRequest = 60,
                 WidthRequest = 60,
             };
+
             var _inner = new StackLayout
             {
                 HorizontalOptions = LayoutOptions.End,
@@ -60,15 +61,16 @@ namespace OS2Indberetning.Templates
                 HorizontalOptions = LayoutOptions.EndAndExpand,
 
             };
+            
+            _inner.Children.Add(circleButton);
+            _layout.Children.Add(_inner);
+            _layout.Children.Add(_image);
 
             if (stored == "0")
             {
                 _layout.Padding = new Thickness(-25, 5, 25, 5);
-                circleButton.IsVisible = false;
+                circleButton.Opacity = 0;
             }
-            _inner.Children.Add(circleButton);
-            _layout.Children.Add(_inner);
-            _layout.Children.Add(_image);
 
             // add a gester reco
             this.GestureRecognizers.Add(new TapGestureRecognizer

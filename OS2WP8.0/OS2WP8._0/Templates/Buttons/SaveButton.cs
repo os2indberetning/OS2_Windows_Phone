@@ -35,7 +35,7 @@ namespace OS2Indberetning.Templates
             _label = new Label
             {
                 FontFamily = Definitions.FontFamily,
-                FontSize = Definitions.HeaderFontSize - 7,
+                FontSize = Definitions.HeaderFontSize,
                 Text = "Gem",
                 TextColor = Color.FromHex(Definitions.TextColor),
                 //YAlign = TextAlignment.Center,

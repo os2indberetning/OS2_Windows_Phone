@@ -97,11 +97,20 @@ namespace OS2Indberetning.ViewModel
 
             foreach (var item in resultList)
             {
-                _munList.Add(new MunCellModel
+                var munCellModel = new MunCellModel { Name = item.Name };
+
+                
+                if (!string.IsNullOrEmpty(item.ImgUrl))
                 {
-                    ImageSource = new UriImageSource { Uri = new Uri(item.ImgUrl) },
-                    Name = item.Name
-                });
+                    munCellModel.ImageSource = new UriImageSource { Uri = new Uri(item.ImgUrl) };
+                }
+                else
+                {
+                    munCellModel.ImageSource = new UriImageSource();
+                }
+
+
+                _munList.Add(munCellModel);
             }
 
             MunList = _munList;

@@ -33,7 +33,7 @@ namespace OS2Indberetning.Pages
         {
             var header = new Label
             {
-                Text = "Bemærkning",
+                Text = "Indtast kommentarer",
                 TextColor = Color.FromHex(Definitions.TextColor),
                 FontSize = Definitions.HeaderFontSize,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
