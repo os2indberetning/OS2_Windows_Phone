@@ -79,8 +79,6 @@ namespace OS2Indberetning.ViewModel
             MessagingCenter.Subscribe<FinishDrivePage>(this, "EndHome",(sender) => { StartHomeCheck = !StartHomeCheck; });
             MessagingCenter.Subscribe<FinishDrivePage>(this, "StartHome", (sender) => { EndHomeCheck = !EndHomeCheck; });
             MessagingCenter.Subscribe<FinishDrivePage>(this, "FourKmRule", (sender) => { FourKmRuleCheck = !FourKmRuleCheck; });
-            MessagingCenter.Subscribe<FinishDrivePage>(this, "SelectNewKm", HandleSelectEditKmMessage);
-            MessagingCenter.Subscribe<FinishDrivePage>(this, "NewKm", HandleNewKmMessage);
             MessagingCenter.Subscribe<FinishDrivePage>(this, "Purpose", (sender) => { HandlePurposeMessage(); });
             MessagingCenter.Subscribe<FinishDrivePage>(this, "Organization", (sender) => { HandleOrganizationMessage(); });
             MessagingCenter.Subscribe<FinishDrivePage>(this, "Rate", (sender) => { HandleRateMessage(); });
@@ -100,8 +98,6 @@ namespace OS2Indberetning.ViewModel
             MessagingCenter.Unsubscribe<FinishDrivePage>(this, "EndHome");
             MessagingCenter.Unsubscribe<FinishDrivePage>(this, "StartHome");
             MessagingCenter.Unsubscribe<FinishDrivePage>(this, "FourKmRule");
-            MessagingCenter.Unsubscribe<FinishDrivePage>(this, "NewKm");
-            MessagingCenter.Unsubscribe<FinishDrivePage>(this, "SelectNewKm");
             MessagingCenter.Unsubscribe<FinishDrivePage>(this, "Purpose");
             MessagingCenter.Unsubscribe<FinishDrivePage>(this, "Organization");
             MessagingCenter.Unsubscribe<FinishDrivePage>(this, "Rate");
@@ -136,15 +132,6 @@ namespace OS2Indberetning.ViewModel
         #region Message Handlers
 
         /// <summary>
-        /// Method that handles a select editKm message from the page
-        /// </summary>
-        /// <param name="sender"></param>
-        private void HandleSelectEditKmMessage(FinishDrivePage sender)
-        {
-            sender.PopUpLayout.ShowPopup(sender.EditKmPopup());
-        }
-
-        /// <summary>
         /// Method that handles a select hometoborderdistance message from the page
         /// </summary>
         /// <param name="sender"></param>
@@ -160,27 +147,6 @@ namespace OS2Indberetning.ViewModel
         {
             InitializeCollection();
         }
-
-        /// <summary>
-        /// Method that handles a NewKm message from the page
-        /// </summary>
-        private void HandleNewKmMessage(FinishDrivePage sender)
-        {
-            try
-            {
-                Definitions.Report.Route.TotalDistance = Convert.ToDouble(_newKm);
-                // When the user inputs new KM the route needs to be cleared
-                Definitions.Report.Route.GPSCoordinates.Clear();
-            }
-            catch (Exception e)
-            {
-                // ONLY happens if user somehow writes letters with numeric keyboard?  
-                // Can happen in a simulator
-            }
-            InitializeCollection();
-            sender.PopUpLayout.DismissPopup();
-        }
-
 
         /// <summary>
         /// Method that handles a Purpose message from the page
