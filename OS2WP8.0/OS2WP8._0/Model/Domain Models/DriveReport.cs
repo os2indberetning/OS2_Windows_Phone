@@ -11,6 +11,7 @@ namespace OS2Indberetning.Model
     {
         public int Id { get; set; }
         public int RouteId { get; set; }
+        public string Uuid { get; set; }
         public int ProfileId { get; set; }
         public int RateId { get; set; }
         public int EmploymentId { get; set; }

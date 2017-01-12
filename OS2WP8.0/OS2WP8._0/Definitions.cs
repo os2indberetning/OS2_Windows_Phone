@@ -32,6 +32,7 @@ namespace OS2Indberetning
         public static bool StartAtHome = false;
         public static bool EndsAtHome = false;
         public static Route Route = new Route();
+        public static string Uuid;
         #endregion
 
         #region GPS properties
