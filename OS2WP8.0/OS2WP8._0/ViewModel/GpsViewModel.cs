@@ -527,6 +527,9 @@ namespace OS2Indberetning.ViewModel
                 return;
             }
 
+            var uuid = Guid.NewGuid().ToString();
+            Definitions.Report.Uuid = uuid;
+
             Definitions.Report.Purpose = Definitions.Purpose;
 
             Definitions.Report.EmploymentId = Definitions.Organization.Id;
@@ -543,7 +546,26 @@ namespace OS2Indberetning.ViewModel
             Definitions.Report.RateId = Definitions.Rate.Id;
 
             if(Definitions.Report.Route.GPSCoordinates.Count == 1)
-                Definitions.Report.Route.GPSCoordinates.Clear();
+            {
+                Definitions.Report.Route.GPSCoordinates.Add(new GPSCoordinate
+                {
+                    Latitude = Definitions.Route.GPSCoordinates[0].Latitude,
+                    Longitude = Definitions.Route.GPSCoordinates[0].Latitude
+                });
+            }
+            else if (Definitions.Report.Route.GPSCoordinates.Count == 0)
+            {
+                Definitions.Report.Route.GPSCoordinates.Add(new GPSCoordinate
+                {
+                    Latitude = "0.0",
+                    Longitude = "0.0"
+                });
+                Definitions.Report.Route.GPSCoordinates.Add(new GPSCoordinate
+                {
+                    Latitude = "0.0",
+                    Longitude = "0.0"
+                });
+            }
 
             Dispose();
             Navigation.PushAsync<FinishDriveViewModel>();
