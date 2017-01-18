@@ -50,7 +50,7 @@ namespace OS2Indberetning.ViewModel
                 d = (double)Application.Current.Properties[_homeToBorderDistanceKey];
             }
             Definitions.Report.HomeToBorderDistance = d;
-            NewKm = Definitions.Report.Route.TotalDistance.ToString();
+            NewKm = Definitions.Report.route.TotalDistance.ToString();
 
             InitializeCollection();
 
@@ -120,7 +120,7 @@ namespace OS2Indberetning.ViewModel
             Organization = Definitions.User.Profile.Employments.FirstOrDefault(x => x.Id == Definitions.Report.EmploymentId).EmploymentPosition;
             Rate = Definitions.User.Rates.FirstOrDefault(x => x.Id == Definitions.Report.RateId).Description;
             Remark = Definitions.Report.ManualEntryRemark;
-            NewKm = Convert.ToString(Math.Round(Definitions.Report.Route.TotalDistance, 1));
+            NewKm = Convert.ToString(Math.Round(Definitions.Report.route.TotalDistance, 1));
             HomeToBorderDistance = Convert.ToString(Definitions.Report.HomeToBorderDistance);
             StartHomeCheck = Definitions.Report.StartsAtHome;
             EndHomeCheck = Definitions.Report.EndsAtHome;
@@ -209,7 +209,7 @@ namespace OS2Indberetning.ViewModel
         /// </summary>
         private void HandleDeleteMessage(object sender)
         {
-            Definitions.Report.Route = null;
+            Definitions.Report.route = null;
             Definitions.Purpose = null;
             Dispose();
             App.Navigation.PopToRootAsync();

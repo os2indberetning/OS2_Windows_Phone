@@ -145,7 +145,7 @@ namespace OS2Indberetning.ViewModel
                 _storedList.Add(new StoredReportCellModel
                 {
                     Date = _datePre + d.ToString("d/M/yyyy"),
-                    Distance = _distancePre + item.Route.TotalDistance.ToString() + " km",
+                    Distance = _distancePre + item.route.TotalDistance.ToString() + " km",
                     Purpose = _purposePre + item.Purpose,
                     Taxe = _taxePre + Definitions.User.Rates.FirstOrDefault(x => x.Id == item.RateId).Description,
                     report = item,

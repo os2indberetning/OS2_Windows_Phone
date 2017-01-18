@@ -88,7 +88,7 @@ namespace OS2Indberetning.BuisnessLogic
 
                 var list = JsonConvert.DeserializeObject<List<DriveReport>>(content);
 
-                var item = list.FindIndex(x => x.Date == report.Date && x.Route.TotalDistance == report.Route.TotalDistance);
+                var item = list.FindIndex(x => x.Date == report.Date && x.route.TotalDistance == report.route.TotalDistance);
                 list.RemoveAt(item);
 
                 var toBeWritten = JsonConvert.SerializeObject(list);
