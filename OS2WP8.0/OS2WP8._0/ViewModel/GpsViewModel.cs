@@ -443,7 +443,7 @@ namespace OS2Indberetning.ViewModel
         /// </summary>
         private void HandleBackMessage()
         {
-            Definitions.Report.Route = null;
+            Definitions.Report.route = null;
             Definitions.Purpose = null;
             Dispose();
             App.Navigation.PopToRootAsync();
@@ -537,33 +537,33 @@ namespace OS2Indberetning.ViewModel
 
             Definitions.Report.ProfileId = Definitions.User.Profile.Id;
             
-            Definitions.Report.Route = Definitions.Route;
-            Definitions.Report.Route.TotalDistance = TraveledDistance;
+            Definitions.Report.route = Definitions.Route;
+            Definitions.Report.route.TotalDistance = TraveledDistance;
 
             Definitions.Report.StartsAtHome = Definitions.StartAtHome;
             Definitions.Report.EndsAtHome = Definitions.EndsAtHome;
             
             Definitions.Report.RateId = Definitions.Rate.Id;
 
-            if(Definitions.Report.Route.GPSCoordinates.Count == 1)
+            if(Definitions.Report.route.GPSCoordinates.Count == 1)
             {
-                Definitions.Report.Route.GPSCoordinates.Add(new GPSCoordinate
+                Definitions.Report.route.GPSCoordinates.Add(new GPSCoordinate
                 {
                     Latitude = Definitions.Route.GPSCoordinates[0].Latitude,
                     Longitude = Definitions.Route.GPSCoordinates[0].Latitude
                 });
             }
-            else if (Definitions.Report.Route.GPSCoordinates.Count == 0)
+            else if (Definitions.Report.route.GPSCoordinates.Count == 0)
             {
-                Definitions.Report.Route.GPSCoordinates.Add(new GPSCoordinate
+                Definitions.Report.route.GPSCoordinates.Add(new GPSCoordinate
                 {
-                    Latitude = "0.0",
-                    Longitude = "0.0"
+                    Latitude = "56.1187857",
+                    Longitude = "10.1396362"
                 });
-                Definitions.Report.Route.GPSCoordinates.Add(new GPSCoordinate
+                Definitions.Report.route.GPSCoordinates.Add(new GPSCoordinate
                 {
-                    Latitude = "0.0",
-                    Longitude = "0.0"
+                    Latitude = "56.1187857",
+                    Longitude = "10.1396362"
                 });
             }
 
