@@ -113,20 +113,23 @@ namespace OS2Indberetning.ViewModel
         {
             if (String.IsNullOrEmpty(Definitions.Report.ManualEntryRemark))
             {
-                Definitions.Report.ManualEntryRemark = "Indtast eventuelle uddybende kommentarer";
+                Remark = "Indtast eventuelle uddybende kommentarer";
+            }
+            else
+            {
+                Remark = Definitions.Report.ManualEntryRemark;
             }
 
             Purpose = Definitions.Report.Purpose;
             Organization = Definitions.User.Profile.Employments.FirstOrDefault(x => x.Id == Definitions.Report.EmploymentId).EmploymentPosition;
             Rate = Definitions.User.Rates.FirstOrDefault(x => x.Id == Definitions.Report.RateId).Description;
-            Remark = Definitions.Report.ManualEntryRemark;
+            
             NewKm = Convert.ToString(Math.Round(Definitions.Report.route.TotalDistance, 1));
             HomeToBorderDistance = Convert.ToString(Definitions.Report.HomeToBorderDistance);
             StartHomeCheck = Definitions.Report.StartsAtHome;
             EndHomeCheck = Definitions.Report.EndsAtHome;
             FourKmRuleCheck = Definitions.Report.FourKmRule;
             ShowFourKmRule = Definitions.User.Profile.Employments.FirstOrDefault(x => x.Id == Definitions.Report.EmploymentId).OrgUnit.FourKmRuleAllowed;
-
         }
 
         #region Message Handlers
@@ -222,7 +225,16 @@ namespace OS2Indberetning.ViewModel
         private void UploadHandler()
         {
             Dispose();
+            UploadCheck();
             Navigation.PushAsync<UploadingViewModel>();
+        }
+
+        private void UploadCheck()
+        {
+            if (String.IsNullOrEmpty(Definitions.Report.ManualEntryRemark))
+            {
+                Definitions.Report.ManualEntryRemark = Definitions.RemarkDefault;
+            }
         }
 
         #endregion
