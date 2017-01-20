@@ -33,6 +33,7 @@ namespace OS2Indberetning
         public static bool EndsAtHome = false;
         public static Route Route = new Route();
         public static string Uuid;
+        public static string RemarkDefault = "Ingen kommentar indtastet";
         #endregion
 
         #region GPS properties
